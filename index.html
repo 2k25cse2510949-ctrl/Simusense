@@ -213,14 +213,147 @@
     SimuSense © 2026 · Explore possibilities. Make informed decisions.
   </footer>
 
-  <script>
-    function openScenario(scenario) {
-      if (scenario === "career") {
-        alert("Education & Career Future Lab is our first module to build!");
-      } else {
-        alert("This scenario is planned for a future SimuSense update.");
-      }
+<section id="future-lab" style="max-width:1100px;margin:45px auto;padding:24px;color:#f5f3ff;">
+  <p style="color:#c4b5fd;letter-spacing:2px;">SIMUSENSE FUTURE LAB</p>
+  <h2>Compare Your Possible Futures</h2>
+  <p style="color:#b8bfd3;">
+    Explore different education paths and see how your estimated
+    costs and planned learning hours change.
+  </p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+
+    <div style="background:#141a2e;padding:22px;border-radius:14px;border:1px solid #51417c;">
+      <h3>Scenario A</h3>
+      <label for="degreeA">Choose a degree</label>
+      <select id="degreeA" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
+        <option value="B.Tech">B.Tech</option>
+        <option value="BBA">BBA</option>
+        <option value="B.Sc.">B.Sc.</option>
+      </select>
+
+      <label for="feeA">Estimated annual college fee (₹)</label>
+      <input id="feeA" type="number" min="0" value="100000" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
+
+      <label for="yearsA">Course duration (years)</label>
+      <input id="yearsA" type="number" min="1" max="10" value="4" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
+
+      <label for="hoursA">Planned learning hours per week</label>
+      <input id="hoursA" type="number" min="0" max="168" value="10" style="display:block;width:100%;padding:10px;margin-top:8px;">
+    </div>
+
+    <div style="background:#141a2e;padding:22px;border-radius:14px;border:1px solid #51417c;">
+      <h3>Scenario B</h3>
+      <label for="degreeB">Choose a degree</label>
+      <select id="degreeB" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
+        <option value="BBA">BBA</option>
+        <option value="B.Tech">B.Tech</option>
+        <option value="B.Sc.">B.Sc.</option>
+      </select>
+
+      <label for="feeB">Estimated annual college fee (₹)</label>
+      <input id="feeB" type="number" min="0" value="50000" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
+
+      <label for="yearsB">Course duration (years)</label>
+      <input id="yearsB" type="number" min="1" max="10" value="3" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
+
+      <label for="hoursB">Planned learning hours per week</label>
+      <input id="hoursB" type="number" min="0" max="168" value="10" style="display:block;width:100%;padding:10px;margin-top:8px;">
+    </div>
+  </div>
+
+  <button onclick="compareFutures()" style="margin-top:22px;padding:13px 22px;background:#8b5cf6;color:white;border:0;border-radius:9px;cursor:pointer;">
+    Compare My Futures
+  </button>
+
+  <div id="futureResults" aria-live="polite" style="margin-top:24px;"></div>
+
+  <p style="color:#9ca3b8;font-size:13px;margin-top:20px;">
+    Estimates use your inputs and assume fees remain constant. They exclude
+    living expenses, fee increases, scholarships and other costs. Learning
+    hours are plans, not guarantees of academic or career outcomes.
+  </p>
+</section>
+
+<script>
+function compareFutures() {
+  const scenarios = [
+    {
+      name: document.getElementById("degreeA").value,
+      fee: Number(document.getElementById("feeA").value),
+      years: Number(document.getElementById("yearsA").value),
+      hours: Number(document.getElementById("hoursA").value)
+    },
+    {
+      name: document.getElementById("degreeB").value,
+      fee: Number(document.getElementById("feeB").value),
+      years: Number(document.getElementById("yearsB").value),
+      hours: Number(document.getElementById("hoursB").value)
     }
+  ];
+
+  const valid = scenarios.every(s =>
+    Number.isFinite(s.fee) && s.fee >= 0 &&
+    Number.isInteger(s.years) && s.years >= 1 && s.years <= 10 &&
+    Number.isFinite(s.hours) && s.hours >= 0 && s.hours <= 168
+  );
+
+  const output = document.getElementById("futureResults");
+
+  if (!valid) {
+    output.textContent =
+      "Please enter valid fees, a course duration from 1 to 10 years, and weekly learning hours from 0 to 168.";
+    return;
+  }
+
+  const results = scenarios.map((s, i) => ({
+    ...s,
+    totalFee: s.fee * s.years,
+    totalLearning: s.hours * 52 * s.years,
+    label: i === 0 ? "Scenario A" : "Scenario B"
+  }));
+
+  const money = amount => "₹" + amount.toLocaleString("en-IN");
+
+  output.innerHTML = `
+    <h3>Your comparison</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+      ${results.map(r => `
+        <div style="background:#141a2e;border:1px solid #51417c;border-radius:12px;padding:20px;">
+          <h3>${r.label}: ${r.name}</h3>
+          <p>Estimated total tuition</p>
+          <h2 style="color:#c4b5fd;">${money(r.totalFee)}</h2>
+          <p>Planned learning time</p>
+          <strong>${r.totalLearning.toLocaleString("en-IN")} hours</strong>
+          <p>Course duration: ${r.years} years</p>
+        </div>
+      `).join("")}
+    </div>
+    <div style="background:#141a2e;padding:20px;border-radius:12px;margin-top:16px;">
+      <h3>What changes between the scenarios?</h3>
+      <p>Tuition difference: <strong>${money(Math.abs(results[0].totalFee - results[1].totalFee))}</strong></p>
+      <p>Planned learning-time difference: <strong>${Math.abs(results[0].totalLearning - results[1].totalLearning).toLocaleString("en-IN")} hours</strong></p>
+      <p>${results[0].totalFee < results[1].totalFee
+        ? "Scenario A has the lower estimated tuition."
+        : results[0].totalFee > results[1].totalFee
+        ? "Scenario B has the lower estimated tuition."
+        : "Both scenarios have the same estimated tuition."}</p>
+      <p style="color:#b8bfd3;font-size:13px;">Lower tuition alone does not mean a degree is the better choice. Consider interests, eligibility, institution quality and career goals too.</p>
+    </div>
+  `;
+}
+</script>
+
+  <script>
+ function openScenario(scenario) {
+  if (scenario === "career") {
+    document.getElementById("future-lab").scrollIntoView({
+      behavior: "smooth"
+    });
+  } else {
+    alert("This scenario is planned for a future SimuSense update.");
+  }
+}
   </script>
 </body>
 </html>
