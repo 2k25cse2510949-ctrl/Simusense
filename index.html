@@ -16,23 +16,50 @@
 
   <main>
     <section class="welcome">
-      <h2>Understand Systems. Simulate Possibilities.</h2>
-
+      <h2>Classroom Energy Simulator</h2>
       <p>
-        Welcome to SimuSense — an interactive platform that helps you
-        explore real-world systems, test different conditions, and
-        compare possible outcomes through simulation.
+        Change classroom settings, run a simulation, and estimate
+        electricity consumption and cost.
       </p>
 
-      <button onclick="alert('Your SimuSense dashboard is ready!')">
-        Start Simulation
-      </button>
+      <div class="controls">
+        <label for="students">Number of students</label>
+        <input type="number" id="students" min="0" max="200" value="40">
+
+        <label for="hours">Operating hours per day</label>
+        <input type="number" id="hours" min="0" max="24" value="8" step="0.5">
+
+        <label for="lights">Number of lights</label>
+        <input type="number" id="lights" min="0" max="100" value="10">
+
+        <label for="fans">Number of fans</label>
+        <input type="number" id="fans" min="0" max="100" value="8">
+
+        <button onclick="calculateSimulation()">Run Simulation</button>
+      </div>
+    </section>
+
+    <section class="welcome results">
+      <h2>Simulation Results</h2>
+
+      <p>Total power: <strong id="powerResult">—</strong></p>
+      <p>Daily energy: <strong id="energyResult">—</strong></p>
+      <p>Estimated daily cost: <strong id="costResult">—</strong></p>
+      <p>Classroom occupancy: <strong id="studentResult">—</strong></p>
+
+      <p id="resultMessage">Change the settings and run your first simulation.</p>
     </section>
   </main>
 
   <footer>
-    <p>SimuSense © 2026 | Built for smarter decisions</p>
+    <p>SimuSense © 2026 | Interactive Digital Twin Project</p>
+    <p>Estimates use assumed equipment ratings and electricity rates.</p>
   </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
 
 </body>
 </html>
