@@ -1,1 +1,227 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimuSense | Explore Your Possible Futures</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: #f5f3ff;
+      line-height: 1.6;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 8%;
+      border-bottom: 1px solid #272c43;
+    }
+
+    .logo { font-size: 24px; font-weight: bold; }
+    .logo span { color: #a78bfa; }
+
+    .tag {
+      color: #c4b5fd;
+      font-size: 12px;
+      border: 1px solid #51417c;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 65px 24px;
+    }
+
+    .intro { text-align: center; margin-bottom: 45px; }
+
+    .intro h1 {
+      font-size: clamp(34px, 6vw, 58px);
+      line-height: 1.12;
+      margin: 18px 0;
+    }
+
+    .intro h1 span { color: #a78bfa; }
+
+    .intro p {
+      color: #b8bfd3;
+      max-width: 650px;
+      margin: 18px auto;
+    }
+
+    .eyebrow {
+      color: #c4b5fd;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
+    }
+
+    .section-title { margin-bottom: 22px; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #141a2e;
+      border: 1px solid #2b3350;
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #a78bfa;
+    }
+
+    .symbol { font-size: 30px; }
+    .card h3 { margin: 12px 0 8px; }
+    .card p { color: #b8bfd3; font-size: 14px; }
+
+    button {
+      background: #8b5cf6;
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 17px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    button:hover { background: #7c3aed; }
+
+    .card button { width: 100%; margin-top: 12px; }
+
+    .note {
+      margin-top: 30px;
+      padding: 18px;
+      background: #141a2e;
+      border-radius: 12px;
+      border: 1px solid #2b3350;
+      color: #b8bfd3;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #858da7;
+      border-top: 1px solid #272c43;
+      font-size: 13px;
+    }
+
+    @media (max-width: 500px) {
+      header { padding: 18px; }
+      main { padding: 40px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Simu<span>Sense</span> ✦</div>
+    <div class="tag">YOUR FUTURE, EXPLORED</div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div class="eyebrow">Think beyond today</div>
+      <h1>Explore your <span>possible futures.</span></h1>
+      <p>
+        What if you chose a different degree, changed your daily habits,
+        or made a new financial decision? Explore possibilities, compare
+        outcomes, and plan your next move with SimuSense.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="section-title">Choose your What-If scenario</h2>
+
+      <div class="cards">
+        <article class="card">
+          <div class="symbol">🎓</div>
+          <h3>Education & Career</h3>
+          <p>
+            Compare B.Tech, BBA and B.Sc. Explore study plans,
+            costs, skills and possible career pathways.
+          </p>
+          <button onclick="openScenario('career')">Explore career paths →</button>
+        </article>
+
+        <article class="card">
+          <div class="symbol">📚</div>
+          <h3>Study & Time</h3>
+          <p>
+            Change your study hours and compare weekly study time
+            with your available free time.
+          </p>
+          <button onclick="openScenario('study')">Explore study plans →</button>
+        </article>
+
+        <article class="card">
+          <div class="symbol">💰</div>
+          <h3>Budget & Savings</h3>
+          <p>
+            Change your monthly savings and explore how your
+            money could grow over time.
+          </p>
+          <button onclick="openScenario('budget')">Explore savings →</button>
+        </article>
+
+        <article class="card">
+          <div class="symbol">⏰</div>
+          <h3>Daily Routine</h3>
+          <p>
+            Rearrange sleep, study, work and leisure to see
+            how your daily schedule changes.
+          </p>
+          <button onclick="openScenario('routine')">Explore routines →</button>
+        </article>
+
+        <article class="card">
+          <div class="symbol">⚡</div>
+          <h3>Energy & Resources</h3>
+          <p>
+            Explore equipment usage, estimated electricity
+            consumption and potential cost savings.
+          </p>
+          <button onclick="openScenario('energy')">Explore energy →</button>
+        </article>
+      </div>
+    </section>
+
+    <div class="note">
+      <strong>How SimuSense works:</strong>
+      Choose a situation, adjust the assumptions, compare alternative
+      scenarios, and use the results to plan your next steps.
+      Estimates are not guarantees of future outcomes.
+    </div>
+  </main>
+
+  <footer>
+    SimuSense © 2026 · Explore possibilities. Make informed decisions.
+  </footer>
+
+  <script>
+    function openScenario(scenario) {
+      if (scenario === "career") {
+        alert("Education & Career Future Lab is our first module to build!");
+      } else {
+        alert("This scenario is planned for a future SimuSense update.");
+      }
+    }
+  </script>
+</body>
+</html>
+
