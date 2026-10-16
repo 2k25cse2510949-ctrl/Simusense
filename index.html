@@ -84,20 +84,41 @@
     .conclusion-box { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
     .conclusion-box span { font-size: 12px; color: #818cf8; text-transform: uppercase; display: block; margin-bottom: 8px; font-weight: 700; }
 
-    .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
-    .video-card { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
-    .video-card h4 { font-size: 14px; color: #f8fafc; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-    .video-frame { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 6px; background: #000; }
-    .video-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-    .video-desc { font-size: 12px; color: var(--text-muted); margin-top: 8px; min-height: 38px; }
-    .yt-search-btn { display: inline-block; margin-top: 8px; font-size: 11px; color: #818cf8; text-decoration: none; border: 1px solid #818cf8; padding: 4px 8px; border-radius: 4px; }
-    .yt-search-btn:hover { background: rgba(129, 140, 248, 0.1); }
+    /* Picture to Picture AI Storyboard Grid */
+    .visual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+    .visual-card { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .visual-card h4 { font-size: 14px; color: #f8fafc; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+    .p2p-scenes { display: flex; flex-direction: column; gap: 10px; }
+    .p2p-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(15, 22, 38, 0.8);
+      border: 1px solid rgba(36, 51, 82, 0.8);
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+    .p2p-badge {
+      font-size: 20px;
+      line-height: 1;
+      padding: 8px;
+      border-radius: 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      flex-shrink: 0;
+    }
+    .p2p-content strong { font-size: 13px; color: #f8fafc; display: block; margin-bottom: 2px; }
+    .p2p-content p { font-size: 12px; color: var(--text-muted); margin: 0; }
+
+    .yt-search-btn { display: inline-block; margin-top: 12px; font-size: 11px; color: #818cf8; text-decoration: none; border: 1px solid #818cf8; padding: 5px 10px; border-radius: 4px; transition: 0.2s; }
+    .yt-search-btn:hover { background: rgba(129, 140, 248, 0.15); color: #fff; }
 
     .dashboard-grid { display: grid; grid-template-columns: 440px 1fr; gap: 20px; }
     @media (max-width: 950px) { 
       .dashboard-grid { grid-template-columns: 1fr; } 
       .conclusion-grid { grid-template-columns: 1fr; } 
-      .video-grid { grid-template-columns: 1fr; }
+      .visual-grid { grid-template-columns: 1fr; }
     }
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -123,23 +144,27 @@
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      } catch (e) {
+        console.warn("Translation widget skipped");
+      }
     }
   </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
 </head>
 <body>
   <div class="app-container">
     
     <div class="top-nav">
       <div>
-        <span class="badge">SimuSense Universal v8.0</span>
+        <span class="badge">SimuSense Universal v9.0</span>
         <h1>Life Decision &amp; Dilemma Helper</h1>
-        <p class="subtitle">Solves any dilemma: Money, health, burnout, relationship conflict, or pets in simple language.</p>
+        <p class="subtitle">Solves any dilemma: Money, health, burnout, relationship conflict, or pets with Picture-to-Picture visual guides.</p>
       </div>
 
       <div class="translate-box">
@@ -162,7 +187,7 @@
         <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Severe health pain stopping work?</button>
       </div>
 
-      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze My Problem &amp; Run Decision Engine</button>
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze My Problem &amp; Show Visual Roadmap</button>
     </section>
 
     <!-- Verdict Banner -->
@@ -187,30 +212,28 @@
       </div>
     </section>
 
-    <!-- Visual Video Guide Section -->
-    <section class="card" id="videoSection">
-      <h2 style="font-size: 16px; margin-bottom: 4px;">📹 Visual Video Guides (Problem &amp; Solution)</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Watch these curated walkthroughs to see why the problem happens and how the solution works.</p>
+    <!-- Picture-to-Picture Visual Guide Section -->
+    <section class="card" id="visualSection">
+      <h2 style="font-size: 16px; margin-bottom: 4px;">🖼️ Picture-to-Picture AI Visual Breakdown</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Visual storyboard showing exactly why this problem hurts and how the solution works step-by-step.</p>
       
-      <div class="video-grid">
-        <!-- Problem Video Card -->
-        <div class="video-card">
-          <h4>🔴 Video 1: Understanding The Problem</h4>
-          <div class="video-frame">
-            <iframe id="problemVideoIframe" src="" allowfullscreen loading="lazy"></iframe>
+      <div class="visual-grid">
+        <!-- Problem Visual Storyboard -->
+        <div class="visual-card">
+          <h4 style="color: #f87171;">🔴 Picture Breakdown: The Hidden Trap</h4>
+          <div class="p2p-scenes" id="problemScenes">
+            <!-- Dynamic Scenes populate here -->
           </div>
-          <div class="video-desc" id="problemVideoDesc">Analyzing problem...</div>
-          <a href="#" target="_blank" id="problemYtLink" class="yt-search-btn">🔍 Search More Videos On This Issue</a>
+          <a href="#" target="_blank" id="problemVisualLink" class="yt-search-btn">🔍 View Detailed Video Guides on YouTube</a>
         </div>
 
-        <!-- Solution Video Card -->
-        <div class="video-card">
-          <h4>🟢 Video 2: How The Practical Solution Works</h4>
-          <div class="video-frame">
-            <iframe id="solutionVideoIframe" src="" allowfullscreen loading="lazy"></iframe>
+        <!-- Solution Visual Storyboard -->
+        <div class="visual-card">
+          <h4 style="color: #34d399;">🟢 Picture Roadmap: How The Solution Works</h4>
+          <div class="p2p-scenes" id="solutionScenes">
+            <!-- Dynamic Scenes populate here -->
           </div>
-          <div class="video-desc" id="solutionVideoDesc">Analyzing solution...</div>
-          <a href="#" target="_blank" id="solutionYtLink" class="yt-search-btn">🔍 Search Practical Guides</a>
+          <a href="#" target="_blank" id="solutionVisualLink" class="yt-search-btn">🔍 View Practical Execution Walkthroughs</a>
         </div>
       </div>
     </section>
@@ -289,55 +312,85 @@
   <script>
     let myChart = null;
 
-    // Working video IDs for each dilemma type
-    const videoDataMap = {
+    // Picture-to-Picture visual step cards
+    const visualP2PMap = {
       investment: {
-        problemId: "r-x9qWvK_9E",
-        problemDesc: "The mistake of chasing quick returns with small money and how fees destroy micro capital.",
-        problemQuery: "why beginners lose money in stocks crypto options trading",
-        solutionId: "vBq3qV2G3o8",
-        solutionDesc: "How index fund SIPs and human skill compounding turn micro money into large capital.",
-        solutionQuery: "how to start index fund sip with 500 rupees zerodha groww"
+        problemSteps: [
+          { icon: "📉", title: "Scene 1: Small Money Illusion", desc: "Thinking Rs 1,200 is small and putting it in crypto/options or wasting it on fast food." },
+          { icon: "💸", title: "Scene 2: High Fee Erosion", desc: "Trading apps charge DP & transaction fees, eating 5-10% of small profits immediately." },
+          { icon: "🕳️", title: "Scene 3: Complete Loss", desc: "90% of beginners lose small capital within 30 days chasing get-rich-quick tips." }
+        ],
+        solutionSteps: [
+          { icon: "🧠", title: "Step 1: Skill Injection", desc: "Use Rs 500 to buy a life-changing book or tool that increases your earning power." },
+          { icon: "📈", title: "Step 2: Automate Rs 500 SIP", desc: "Start an automated Nifty 50 Index Fund SIP. Compounding starts from day one." },
+          { icon: "🛡️", title: "Step 3: Emergency Seed", desc: "Keep the rest in an auto-sweep bank account for unexpected expenses." }
+        ],
+        searchQuery: "how to start index fund sip with 500 rupees groww zerodha"
       },
       burnout: {
-        problemId: "gB4D9V7Wd8E",
-        problemDesc: "The biological cost of sleep deprivation and working 80 hours a week.",
-        problemQuery: "what happens to brain when you sleep only 4 hours burnout",
-        solutionId: "GszU8r8gS_c",
-        solutionDesc: "The 7-day nervous system reset: how to recover from severe burnout and set boundaries.",
-        solutionQuery: "how to recover from burnout practical steps"
+        problemSteps: [
+          { icon: "⏰", title: "Scene 1: Extreme Grind", desc: "Working 80+ hours while sacrificing sleep to earn extra cash." },
+          { icon: "🧠", title: "Scene 2: Cognitive Fog", desc: "Lack of deep sleep triggers chronic cortisol, brain fog, and severe anxiety." },
+          { icon: "🏥", title: "Scene 3: Involuntary Crash", desc: "Endocrine and cardiovascular collapse forces expensive medical leaves." }
+        ],
+        solutionSteps: [
+          { icon: "🛌", title: "Step 1: 7-Hour Sleep Rule", desc: "Treat sleep as an immovable asset. Brain cells only repair during sleep." },
+          { icon: "🛑", title: "Step 2: Strict 50-Hour Cap", desc: "Leave on time. Companies replace workers in days; health cannot be replaced." },
+          { icon: "🌲", title: "Step 3: 3-Day Screen Detox", desc: "Spend a weekend walking in nature without work notifications to reset nerves." }
+        ],
+        searchQuery: "how to recover from burnout nervous system reset"
       },
       toxic_exit: {
-        problemId: "2oY9sWv8sK8",
-        problemDesc: "How toxic work environments destroy your confidence and cause chronic stress.",
-        problemQuery: "signs of a toxic work environment and gaslighting boss",
-        solutionId: "mN2H7K0q8jE",
-        solutionDesc: "Quiet quitting and building a 3-month survival buffer for an orderly exit.",
-        solutionQuery: "how to leave a toxic job without offer exit strategy"
+        problemSteps: [
+          { icon: "🗣️", title: "Scene 1: Daily Humiliation", desc: "Toxic boss or manager constantly insults self-worth, making every morning painful." },
+          { icon: "⚡", title: "Scene 2: Impulsive Walkout", desc: "Quitting without savings creates instant panic about rent and food." },
+          { icon: "🔄", title: "Scene 3: The Desperation Trap", desc: "Running out of cash forces acceptance of an equally toxic replacement job." }
+        ],
+        solutionSteps: [
+          { icon: "🧘", title: "Step 1: Emotional Detachment", desc: "Quiet quit: do your core duties strictly in hours and stop taking insults to heart." },
+          { icon: "💰", title: "Step 2: 3-Month Cash Shield", desc: "Save essential food and living expenses before handing in your resignation." },
+          { icon: "📨", title: "Step 3: Evening Job Hunting", desc: "Apply to 5 jobs every evening. The moment you get an offer, resign calmly." }
+        ],
+        searchQuery: "how to leave toxic job safely exit strategy"
       },
       animal_moral: {
-        problemId: "Tk8Z3cK9pRw",
-        problemDesc: "A veterinarian explains how to assess terminal pain using the quality of life scale.",
-        problemQuery: "veterinarian when is it time to put dog down quality of life",
-        solutionId: "7P9Z6vW1mKo",
-        solutionDesc: "Understanding compassionate pet euthanasia at home and releasing false guilt.",
-        solutionQuery: "compassionate pet euthanasia at home peaceful transition"
+        problemSteps: [
+          { icon: "🐕", title: "Scene 1: Terminal Pain", desc: "14-year-old companion suffering from incurable cancer and daily agony." },
+          { icon: "⏳", title: "Scene 2: Delaying Grief", desc: "Keeping them alive solely because we cannot bear the thought of our own tears." },
+          { icon: "💔", title: "Scene 3: Traumatic Memory", desc: "Watching them suffer in crisis overrides years of happy memories." }
+        ],
+        solutionSteps: [
+          { icon: "📋", title: "Step 1: Quality of Life Audit", desc: "Assess mobility, eating, and comfort. If pain is constant, mercy is love." },
+          { icon: "🏡", title: "Step 2: Peaceful Home Farewell", desc: "Have a veterinarian visit your home so your pet rests in their favorite bed." },
+          { icon: "🕊️", title: "Step 3: Honor Without Guilt", desc: "Grieve openly. Taking on the pain of loss to end their physical agony is true love." }
+        ],
+        searchQuery: "veterinarian how to know when to put dog down quality of life"
       },
       physical_shock: {
-        problemId: "d6q0v1V5kM0",
-        problemDesc: "How herniated discs and bad sitting habits compress spinal nerves.",
-        problemQuery: "spine disc herniation sitting posture nerve compression",
-        solutionId: "4BOTvaRaUQc",
-        solutionDesc: "McGill Big 3 spine rehabilitation exercises and workstation posture adaptation.",
-        solutionQuery: "mcgill big 3 spine back pain rehabilitation exercises"
+        problemSteps: [
+          { icon: "🦴", title: "Scene 1: Disc Compression", desc: "Severe spine disc bulge compressing spinal nerves during prolonged sitting." },
+          { icon: "⚡", title: "Scene 2: Forcing Through Pain", desc: "Pushing through pain creates permanent numbness and motor nerve damage." },
+          { icon: "🚫", title: "Scene 3: Total Incapacity", desc: "Inability to work leads to lost income and expensive emergency surgeries." }
+        ],
+        solutionSteps: [
+          { icon: "⏱️", title: "Step 1: 30-Minute Interval Rule", desc: "Stand up or walk for 2 minutes every 30 minutes to decompress the lumbar spine." },
+          { icon: "💻", title: "Step 2: Remote / Knowledge Pivot", desc: "Shift towards knowledge-based work that allows ergonomic and home flexibility." },
+          { icon: "🧘", title: "Step 3: McGill Core Stretches", desc: "Perform daily physical therapy exercises to rebuild muscular spine protection." }
+        ],
+        searchQuery: "mcgill big 3 spine back pain exercises"
       },
       existential: {
-        problemId: "X2qka1z6f4U",
-        problemDesc: "The 'Arrival Fallacy': why achieving career success can still leave you feeling empty.",
-        problemQuery: "why success makes you feel empty arrival fallacy",
-        solutionId: "L9aF0t8z7gQ",
-        solutionDesc: "Rebuilding daily meaning, personal curiosity, and breaking out of autopilot.",
-        solutionQuery: "how to find purpose when life feels meaningless"
+        problemSteps: [
+          { icon: "🤖", title: "Scene 1: The Hollow Checkbox", desc: "Job, money, and apartment achieved, but every morning feels completely empty." },
+          { icon: "📱", title: "Scene 2: Dopamine Numbing", desc: "Using social media scrolling, alcohol, or shopping to mask internal numbness." },
+          { icon: "🌫️", title: "Scene 3: Deep Disconnection", desc: "Living on pure autopilot without any authentic personal curiosity." }
+        ],
+        solutionSteps: [
+          { icon: "🌱", title: "Step 1: Keep Baseline Safe", desc: "Do not burn your job down; use financial stability as your safety cushion." },
+          { icon: "🎨", title: "Step 2: 1 Hour of True Play", desc: "Spend 1 hour daily on unmonetized hobbies (art, writing, walking, sports)." },
+          { icon: "🤝", title: "Step 3: Real Human Bonds", desc: "Share your honest feelings with one friend. Authentic connection heals voids." }
+        ],
+        searchQuery: "how to find meaning when life feels empty"
       }
     };
 
@@ -370,7 +423,6 @@
         type: "investment"
       };
 
-      // Extract amount
       const numMatch = clean.match(/(?:₹|rs\.?|inr)?\s*([\d,.]+)\s*(k|lakh|lac|cr|rupees|rs)?/i);
       if (numMatch && numMatch[1]) {
         let val = parseFloat(numMatch[1].replace(/,/g, ''));
@@ -381,7 +433,6 @@
         if (!isNaN(val) && val > 0) res.capital = val;
       }
 
-      // Keyword Classification
       if (clean.includes("dog") || clean.includes("cat") || clean.includes("pet") || clean.includes("animal") || clean.includes("euthan") || clean.includes("put down") || clean.includes("vet")) {
         res.type = "animal_moral";
         res.distress = 90;
@@ -416,27 +467,44 @@
       return res;
     }
 
-    function updateVideoGuides(type) {
+    function updateVisualGuides(type) {
       try {
-        const data = videoDataMap[type] || videoDataMap.investment;
+        const data = visualP2PMap[type] || visualP2PMap.investment;
         
-        const pFrame = document.getElementById("problemVideoIframe");
-        const pDesc = document.getElementById("problemVideoDesc");
-        const pLink = document.getElementById("problemYtLink");
+        const pContainer = document.getElementById("problemScenes");
+        const sContainer = document.getElementById("solutionScenes");
+        const pLink = document.getElementById("problemVisualLink");
+        const sLink = document.getElementById("solutionVisualLink");
 
-        const sFrame = document.getElementById("solutionVideoIframe");
-        const sDesc = document.getElementById("solutionVideoDesc");
-        const sLink = document.getElementById("solutionYtLink");
+        if (pContainer) {
+          pContainer.innerHTML = data.problemSteps.map(step => `
+            <div class="p2p-step">
+              <div class="p2p-badge">${step.icon}</div>
+              <div class="p2p-content">
+                <strong>${step.title}</strong>
+                <p>${step.desc}</p>
+              </div>
+            </div>
+          `).join('');
+        }
 
-        if (pFrame) pFrame.src = "https://www.youtube-nocookie.com/embed/" + data.problemId;
-        if (pDesc) pDesc.textContent = data.problemDesc;
-        if (pLink) pLink.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.problemQuery);
+        if (sContainer) {
+          sContainer.innerHTML = data.solutionSteps.map(step => `
+            <div class="p2p-step">
+              <div class="p2p-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">${step.icon}</div>
+              <div class="p2p-content">
+                <strong>${step.title}</strong>
+                <p>${step.desc}</p>
+              </div>
+            </div>
+          `).join('');
+        }
 
-        if (sFrame) sFrame.src = "https://www.youtube-nocookie.com/embed/" + data.solutionId;
-        if (sDesc) sDesc.textContent = data.solutionDesc;
-        if (sLink) sLink.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.solutionQuery);
+        const ytUrl = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.searchQuery);
+        if (pLink) pLink.href = ytUrl;
+        if (sLink) sLink.href = ytUrl;
       } catch (err) {
-        console.warn("Video loader skipped:", err);
+        console.warn("Visual storyboard skipped:", err);
       }
     }
 
@@ -458,7 +526,7 @@
       if (vEl) vEl.value = p.vitality;
       if (dEl) dEl.value = p.distress;
 
-      updateVideoGuides(p.type);
+      updateVisualGuides(p.type);
       runSimulation(p.type, p.capital);
     }
 
