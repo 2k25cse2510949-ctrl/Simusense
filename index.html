@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SimuSense — Universal Life & Decision Simulator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimuSense — Life & Dilemma Decision Helper</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -21,16 +21,45 @@
       --warning: #f59e0b;
       --mental: #38bdf8;
       --emotional: #ec4899;
-      --vitality: #22c55e;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg-primary); color: var(--text-main); padding: 24px 16px; line-height: 1.5; }
+    body { background-color: var(--bg-primary); color: var(--text-main); padding: 24px 16px; line-height: 1.6; }
     .app-container { max-width: 1250px; margin: 0 auto; }
-    .header { margin-bottom: 20px; }
-    .badge { background: rgba(99, 102, 241, 0.2); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
+    
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .badge { background: rgba(99, 102, 241, 0.2); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; }
     h1 { font-size: 26px; font-weight: 700; margin-top: 6px; }
     .subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+    /* Translation Bar */
+    .translate-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 30px;
+    }
+    .translate-box span { font-size: 12px; color: var(--text-muted); }
+    #google_translate_element select {
+      background: var(--bg-card);
+      color: #fff;
+      border: 1px solid var(--accent);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+    }
 
     .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
     .dilemma-card { border: 1px solid var(--accent); background: #111a30; }
@@ -42,19 +71,19 @@
     .chip { background: var(--bg-card); color: #cbd5e1; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
     .chip:hover { border-color: var(--accent); color: #fff; background: rgba(99, 102, 241, 0.2); }
 
-    .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
+    .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
     .btn-primary:hover { background: var(--accent-hover); }
 
     .conclusion-card { border-left: 4px solid var(--accent); background: #131d33; }
     .conclusion-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
-    .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+    .status-pill { font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; }
     .status-safe { background: rgba(16, 185, 129, 0.2); color: #34d399; }
     .status-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; }
     .status-warn { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
 
     .conclusion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
     .conclusion-box { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
-    .conclusion-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 8px; font-weight: 700; }
+    .conclusion-box span { font-size: 12px; color: #818cf8; text-transform: uppercase; display: block; margin-bottom: 8px; font-weight: 700; }
 
     .dashboard-grid { display: grid; grid-template-columns: 440px 1fr; gap: 20px; }
     @media (max-width: 950px) { .dashboard-grid { grid-template-columns: 1fr; } .conclusion-grid { grid-template-columns: 1fr; } }
@@ -73,87 +102,116 @@
     .insights-card { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 4px; }
     .insights-card ul { padding-left: 18px; font-size: 13px; color: var(--text-muted); margin-top: 6px; }
     .insights-card li { margin-bottom: 6px; }
+    
+    /* Clean up Google Translate bar elements */
+    .goog-te-gadget { font-size: 0px !important; }
+    .goog-te-gadget span { display: none !important; }
+    .goog-te-banner-frame { display: none !important; }
+    body { top: 0px !important; }
   </style>
+
+  <!-- Google Translate Global Script -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
   <div class="app-container">
     
-    <header class="header">
-      <span class="badge">SimuSense Universal Core</span>
-      <h1>Universal Life & Decision Simulator</h1>
-      <p class="subtitle">Universal Decision Engine: Handles micro & macro investments, psychological burnout, emotional separations, animal ethics, or physical crises.</p>
-    </header>
-
-    <section class="card dilemma-card">
-      <h2 style="font-size: 16px;">1. Describe Any Dilemma (Living Beings, Money, Mind, Health, or Morals)</h2>
-      <textarea id="userDilemma" rows="3" placeholder="Type naturally: e.g. 'I have 1200 rupees where should I invest it?', or 'My dog is 14 years old with terminal cancer, should I put him down?', or 'Working 80 hours a week and feeling depressed...'"></textarea>
-
-      <div class="preset-chips">
-        <span class="chip-label">Quick Scenarios:</span>
-        <button type="button" class="chip" onclick="handlePreset('micro_invest')">💰 Micro-Invest: Best use of ₹1200?</button>
-        <button type="button" class="chip" onclick="handlePreset('burnout')">⚡ Burnout: 80hr work & 5hr sleep?</button>
-        <button type="button" class="chip" onclick="handlePreset('toxic_exit')">💔 Emotional: Quit toxic job without offer?</button>
-        <button type="button" class="chip" onclick="handlePreset('moral_pet')">🐶 Animal/Moral: Terminal pet suffering vs guilt?</button>
-        <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Physical: Severe spine pain reducing work 40%?</button>
+    <div class="top-nav">
+      <div>
+        <span class="badge">SimuSense Universal</span>
+        <h1>Life Decision & Dilemma Helper</h1>
+        <p class="subtitle">Helps you make the right choice for money, health, stress, relationships, and pets in simple words.</p>
       </div>
 
-      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Model Trajectory</button>
+      <!-- Language Selector -->
+      <div class="translate-box">
+        <span>🌐 Choose Language:</span>
+        <div id="google_translate_element"></div>
+      </div>
+    </div>
+
+    <!-- Dilemma Input -->
+    <section class="card dilemma-card">
+      <h2 style="font-size: 16px;">1. What is bothering you or what decision do you need to make?</h2>
+      <textarea id="userDilemma" rows="3" placeholder="Type naturally in simple words, e.g. 'I have 1200 rupees where should I put it?', 'My job is very toxic and giving me depression', 'My old dog is in severe pain, what should I do?'"></textarea>
+
+      <div class="preset-chips">
+        <span class="chip-label">Quick Examples:</span>
+        <button type="button" class="chip" onclick="handlePreset('micro_invest')">💰 Best place for Rs 1200?</button>
+        <button type="button" class="chip" onclick="handlePreset('burnout')">⚡ Working 80 hours &amp; no sleep?</button>
+        <button type="button" class="chip" onclick="handlePreset('toxic_exit')">💔 Quit toxic job without backup?</button>
+        <button type="button" class="chip" onclick="handlePreset('moral_pet')">🐶 Old pet in severe pain?</button>
+        <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Severe health pain stopping my work?</button>
+      </div>
+
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze My Problem &amp; Show Simple Roadmap</button>
     </section>
 
+    <!-- Verdict Banner -->
     <section class="card conclusion-card" id="conclusionCard">
       <div class="conclusion-header">
         <div>
           <span class="status-pill status-safe" id="verdictPill">Balanced</span>
-          <span id="detectedArchetype" style="font-size: 12px; color: #818cf8; margin-left: 10px; font-weight: 600;"></span>
+          <span id="detectedArchetype" style="font-size: 13px; color: #818cf8; margin-left: 10px; font-weight: 600;"></span>
         </div>
       </div>
-      <div id="verdictSummary" style="font-size: 14px; color: #cbd5e1; margin-top: 6px; line-height: 1.6;"></div>
+      <div id="verdictSummary" style="font-size: 15px; color: #cbd5e1; margin-top: 6px; line-height: 1.6;"></div>
       
       <div class="conclusion-grid">
         <div class="conclusion-box">
-          <span>Comprehensive Risk Audit</span>
+          <span>⚠️ What could go wrong (Simple Risks)</span>
           <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
         <div class="conclusion-box">
-          <span>Actionable Strategic Roadmap</span>
+          <span>✅ What you should do step-by-step</span>
           <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
       </div>
     </section>
 
+    <!-- Main Workspace -->
     <main class="dashboard-grid">
       <section class="card">
-        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Extracted State Vectors</h2>
+        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Your Current Situation (Numbers)</h2>
         
         <div class="form-row">
           <div>
-            <label>Available Capital / Savings (₹)</label>
+            <label>Money in Hand / Savings (Rs)</label>
             <input type="number" id="v_capital" value="1200" step="500" oninput="runSimulation()">
           </div>
           <div>
-            <label>Monthly Earning Capacity (₹)</label>
+            <label>Monthly Income (Rs)</label>
             <input type="number" id="v_income" value="20000" step="1000" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
           <div>
-            <label>Mental Peace (0–100)</label>
+            <label>Mental Peace (0 to 100)</label>
             <input type="number" id="v_mental" value="70" min="0" max="100" oninput="runSimulation()">
           </div>
           <div>
-            <label>Emotional Equilibrium (0–100)</label>
+            <label>Emotional Calm (0 to 100)</label>
             <input type="number" id="v_emotional" value="65" min="0" max="100" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
           <div>
-            <label>Physical Vitality (0–100)</label>
+            <label>Body Health / Energy (0 to 100)</label>
             <input type="number" id="v_vitality" value="80" min="0" max="100" oninput="runSimulation()">
           </div>
           <div>
-            <label>Systemic Distress (0–100)</label>
+            <label>Stress Level (0 = Relaxed, 100 = Panic)</label>
             <input type="number" id="v_distress" value="30" min="0" max="100" oninput="runSimulation()">
           </div>
         </div>
@@ -162,11 +220,11 @@
       <section class="card">
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">Projected Capital</div>
-            <div class="stat-value" id="kpi_capital" style="color: var(--accent);">₹1,200</div>
+            <div class="stat-label">Money Future</div>
+            <div class="stat-value" id="kpi_capital" style="color: var(--accent);">Rs 1,200</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Mental Health</div>
+            <div class="stat-label">Mental Peace</div>
             <div class="stat-value" id="kpi_mental" style="color: var(--mental);">70 / 100</div>
           </div>
           <div class="stat-card">
@@ -174,7 +232,7 @@
             <div class="stat-value" id="kpi_emotional" style="color: var(--emotional);">65 / 100</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Life Equilibrium</div>
+            <div class="stat-label">Life Balance</div>
             <div class="stat-value" id="kpi_equilibrium" style="color: #cbd5e1;">72%</div>
           </div>
         </div>
@@ -184,7 +242,7 @@
         </div>
 
         <div class="insights-card">
-          <h4 style="font-size: 13px;">Universal Dynamics & Feedback Loops:</h4>
+          <h4 style="font-size: 13px;">Simple Takeaway:</h4>
           <ul id="insightsList"></ul>
         </div>
       </section>
@@ -195,16 +253,19 @@
     let myChart = null;
 
     const presets = {
-      micro_invest: "I have 1200 rupees, where should I invest it to get the best return?",
-      burnout: "I am working 80 hours a week sleeping 4.5 hours for good money but feeling depressed and completely burnt out. Should I quit?",
-      toxic_exit: "My boss constantly insults me and my workplace is toxic. I have 2 Lakh savings. Should I leave right now without a backup offer?",
-      moral_pet: "My 14-year-old dog has terminal bone cancer and is in severe pain. Doctor says put him down but I feel immense guilt. What should I do?",
-      physical_spine: "I am suffering from severe spine disc pain that limits my daily physical sitting capacity by 40%. How should I adapt my career?"
+      micro_invest: "I have 1200 rupees, where should I put this money to get the best result?",
+      burnout: "I am working 80 hours a week and sleeping only 4.5 hours for good money. I feel depressed and exhausted. Should I stop?",
+      toxic_exit: "My boss insults me every day and the office is toxic. I have 2 Lakh savings. Should I leave today without another job?",
+      moral_pet: "My 14-year-old dog has terminal bone cancer and is in severe pain every day. Doctor says put him down. I feel guilty.",
+      physical_spine: "I have severe spine and back pain that stops me from sitting or working for long hours. How do I fix my life?"
     };
 
     function handlePreset(key) {
-      document.getElementById("userDilemma").value = presets[key];
-      compileAndSimulate();
+      const el = document.getElementById("userDilemma");
+      if (el && presets[key]) {
+        el.value = presets[key];
+        compileAndSimulate();
+      }
     }
 
     function parseUniversalDilemma(text) {
@@ -265,28 +326,37 @@
     }
 
     function compileAndSimulate() {
-      const text = document.getElementById("userDilemma").value.trim();
-      if (!text) {
-        alert("Please enter a dilemma first!");
-        return;
-      }
+      const area = document.getElementById("userDilemma");
+      const text = area ? area.value.trim() : "";
+      
+      const p = parseUniversalDilemma(text || "I have 1200 rupees");
 
-      const p = parseUniversalDilemma(text);
+      const cEl = document.getElementById("v_capital");
+      const mEl = document.getElementById("v_mental");
+      const eEl = document.getElementById("v_emotional");
+      const vEl = document.getElementById("v_vitality");
+      const dEl = document.getElementById("v_distress");
 
-      document.getElementById("v_capital").value = p.capital;
-      document.getElementById("v_mental").value = p.mental;
-      document.getElementById("v_emotional").value = p.emotional;
-      document.getElementById("v_vitality").value = p.vitality;
-      document.getElementById("v_distress").value = p.distress;
+      if (cEl) cEl.value = p.capital;
+      if (mEl) mEl.value = p.mental;
+      if (eEl) eEl.value = p.emotional;
+      if (vEl) vEl.value = p.vitality;
+      if (dEl) dEl.value = p.distress;
 
       runSimulation(p.type, p.capital);
     }
 
-    function runSimulation(type, cap) {
-      let capital = parseFloat(document.getElementById("v_capital").value) || cap || 1200;
-      let mental = parseFloat(document.getElementById("v_mental").value) || 70;
-      let emotional = parseFloat(document.getElementById("v_emotional").value) || 65;
-      let vitality = parseFloat(document.getElementById("v_vitality").value) || 80;
+    function runSimulation(typeOverride, capOverride) {
+      const cInput = document.getElementById("v_capital");
+      const mInput = document.getElementById("v_mental");
+      const eInput = document.getElementById("v_emotional");
+      const vInput = document.getElementById("v_vitality");
+
+      let capital = cInput ? (parseFloat(cInput.value) || 1200) : (capOverride || 1200);
+      let mental = mInput ? (parseFloat(mInput.value) || 70) : 70;
+      let emotional = eInput ? (parseFloat(eInput.value) || 65) : 65;
+      let vitality = vInput ? (parseFloat(vInput.value) || 80) : 80;
+      let type = typeOverride || "investment";
 
       const years = 5;
       let timeline = [];
@@ -316,7 +386,7 @@
         }
 
         timeline.push({
-          year: `Yr ${yr}`,
+          year: "Year " + yr,
           capital: curCap,
           mental: Math.round(curM),
           emotional: Math.round(curE),
@@ -327,7 +397,7 @@
 
       renderUniversalDiagnosis(type, capital);
       updateKPIs(timeline[timeline.length - 1]);
-      renderUniversalChart(timeline, type);
+      renderUniversalChart(timeline);
     }
 
     function renderUniversalDiagnosis(type, capital) {
@@ -337,173 +407,110 @@
       const risk = document.getElementById("riskText");
       const action = document.getElementById("actionText");
       const list = document.getElementById("insightsList");
-      list.innerHTML = "";
+      if (list) list.innerHTML = "";
 
+      // 1. Small Money & Investment
       if (type === "investment") {
-        arch.textContent = "Archetype: Micro & Macro Capital Allocation";
-        pill.className = "status-pill status-safe";
-        pill.textContent = "High Leverage Opportunity";
+        if (arch) arch.textContent = "Category: Smart Money Decision";
+        if (pill) {
+          pill.className = "status-pill status-safe";
+          pill.textContent = "Great Opportunity";
+        }
 
         if (capital <= 5000) {
-          summary.innerHTML = `<strong>Micro-Capital Optimization (₹${capital.toLocaleString('en-IN')}):</strong> With ₹${capital.toLocaleString('en-IN')}, market compounding at 12% returns only ~₹144/year. The true 10x–100x return comes from <strong>Human Capital Compounding (High-ROI Skills & Tools)</strong> or starting an automated Micro-SIP to build unshakeable investing discipline.`;
+          if (summary) summary.innerHTML = "<strong>The Truth About Rs " + capital.toLocaleString('en-IN') + ":</strong> In the stock market, Rs 1,200 only grows by about Rs 140 in a full year. But if you spend this money to learn a skill or buy a tool, that same Rs 1,200 can help you earn Rs 10,000+ every month!";
 
-          risk.innerHTML = `
-            <strong>1. Quick-Rich F&O/Crypto Traps:</strong> Chote amounts tempt karte hain options trading ya meme coins me dalne ke liye, jisme 89%+ log pura paisa 30 din me zero kar dete hain.<br>
-            <strong>2. Transaction Fee Drag:</strong> Chote trades par DP charges aur platform fees 5–10% seedha kha jati hain.<br>
-            <strong>3. Inflation Erosion:</strong> Savings account (2.5%) me pada rehne se 6% inflation purchasing power khatam kar deti hai.<br>
-            <strong>4. Illusion of Insignificance:</strong> Yeh sochna ki '₹1,200 se kya hoga' impulsive kharche karwata hai.<br>
-            <strong>5. Unregulated Tips:</strong> Telegram aur Instagram scam channels par bharosa karke capital gawana.<br>
-            <strong>6. Lack of Liquidity Buffer:</strong> Saare chote paise lock kar dena bina daily cash emergency soche.<br>
-            <strong>7. High Opportunity Cost:</strong> Paise ko aisi jagah daalna jahan monthly earnings me koi badhotari na ho.<br>
-            <strong>8. Behavioral Impatience:</strong> 6 mahine me returns na dikhne par account band kar dena.<br>
-            <strong>9. Zero Leverage:</strong> Sirf paise ke returns par depend rehna bina earning skills badhaye.<br>
-            <strong>10. Delaying Systematic Action:</strong> Badi amount aane ka intezar karke saalon ka compounding miss karna.
-          `;
+          if (risk) risk.innerHTML = "<strong>1. Getting Scammed:</strong> Never put small money into quick-rich schemes, Telegram tips, or crypto. 90% of people lose all their money there.<br><strong>2. Waste on Junk:</strong> Thinking 'Rs 1,200 is too small' and wasting it on useless fast food or party clothes.<br><strong>3. Hidden App Fees:</strong> Trading apps charge small fees that eat up your small profits.";
 
-          action.innerHTML = `
-            <strong>Phase 1: High-ROI Skill Asset (100x ROI Potential)</strong><br>
-            • Buy a foundational book (e.g. Psychology of Money, Atomic Habits) or a technical certification tool/course that directly upgrades your monthly earning capacity.<br>
-            • Invest in domain/hosting/portfolio assets to show real work to clients or employers.<br><br>
-            <strong>Phase 2: Index Fund Micro-SIP Discipline</strong><br>
-            • Start a ₹500/month recurring automated SIP in a low-cost Nifty 50 Index Fund via Zerodha Coin or Groww with zero brokerage fees.<br>
-            • Do not stop the SIP even during market corrections; let rupee-cost averaging work for you.<br><br>
-            <strong>Phase 3: Emergency Seed Protection</strong><br>
-            • Place remaining balance in an auto-sweep fixed deposit or liquid fund for instant liquidity.<br>
-            • Scale up contribution by 10% every time your monthly earning increases.
-          `;
+          if (action) action.innerHTML = "<strong>Step 1: Buy a Good Learning Tool or Book</strong><br>Use Rs 500 to buy a life-changing book (like Psychology of Money) or an online course that helps you get a better job or freelance work.<br><br><strong>Step 2: Start a Rs 500 Monthly Habit (SIP)</strong><br>Put Rs 500 every month in a safe Index Fund (Nifty 50). This builds the habit of a wealthy person.<br><br><strong>Step 3: Keep the Rest Safe</strong><br>Keep the remaining money in your bank for any sudden emergency.";
 
-          list.innerHTML = `
-            <li>₹1,200 share market me sirf ₹144/saal dega, par agar isse koi skill sikhi to agle mahine ₹10,000+ ban sakte hain.</li>
-            <li>Micro-SIP habit build karne ke liye best hai, waiting mat karo.</li>
-          `;
+          if (list) list.innerHTML = "<li>With small money, investing in yourself gives 100 times more return than the share market.</li><li>Starting small today is much better than waiting for lakhs of rupees.</li>";
         } else {
-          summary.innerHTML = `<strong>Capital Growth Strategy (₹${capital.toLocaleString('en-IN')}):</strong> Substantial corpus ready for diversified equity compounding and risk hedging.`;
-          risk.innerHTML = `<strong>1. Equity Drawdowns:</strong> Short-term volatility.<br><strong>2. Inflation Drag:</strong> Cash holding risks.`;
-          action.innerHTML = `<strong>1. Asset Allocation:</strong> 70% Index Funds, 30% Liquid Debt.<br><strong>2. Emergency Buffer:</strong> 6 months expenses liquid.`;
-          list.innerHTML = `<li>Broad market indexing beats 90% active pickers over 10+ years.</li>`;
+          if (summary) summary.innerHTML = "<strong>Growing Your Rs " + capital.toLocaleString('en-IN') + ":</strong> You have a good amount of savings. Keep it safe and let it grow steadily without taking stupid risks.";
+          if (risk) risk.innerHTML = "<strong>1. Don't Put All Eggs in One Basket:</strong> Do not put all money into one stock or one friend's business.<br><strong>2. Inflation Loss:</strong> Keeping cash idle in a regular bank account slowly loses its buying power.";
+          if (action) action.innerHTML = "<strong>Step 1:</strong> Put 70% in safe Nifty 50 Index Mutual Funds.<br><strong>Step 2:</strong> Keep 30% in safe bank deposits for emergencies.";
+          if (list) list.innerHTML = "<li>Safe index funds beat 90% of stock pickers over 5 to 10 years.</li>";
         }
-      }
+      } 
+      // 2. Animal & Pet Moral Decision
       else if (type === "animal_moral") {
-        arch.textContent = "Archetype: Compassionate Ethics & Grief (Animal Companion)";
-        pill.className = "status-pill status-warn";
-        pill.textContent = "Compassion vs Attachment";
-        summary.innerHTML = `<strong>The Mercy Paradox:</strong> Holding onto a companion in terminal, intractable physical pain delays human grief by prolonging their biological agony. Euthanasia in hopeless pain is not quitting; it is taking on their pain yourself so they can finally rest.`;
-
-        risk.innerHTML = `
-          <strong>1. Prolonging Biological Suffering:</strong> Animal companion experiences constant pain without understanding why.<br>
-          <strong>2. Caregiver Traumatic Memories:</strong> Watching them deteriorate displaces joyful memories with trauma.<br>
-          <strong>3. Self-Inflicted Guilt:</strong> Blaming yourself for a biological disease you did not cause.<br>
-          <strong>4. Delayed Acceptance:</strong> Postponing inevitable grief increases emergency hospital trauma.<br>
-          <strong>5. Financial Depletion on Hopeless Interventions:</strong> Invasive end-stage surgeries that only add physical distress.
-        `;
-
-        action.innerHTML = `
-          <strong>1. Objective Quality of Life Audit:</strong> Evaluate mobility, pain management, and feeding capacity.<br>
-          <strong>2. In-Home Veterinary Transition:</strong> Arrange an in-home transition so their final moments are peaceful in their familiar bed.<br>
-          <strong>3. Reframe the Decision as Final Gift:</strong> You promised to protect them from suffering; keeping that promise means bearing the grief yourself.<br>
-          <strong>4. Dedicated Mourning Space:</strong> Allow yourself permission to grieve deeply without guilt.
-        `;
-
-        list.innerHTML = `
-          <li>Animals live in the immediate moment; prolonging hopeless suffering provides zero benefit to them.</li>
-          <li>Releasing them preserves their dignity.</li>
-        `;
+        if (arch) arch.textContent = "Category: Loving Your Pet & Hard Choices";
+        if (pill) {
+          pill.className = "status-pill status-warn";
+          pill.textContent = "Love vs Pain";
+        }
+        if (summary) summary.innerHTML = "<strong>True Love Means Ending Their Suffering:</strong> Keeping a pet alive when they are in constant, incurable pain is not saving them—it is forcing them to suffer just because we are afraid of feeling sad. Letting them go peacefully is the kindest final gift you can give.";
+        if (risk) risk.innerHTML = "<strong>1. Endless Daily Agony:</strong> The pet cannot speak, but they feel constant pain 24 hours a day.<br><strong>2. Bad Memories:</strong> Watching them suffer in their final weeks can overwrite all your happy memories with trauma.<br><strong>3. False Guilt:</strong> Do not blame yourself. You did not cause the cancer or old age.";
+        if (action) action.innerHTML = "<strong>Step 1: Check Their Daily Joy:</strong> If they cannot walk, eat, or wag their tail without pain, it is time to be brave for them.<br><strong>Step 2: Peaceful Goodbye at Home:</strong> Call a vet to your home so your pet falls asleep in their favorite bed with you hugging them.<br><strong>Step 3: Allow Yourself to Cry:</strong> Grieve openly. You gave them a wonderful life.";
+        if (list) list.innerHTML = "<li>Animals only live in the present moment; they do not care about tomorrow if today is pure pain.</li><li>Relieving their pain is true love, not betrayal.</li>";
       }
+      // 3. Physical Health & Spine
       else if (type === "physical_shock") {
-        arch.textContent = "Archetype: Somatic Adaptation & Energy Calibration";
-        pill.className = "status-pill status-warn";
-        pill.textContent = "Capacity Pivot Required";
-        summary.innerHTML = `<strong>Physical Constraint vs Human Leverage:</strong> Severe spine disc pain or injury reduces active physical sitting/labor capacity by 40%. Continuing high-strain physical work will accelerate permanent structural nerve damage.`;
-
-        risk.innerHTML = `
-          <strong>1. Structural Nerve Compression:</strong> Ignoring disc pain causes permanent sciatica or motor weakness.<br>
-          <strong>2. Active Income Fragility:</strong> Relying on physical labor creates acute financial vulnerability.<br>
-          <strong>3. Secondary Depression:</strong> Chronic physical pain directly depletes serotonin and executive mental energy.<br>
-          <strong>4. Escalating Medical Interventions:</strong> Emergency spine surgeries when conservative recovery is ignored.<br>
-          <strong>5. Burnout through Overcompensation:</strong> Forcing 100% output with a 60% capacity body guarantees breakdown.
-        `;
-
-        action.innerHTML = `
-          <strong>1. Ergonomic & Physical Therapy Protocol:</strong> Enforce strict standing desk rotation, lumbar decompression, and structured physio.<br>
-          <strong>2. Pivot to Asynchronous/Remote Knowledge Work:</strong> Shift from physical presence jobs to knowledge, consulting, or automated digital roles.<br>
-          <strong>3. Cap Continuous Sitting to 35 Minutes:</strong> Use pomodoro timers to break lumbar pressure cycles.<br>
-          <strong>4. Automate Savings & Health Cover:</strong> Secure comprehensive medical insurance with zero room-rent caps immediately.
-        `;
-
-        list.innerHTML = `
-          <li>Physical capacity constraints force transition to intellectual and digital leverage.</li>
-          <li>Early adaptation prevents permanent nerve and spinal damage.</li>
-        `;
+        if (arch) arch.textContent = "Category: Body Health & Work Balance";
+        if (pill) {
+          pill.className = "status-pill status-warn";
+          pill.textContent = "Body Needs Rest";
+        }
+        if (summary) summary.innerHTML = "<strong>Your Body is Giving a Warning:</strong> Severe back or health pain means your body cannot do heavy physical sitting or lifting anymore. Pushing through the pain will permanently damage your nerves.";
+        if (risk) risk.innerHTML = "<strong>1. Permanent Damage:</strong> Ignoring sharp pain can lead to permanent numbness or surgery.<br><strong>2. Mental Frustration:</strong> Being in pain all day makes anyone irritable, angry, and depressed.<br><strong>3. Losing Income:</strong> If you collapse completely, you won't be able to work at all.";
+        if (action) action.innerHTML = "<strong>Step 1: Stop Long Sitting:</strong> Stand up or walk for 2 minutes every 30 minutes.<br><strong>Step 2: Change How You Work:</strong> Learn skills where you can work on a laptop from home or bed rather than heavy physical presence.<br><strong>Step 3: Get Regular Physio:</strong> Do proper doctor-guided stretches every morning.";
+        if (list) list.innerHTML = "<li>You only get one body. Work can wait; broken nerves cannot be easily fixed.</li>";
       }
+      // 4. Toxic Job & Bad Boss
       else if (type === "toxic_exit") {
-        arch.textContent = "Archetype: Interpersonal Sovereignty & Safety";
-        pill.className = "status-pill status-danger";
-        pill.textContent = "Exit Architecture Required";
-        summary.innerHTML = `<strong>Sovereignty vs Survival Runway:</strong> Chronic workplace toxicity or emotional abuse destroys mental health. However, quitting impulsively without a runway creates acute financial panic. You need an orderly, structured transition plan.`;
-
-        risk.innerHTML = `
-          <strong>1. Chronic Neurocognitive Erosion:</strong> Abusive dynamics keep cortisol high, destroying immune function.<br>
-          <strong>2. Panic Rehiring Trap:</strong> Running out of money forces you to accept the next equally toxic offer.<br>
-          <strong>3. Identity Fracture:</strong> Gaslighting makes you doubt your professional competence.<br>
-          <strong>4. Emergency Fund Depletion:</strong> Spending your buffer on unplanned sabbaticals leaves zero emergency cushion.<br>
-          <strong>5. Social Withdrawal:</strong> Isolation from supportive friends and professional mentors.
-        `;
-
-        action.innerHTML = `
-          <strong>1. Execute 'Emotional Detachment' (Quiet Quitting):</strong> Do your core duties strictly within hours while disengaging emotionally.<br>
-          <strong>2. Build 3-to-6 Month Survival Buffer:</strong> Save essential living expenses before handing in your formal resignation.<br>
-          <strong>3. Channel Energy into Daily Job Applications:</strong> Dedicate 2 hours every evening to interviews and portfolio building.<br>
-          <strong>4. Secure Independent Health Insurance:</strong> Ensure you are medically protected during the job transition window.
-        `;
-
-        list.innerHTML = `
-          <li>Mental health recovery requires clear boundaries and an orderly exit runway.</li>
-        `;
+        if (arch) arch.textContent = "Category: Toxic Job & Mental Peace";
+        if (pill) {
+          pill.className = "status-pill status-danger";
+          pill.textContent = "Plan Your Exit";
+        }
+        if (summary) summary.innerHTML = "<strong>Protect Your Peace, But Don't Starve:</strong> A toxic boss destroys your confidence and sleep. But quitting today with zero money will bring a new problem: panic about paying rent and food.";
+        if (risk) risk.innerHTML = "<strong>1. Mental Breakdown:</strong> Hearing daily insults harms your self-worth.<br><strong>2. Panic Hiring:</strong> If your bank account hits zero, you will take another terrible job out of desperation.<br><strong>3. Credit Card Debt:</strong> Never quit without at least 3 months of basic food and rent money saved.";
+        if (action) action.innerHTML = "<strong>Step 1: Stop Caring Emotionally:</strong> Do only what is required during office hours. Do not let their shouting touch your heart.<br><strong>Step 2: Save 3 Months Expenses:</strong> Cut useless spending and build an emergency cash shield.<br><strong>Step 3: Apply to 5 Jobs Daily:</strong> Use your evenings to send resumes quietly. The moment you get an offer, resign with a smile.";
+        if (list) list.innerHTML = "<li>A quiet, planned exit is always 10 times better than an angry, broke exit.</li>";
       }
+      // 5. Burnout & No Sleep
       else if (type === "burnout") {
-        arch.textContent = "Archetype: Systemic Biological & Cognitive Burnout";
-        pill.className = "status-pill status-danger";
-        pill.textContent = "Biological Deficit Warning";
-        summary.innerHTML = `<strong>Involuntary Biological Crash:</strong> Sleeping under 5 hours while working 80 hours a week produces diminishing marginal returns. By Year 2, physical and cognitive bandwidth collapse, forcing medical leaves and lost income.`;
-
-        risk.innerHTML = `
-          <strong>1. Executive Cognitive Breakdown:</strong> Prefrontal cortex decision-making deteriorates drastically.<br>
-          <strong>2. False Productivity Trap:</strong> Mistake rates rise 300%, neutralizing extra hours worked.<br>
-          <strong>3. Involuntary Medical Crash:</strong> Endocrine and cardiovascular collapse after 24 months of high cortisol.<br>
-          <strong>4. Reversal of Financial Gains:</strong> Medical rehab and therapy consume excess earnings.<br>
-          <strong>5. Relationship Atrophy:</strong> Zero bandwidth for personal connections breeds severe isolation.
-        `;
-
-        action.innerHTML = `
-          <strong>1. Enforce 7-Hour Sleep Protocol:</strong> Treat sleep as a core non-negotiable performance asset.<br>
-          <strong>2. Cap Work at 50 Hours/Week:</strong> Eliminate low-yield side hustles immediately.<br>
-          <strong>3. Schedule a 7-Day Screen Detox:</strong> Reset autonomic nervous system and lower baseline stress.<br>
-          <strong>4. Shift from Hours to Outcomes:</strong> Delegate or automate low-impact tasks.
-        `;
-
-        list.innerHTML = `
-          <li>Human biology cannot out-earn chronic sleep deprivation.</li>
-        `;
+        if (arch) arch.textContent = "Category: Overwork & Tiredness";
+        if (pill) {
+          pill.className = "status-pill status-danger";
+          pill.textContent = "Dangerous Burnout";
+        }
+        if (summary) summary.innerHTML = "<strong>You Cannot Run a Car on Empty Fuel:</strong> Working 80 hours while sleeping only 4.5 hours is slowly breaking your brain and heart. No amount of salary is worth a hospital visit in your 20s or 30s.";
+        if (risk) risk.innerHTML = "<strong>1. Brain Fog:</strong> Without sleep, you make stupid mistakes that can get you fired anyway.<br><strong>2. Sudden Hospitalization:</strong> Chronic stress leads to sudden heart and stomach issues.<br><strong>3. Money Spent on Doctors:</strong> All the extra money you earn will be handed over to hospitals.";
+        if (action) action.innerHTML = "<strong>Step 1: Sleep 7 Hours Non-Negotiable:</strong> Your body repairs its brain cells only when you sleep.<br><strong>Step 2: Say 'No' to Extra Free Hours:</strong> Leave work on time. The company will replace you in 3 days if you drop dead.<br><strong>Step 3: Take a 3-Day Full Rest:</strong> Keep your phone away for an entire weekend and just sleep and walk in nature.";
+        if (list) list.innerHTML = "<li>Health is wealth. If your body stops working, your bank balance is useless.</li>";
       }
+      // 6. General
       else {
-        arch.textContent = "Archetype: Existential Integration & Value Alignment";
-        pill.className = "status-pill status-safe";
-        pill.textContent = "Equilibrium Achievable";
-        summary.innerHTML = `<strong>Holistic Realignment:</strong> Resolving the friction between internal values, personal peace, and external daily demands.`;
-        risk.innerHTML = `<strong>1. Chronic Stress Drag:</strong> Small frictions accumulate into apathy.<br><strong>2. Reactive Living:</strong> Operating on autopilot without clear priorities.`;
-        action.innerHTML = `<strong>1. Daily Rest Boundaries:</strong> Protect personal downtime.<br><strong>2. Pursue Intrinsically Rewarding Goals:</strong> Reclaim creative curiosity.`;
-        list.innerHTML = `<li>Balanced daily habits sustain lifelong mental resilience.</li>`;
+        if (arch) arch.textContent = "Category: Finding Peace & Meaning";
+        if (pill) {
+          pill.className = "status-pill status-safe";
+          pill.textContent = "Balanced Path";
+        }
+        if (summary) summary.innerHTML = "<strong>Finding Your Center:</strong> When you feel empty or confused, it means your daily actions do not match what your heart truly wants.";
+        if (risk) risk.innerHTML = "<strong>1. Overthinking:</strong> Sitting in a room thinking in circles never solves life problems.<br><strong>2. Isolation:</strong> Hiding your feelings from everyone makes sadness heavier.";
+        if (action) action.innerHTML = "<strong>Step 1: Talk to One Honest Friend:</strong> Share what is inside your heart.<br><strong>Step 2: Do 30 Minutes of Physical Activity Daily:</strong> Walking or running cleans out mental anxiety.<br><strong>Step 3: Take Small Steps:</strong> Fix today first; do not worry about the next 5 years all at once.";
+        if (list) list.innerHTML = "<li>One small good habit every day beats worrying about everything at once.</li>";
       }
     }
 
     function updateKPIs(last) {
-      document.getElementById("kpi_capital").textContent = `₹${last.capital.toLocaleString('en-IN')}`;
-      document.getElementById("kpi_mental").textContent = `${last.mental} / 100`;
-      document.getElementById("kpi_emotional").textContent = `${last.emotional} / 100`;
-      document.getElementById("kpi_equilibrium").textContent = `${last.equilibrium}%`;
+      if (!last) return;
+      const kCap = document.getElementById("kpi_capital");
+      const kMen = document.getElementById("kpi_mental");
+      const kEmo = document.getElementById("kpi_emotional");
+      const kEq = document.getElementById("kpi_equilibrium");
+
+      if (kCap) kCap.textContent = "Rs " + last.capital.toLocaleString('en-IN');
+      if (kMen) kMen.textContent = last.mental + " / 100";
+      if (kEmo) kEmo.textContent = last.emotional + " / 100";
+      if (kEq) kEq.textContent = last.equilibrium + "%";
     }
 
-    function renderUniversalChart(timeline, type) {
+    function renderUniversalChart(timeline) {
+      const chartCanvas = document.getElementById("trajectoryChart");
+      if (!chartCanvas || typeof Chart === "undefined") return;
+
       const labels = timeline.map(d => d.year);
       const capData = timeline.map(d => d.capital);
       const mData = timeline.map(d => d.mental);
@@ -511,14 +518,14 @@
 
       if (myChart) myChart.destroy();
 
-      const ctx = document.getElementById("trajectoryChart").getContext("2d");
+      const ctx = chartCanvas.getContext("2d");
       myChart = new Chart(ctx, {
         type: "line",
         data: {
           labels: labels,
           datasets: [
             {
-              label: "Capital (₹)",
+              label: "Money Growth (Rs)",
               data: capData,
               borderColor: "#6366f1",
               backgroundColor: "rgba(99, 102, 241, 0.15)",
@@ -555,7 +562,7 @@
               type: 'linear',
               position: 'left',
               grid: { color: "#243352" },
-              ticks: { color: "#818cf8", callback: (v) => "₹" + v.toLocaleString('en-IN') }
+              ticks: { color: "#818cf8", callback: (v) => "Rs " + v.toLocaleString('en-IN') }
             },
             y1: {
               type: 'linear',
@@ -571,7 +578,7 @@
       });
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("load", () => {
       compileAndSimulate();
     });
   </script>
