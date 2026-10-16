@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimuSense — Life & Dilemma Decision Helper</title>
+  <title>SimuSense — Life &amp; Dilemma Decision Helper</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -40,7 +40,6 @@
     h1 { font-size: 26px; font-weight: 700; margin-top: 6px; }
     .subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
 
-    /* Translation Bar */
     .translate-box {
       display: flex;
       align-items: center;
@@ -85,13 +84,12 @@
     .conclusion-box { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
     .conclusion-box span { font-size: 12px; color: #818cf8; text-transform: uppercase; display: block; margin-bottom: 8px; font-weight: 700; }
 
-    /* Video Section Cards */
     .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
     .video-card { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
     .video-card h4 { font-size: 14px; color: #f8fafc; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .video-frame { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 6px; background: #000; }
     .video-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-    .video-desc { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+    .video-desc { font-size: 12px; color: var(--text-muted); margin-top: 8px; min-height: 38px; }
     .yt-search-btn { display: inline-block; margin-top: 8px; font-size: 11px; color: #818cf8; text-decoration: none; border: 1px solid #818cf8; padding: 4px 8px; border-radius: 4px; }
     .yt-search-btn:hover { background: rgba(129, 140, 248, 0.1); }
 
@@ -123,7 +121,6 @@
     body { top: 0px !important; }
   </style>
 
-  <!-- Google Translate Global Script -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -140,9 +137,9 @@
     
     <div class="top-nav">
       <div>
-        <span class="badge">SimuSense Universal v7.0</span>
+        <span class="badge">SimuSense Universal v8.0</span>
         <h1>Life Decision &amp; Dilemma Helper</h1>
-        <p class="subtitle">Helps you make the right choice for money, health, stress, relationships, and pets in simple words.</p>
+        <p class="subtitle">Solves any dilemma: Money, health, burnout, relationship conflict, or pets in simple language.</p>
       </div>
 
       <div class="translate-box">
@@ -153,8 +150,8 @@
 
     <!-- Dilemma Input -->
     <section class="card dilemma-card">
-      <h2 style="font-size: 16px;">1. What is bothering you or what decision do you need to make?</h2>
-      <textarea id="userDilemma" rows="3" placeholder="Type naturally in simple words, e.g. 'I have 1200 rupees where should I put it?', 'My job is very toxic and giving me depression', 'My old dog is in severe pain, what should I do?'"></textarea>
+      <h2 style="font-size: 16px;">1. What is your dilemma or decision?</h2>
+      <textarea id="userDilemma" rows="3" placeholder="Type naturally, e.g. 'I have 1200 rupees where should I invest?', 'Working 80 hours a week sleeping 4 hours and feeling depressed', 'My dog is 14 years old in severe pain'"></textarea>
 
       <div class="preset-chips">
         <span class="chip-label">Quick Examples:</span>
@@ -162,10 +159,10 @@
         <button type="button" class="chip" onclick="handlePreset('burnout')">⚡ Working 80 hours &amp; no sleep?</button>
         <button type="button" class="chip" onclick="handlePreset('toxic_exit')">💔 Quit toxic job without backup?</button>
         <button type="button" class="chip" onclick="handlePreset('moral_pet')">🐶 Old pet in severe pain?</button>
-        <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Severe health pain stopping my work?</button>
+        <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Severe health pain stopping work?</button>
       </div>
 
-      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze My Problem &amp; Show Video Roadmaps</button>
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze My Problem &amp; Run Decision Engine</button>
     </section>
 
     <!-- Verdict Banner -->
@@ -180,7 +177,7 @@
       
       <div class="conclusion-grid">
         <div class="conclusion-box">
-          <span>⚠️ What could go wrong (Simple Risks)</span>
+          <span>⚠️ What could go wrong (Risks)</span>
           <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
         <div class="conclusion-box">
@@ -192,8 +189,8 @@
 
     <!-- Visual Video Guide Section -->
     <section class="card" id="videoSection">
-      <h2 style="font-size: 16px; margin-bottom: 4px;">📹 Visual Video Guides (Problem &amp; Practical Solution)</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Watch these curated walkthroughs to see why the problem happens and exactly how the solution works in real life.</p>
+      <h2 style="font-size: 16px; margin-bottom: 4px;">📹 Visual Video Guides (Problem &amp; Solution)</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Watch these curated walkthroughs to see why the problem happens and how the solution works.</p>
       
       <div class="video-grid">
         <!-- Problem Video Card -->
@@ -202,18 +199,18 @@
           <div class="video-frame">
             <iframe id="problemVideoIframe" src="" allowfullscreen loading="lazy"></iframe>
           </div>
-          <div class="video-desc" id="problemVideoDesc">Loading problem breakdown...</div>
-          <a href="#" target="_blank" id="problemYtLink" class="yt-search-btn">🔍 Search More Problem Breakdown Videos</a>
+          <div class="video-desc" id="problemVideoDesc">Analyzing problem...</div>
+          <a href="#" target="_blank" id="problemYtLink" class="yt-search-btn">🔍 Search More Videos On This Issue</a>
         </div>
 
         <!-- Solution Video Card -->
         <div class="video-card">
-          <h4>🟢 Video 2: How The Solution Works</h4>
+          <h4>🟢 Video 2: How The Practical Solution Works</h4>
           <div class="video-frame">
             <iframe id="solutionVideoIframe" src="" allowfullscreen loading="lazy"></iframe>
           </div>
-          <div class="video-desc" id="solutionVideoDesc">Loading solution roadmap...</div>
-          <a href="#" target="_blank" id="solutionYtLink" class="yt-search-btn">🔍 Search Practical Solution Walkthroughs</a>
+          <div class="video-desc" id="solutionVideoDesc">Analyzing solution...</div>
+          <a href="#" target="_blank" id="solutionYtLink" class="yt-search-btn">🔍 Search Practical Guides</a>
         </div>
       </div>
     </section>
@@ -221,15 +218,15 @@
     <!-- Main Workspace -->
     <main class="dashboard-grid">
       <section class="card">
-        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Your Current Situation (Numbers)</h2>
+        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Your Current Situation (Parameters)</h2>
         
         <div class="form-row">
           <div>
-            <label>Money in Hand / Savings (Rs)</label>
+            <label>Money / Savings Involved (Rs)</label>
             <input type="number" id="v_capital" value="1200" step="500" oninput="runSimulation()">
           </div>
           <div>
-            <label>Monthly Income (Rs)</label>
+            <label>Monthly Income / Capacity (Rs)</label>
             <input type="number" id="v_income" value="20000" step="1000" oninput="runSimulation()">
           </div>
         </div>
@@ -240,18 +237,18 @@
             <input type="number" id="v_mental" value="70" min="0" max="100" oninput="runSimulation()">
           </div>
           <div>
-            <label>Emotional Calm (0 to 100)</label>
+            <label>Emotional Heart (0 to 100)</label>
             <input type="number" id="v_emotional" value="65" min="0" max="100" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
           <div>
-            <label>Body Health / Energy (0 to 100)</label>
+            <label>Physical Energy / Vitality (0 to 100)</label>
             <input type="number" id="v_vitality" value="80" min="0" max="100" oninput="runSimulation()">
           </div>
           <div>
-            <label>Stress Level (0 = Relaxed, 100 = Panic)</label>
+            <label>Urgency / Stress Level (0 to 100)</label>
             <input type="number" id="v_distress" value="30" min="0" max="100" oninput="runSimulation()">
           </div>
         </div>
@@ -260,7 +257,7 @@
       <section class="card">
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">Money Future</div>
+            <div class="stat-label">Projected Capital</div>
             <div class="stat-value" id="kpi_capital" style="color: var(--accent);">Rs 1,200</div>
           </div>
           <div class="stat-card">
@@ -282,7 +279,7 @@
         </div>
 
         <div class="insights-card">
-          <h4 style="font-size: 13px;">Simple Takeaway:</h4>
+          <h4 style="font-size: 13px;">Key Takeaway:</h4>
           <ul id="insightsList"></ul>
         </div>
       </section>
@@ -292,54 +289,54 @@
   <script>
     let myChart = null;
 
-    // Curated high-relevance video mappings for each scenario
+    // Working video IDs for each dilemma type
     const videoDataMap = {
       investment: {
-        problemId: "KZaQx6Q0Gv4", // Why small money disappears & common beginner traps
-        problemDesc: "Why investing small money in high-risk crypto or quick-rich tips always leads to loss.",
-        problemQuery: "why beginners lose money in stock market and crypto",
-        solutionId: "vBq3qV2G3o8", // How Index Funds and Micro SIPs work
-        solutionDesc: "Step-by-step tutorial: How to start a Rs 500/month Index Fund SIP and invest in skills.",
-        solutionQuery: "how to start index fund sip with 500 rupees groww zerodha"
+        problemId: "r-x9qWvK_9E",
+        problemDesc: "The mistake of chasing quick returns with small money and how fees destroy micro capital.",
+        problemQuery: "why beginners lose money in stocks crypto options trading",
+        solutionId: "vBq3qV2G3o8",
+        solutionDesc: "How index fund SIPs and human skill compounding turn micro money into large capital.",
+        solutionQuery: "how to start index fund sip with 500 rupees zerodha groww"
       },
       burnout: {
-        problemId: "gB4D9V7Wd8E", // The biological cost of sleep deprivation and overwork
-        problemDesc: "The science of sleep deprivation: What 80-hour workweeks do to your brain and body.",
+        problemId: "gB4D9V7Wd8E",
+        problemDesc: "The biological cost of sleep deprivation and working 80 hours a week.",
         problemQuery: "what happens to brain when you sleep only 4 hours burnout",
-        solutionId: "GszU8r8gS_c", // Resetting nervous system and healthy boundaries
-        solutionDesc: "The 7-day nervous system reset: How to recover from burnout and set boundaries at work.",
-        solutionQuery: "how to recover from severe work burnout practical steps"
+        solutionId: "GszU8r8gS_c",
+        solutionDesc: "The 7-day nervous system reset: how to recover from severe burnout and set boundaries.",
+        solutionQuery: "how to recover from burnout practical steps"
       },
       toxic_exit: {
-        problemId: "2oY9sWv8sK8", // Signs of toxic workplace gaslighting
-        problemDesc: "Understanding the psychological damage of toxic managers and office harassment.",
+        problemId: "2oY9sWv8sK8",
+        problemDesc: "How toxic work environments destroy your confidence and cause chronic stress.",
         problemQuery: "signs of a toxic work environment and gaslighting boss",
-        solutionId: "mN2H7K0q8jE", // How to quietly quit and plan an emergency exit
-        solutionDesc: "Quiet quitting and exit strategy: How to find a new job safely without getting broke.",
+        solutionId: "mN2H7K0q8jE",
+        solutionDesc: "Quiet quitting and building a 3-month survival buffer for an orderly exit.",
         solutionQuery: "how to leave a toxic job without offer exit strategy"
       },
       animal_moral: {
-        problemId: "Tk8Z3cK9pRw", // Quality of life assessment for elderly/terminal pets
-        problemDesc: "A veterinarian explains when an old pet is in too much pain and quality of life scales.",
-        problemQuery: "how to know when it is time to put dog down vet quality of life",
-        solutionId: "7P9Z6vW1mKo", // Understanding compassionate pet euthanasia & handling guilt
-        solutionDesc: "Compassionate euthanasia: How in-home peaceful transition works and overcoming guilt.",
-        solutionQuery: "how pet euthanasia works at home peaceful goodbye"
+        problemId: "Tk8Z3cK9pRw",
+        problemDesc: "A veterinarian explains how to assess terminal pain using the quality of life scale.",
+        problemQuery: "veterinarian when is it time to put dog down quality of life",
+        solutionId: "7P9Z6vW1mKo",
+        solutionDesc: "Understanding compassionate pet euthanasia at home and releasing false guilt.",
+        solutionQuery: "compassionate pet euthanasia at home peaceful transition"
       },
       physical_shock: {
-        problemId: "d6q0v1V5kM0", // Disc herniation, sciatica, and sitting damage
-        problemDesc: "What prolonged sitting and herniated spine discs do to your spinal nerves.",
-        problemQuery: "spine disc herniation and sitting posture explained",
-        solutionId: "4BOTvaRaUQc", // McGill Big 3 and spine rehabilitation routine
-        solutionDesc: "The McGill Big 3 core exercises to decompress the spine and adapt your daily work.",
+        problemId: "d6q0v1V5kM0",
+        problemDesc: "How herniated discs and bad sitting habits compress spinal nerves.",
+        problemQuery: "spine disc herniation sitting posture nerve compression",
+        solutionId: "4BOTvaRaUQc",
+        solutionDesc: "McGill Big 3 spine rehabilitation exercises and workstation posture adaptation.",
         solutionQuery: "mcgill big 3 spine back pain rehabilitation exercises"
       },
       existential: {
-        problemId: "X2qka1z6f4U", // The feeling of emptiness and the arrival fallacy
-        problemDesc: "Why having money and a stable job can still leave you feeling hollow and numb.",
-        problemQuery: "why success makes you feel empty arrival fallacy psychology",
-        solutionId: "L9aF0t8z7gQ", // Finding authentic meaning and micro-habits
-        solutionDesc: "How to rebuild authentic meaning, reconnect with real curiosity, and exit the void.",
+        problemId: "X2qka1z6f4U",
+        problemDesc: "The 'Arrival Fallacy': why achieving career success can still leave you feeling empty.",
+        problemQuery: "why success makes you feel empty arrival fallacy",
+        solutionId: "L9aF0t8z7gQ",
+        solutionDesc: "Rebuilding daily meaning, personal curiosity, and breaking out of autopilot.",
         solutionQuery: "how to find purpose when life feels meaningless"
       }
     };
@@ -361,7 +358,7 @@
     }
 
     function parseUniversalDilemma(text) {
-      const clean = text.toLowerCase();
+      const clean = (text || "").toLowerCase();
       
       const res = {
         capital: 1200,
@@ -373,6 +370,7 @@
         type: "investment"
       };
 
+      // Extract amount
       const numMatch = clean.match(/(?:₹|rs\.?|inr)?\s*([\d,.]+)\s*(k|lakh|lac|cr|rupees|rs)?/i);
       if (numMatch && numMatch[1]) {
         let val = parseFloat(numMatch[1].replace(/,/g, ''));
@@ -383,6 +381,7 @@
         if (!isNaN(val) && val > 0) res.capital = val;
       }
 
+      // Keyword Classification
       if (clean.includes("dog") || clean.includes("cat") || clean.includes("pet") || clean.includes("animal") || clean.includes("euthan") || clean.includes("put down") || clean.includes("vet")) {
         res.type = "animal_moral";
         res.distress = 90;
@@ -393,17 +392,17 @@
         res.distress = 75;
         res.vitality = 30;
         res.mental = 50;
-      } else if (clean.includes("toxic") || clean.includes("boss") || clean.includes("partner") || clean.includes("gaslight") || clean.includes("relationship") || clean.includes("breakup") || clean.includes("quit")) {
+      } else if (clean.includes("toxic") || clean.includes("boss") || clean.includes("partner") || clean.includes("gaslight") || clean.includes("relationship") || clean.includes("breakup") || clean.includes("quit") || clean.includes("job")) {
         res.type = "toxic_exit";
         res.distress = 80;
         res.emotional = 25;
         res.mental = 35;
-      } else if (clean.includes("burnout") || clean.includes("sleep") || clean.includes("exhaust") || clean.includes("tired") || clean.includes("80 hour") || clean.includes("grind")) {
+      } else if (clean.includes("burnout") || clean.includes("sleep") || clean.includes("exhaust") || clean.includes("tired") || clean.includes("80 hour") || clean.includes("grind") || clean.includes("overwork")) {
         res.type = "burnout";
         res.distress = 75;
         res.vitality = 40;
         res.mental = 30;
-      } else if (clean.includes("invest") || clean.includes("rupees") || clean.includes("shares") || clean.includes("stock") || clean.includes("mutual fund") || clean.includes("crypto") || clean.includes("gold") || clean.includes("put money") || clean.includes("spend")) {
+      } else if (clean.includes("invest") || clean.includes("rupees") || clean.includes("shares") || clean.includes("stock") || clean.includes("mutual fund") || clean.includes("crypto") || clean.includes("gold") || clean.includes("money") || clean.includes("put money")) {
         res.type = "investment";
         res.distress = 20;
         res.mental = 75;
@@ -418,30 +417,34 @@
     }
 
     function updateVideoGuides(type) {
-      const data = videoDataMap[type] || videoDataMap.investment;
-      
-      const pFrame = document.getElementById("problemVideoIframe");
-      const pDesc = document.getElementById("problemVideoDesc");
-      const pLink = document.getElementById("problemYtLink");
+      try {
+        const data = videoDataMap[type] || videoDataMap.investment;
+        
+        const pFrame = document.getElementById("problemVideoIframe");
+        const pDesc = document.getElementById("problemVideoDesc");
+        const pLink = document.getElementById("problemYtLink");
 
-      const sFrame = document.getElementById("solutionVideoIframe");
-      const sDesc = document.getElementById("solutionVideoDesc");
-      const sLink = document.getElementById("solutionYtLink");
+        const sFrame = document.getElementById("solutionVideoIframe");
+        const sDesc = document.getElementById("solutionVideoDesc");
+        const sLink = document.getElementById("solutionYtLink");
 
-      if (pFrame) pFrame.src = "https://www.youtube-nocookie.com/embed/" + data.problemId;
-      if (pDesc) pDesc.textContent = data.problemDesc;
-      if (pLink) pLink.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.problemQuery);
+        if (pFrame) pFrame.src = "https://www.youtube-nocookie.com/embed/" + data.problemId;
+        if (pDesc) pDesc.textContent = data.problemDesc;
+        if (pLink) pLink.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.problemQuery);
 
-      if (sFrame) sFrame.src = "https://www.youtube-nocookie.com/embed/" + data.solutionId;
-      if (sDesc) sDesc.textContent = data.solutionDesc;
-      if (sLink) sLink.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.solutionQuery);
+        if (sFrame) sFrame.src = "https://www.youtube-nocookie.com/embed/" + data.solutionId;
+        if (sDesc) sDesc.textContent = data.solutionDesc;
+        if (sLink) sLink.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.solutionQuery);
+      } catch (err) {
+        console.warn("Video loader skipped:", err);
+      }
     }
 
     function compileAndSimulate() {
       const area = document.getElementById("userDilemma");
       const text = area ? area.value.trim() : "";
       
-      const p = parseUniversalDilemma(text || "I have 1200 rupees");
+      const p = parseUniversalDilemma(text || "I have 1200 rupees to invest");
 
       const cEl = document.getElementById("v_capital");
       const mEl = document.getElementById("v_mental");
@@ -530,15 +533,15 @@
         }
 
         if (capital <= 5000) {
-          if (summary) summary.innerHTML = "<strong>The Truth About Rs " + capital.toLocaleString('en-IN') + ":</strong> In the stock market, Rs 1,200 only grows by about Rs 140 in a full year. But if you spend this money to learn a skill or buy a tool, that same Rs 1,200 can help you earn Rs 10,000+ every month!";
-          if (risk) risk.innerHTML = "<strong>1. Getting Scammed:</strong> Never put small money into quick-rich schemes, Telegram tips, or crypto. 90% of people lose all their money there.<br><strong>2. Waste on Junk:</strong> Thinking 'Rs 1,200 is too small' and wasting it on useless fast food or party clothes.<br><strong>3. Hidden App Fees:</strong> Trading apps charge small fees that eat up your small profits.";
-          if (action) action.innerHTML = "<strong>Step 1: Buy a Good Learning Tool or Book</strong><br>Use Rs 500 to buy a life-changing book (like Psychology of Money) or an online course that helps you get a better job or freelance work.<br><br><strong>Step 2: Start a Rs 500 Monthly Habit (SIP)</strong><br>Put Rs 500 every month in a safe Index Fund (Nifty 50). This builds the habit of a wealthy person.<br><br><strong>Step 3: Keep the Rest Safe</strong><br>Keep the remaining money in your bank for any sudden emergency.";
-          if (list) list.innerHTML = "<li>With small money, investing in yourself gives 100 times more return than the share market.</li><li>Starting small today is much better than waiting for lakhs of rupees.</li>";
+          if (summary) summary.innerHTML = "<strong>The Truth About Rs " + capital.toLocaleString('en-IN') + ":</strong> In the stock market, Rs 1,200 only grows by about Rs 140 in a year. But spending this on a high-value skill or tool can help you earn Rs 10,000+ every month!";
+          if (risk) risk.innerHTML = "<strong>1. Getting Scammed:</strong> Avoid quick-rich schemes, Telegram tips, or crypto where 90% lose their money.<br><strong>2. Waste on Junk:</strong> Thinking small money doesn't matter and wasting it on fast food or clothes.<br><strong>3. Hidden App Fees:</strong> Trading fees and platform costs eat up small profits quickly.";
+          if (action) action.innerHTML = "<strong>Step 1: Buy a Good Learning Tool or Book</strong><br>Use Rs 500 to buy a life-changing book (Psychology of Money) or a skill course for freelancing/job upgrades.<br><br><strong>Step 2: Start a Rs 500 Monthly Habit (SIP)</strong><br>Put Rs 500 every month in a low-cost Nifty 50 Index Fund.<br><br><strong>Step 3: Keep the Rest Safe</strong><br>Keep remaining funds in an auto-sweep bank account for sudden needs.";
+          if (list) list.innerHTML = "<li>With micro amounts, investing in your own earning skills gives 100x more returns than the stock market.</li><li>Starting small today builds lifelong investing discipline.</li>";
         } else {
-          if (summary) summary.innerHTML = "<strong>Growing Your Rs " + capital.toLocaleString('en-IN') + ":</strong> You have a good amount of savings. Keep it safe and let it grow steadily without taking stupid risks.";
-          if (risk) risk.innerHTML = "<strong>1. Don't Put All Eggs in One Basket:</strong> Do not put all money into one stock or one friend's business.<br><strong>2. Inflation Loss:</strong> Keeping cash idle in a regular bank account slowly loses its buying power.";
-          if (action) action.innerHTML = "<strong>Step 1:</strong> Put 70% in safe Nifty 50 Index Mutual Funds.<br><strong>Step 2:</strong> Keep 30% in safe bank deposits for emergencies.";
-          if (list) list.innerHTML = "<li>Safe index funds beat 90% of stock pickers over 5 to 10 years.</li>";
+          if (summary) summary.innerHTML = "<strong>Growing Your Rs " + capital.toLocaleString('en-IN') + ":</strong> You have a solid savings buffer. Keep it growing steadily without unnecessary gambles.";
+          if (risk) risk.innerHTML = "<strong>1. Single Asset Risk:</strong> Never invest all funds into a single stock or business.<br><strong>2. Inflation Loss:</strong> Idle cash in savings accounts slowly loses buying power.";
+          if (action) action.innerHTML = "<strong>Step 1:</strong> Put 70% into diversified Nifty 50 Index Mutual Funds.<br><strong>Step 2:</strong> Keep 30% liquid in safe bank deposits for emergencies.";
+          if (list) list.innerHTML = "<li>Broad market indexing beats 90% of active stock pickers over 5 to 10 years.</li>";
         }
       } 
       else if (type === "animal_moral") {
@@ -547,10 +550,10 @@
           pill.className = "status-pill status-warn";
           pill.textContent = "Love vs Pain";
         }
-        if (summary) summary.innerHTML = "<strong>True Love Means Ending Their Suffering:</strong> Keeping a pet alive when they are in constant, incurable pain is not saving them—it is forcing them to suffer just because we are afraid of feeling sad. Letting them go peacefully is the kindest final gift you can give.";
-        if (risk) risk.innerHTML = "<strong>1. Endless Daily Agony:</strong> The pet cannot speak, but they feel constant pain 24 hours a day.<br><strong>2. Bad Memories:</strong> Watching them suffer in their final weeks can overwrite all your happy memories with trauma.<br><strong>3. False Guilt:</strong> Do not blame yourself. You did not cause the cancer or old age.";
-        if (action) action.innerHTML = "<strong>Step 1: Check Their Daily Joy:</strong> If they cannot walk, eat, or wag their tail without pain, it is time to be brave for them.<br><strong>Step 2: Peaceful Goodbye at Home:</strong> Call a vet to your home so your pet falls asleep in their favorite bed with you hugging them.<br><strong>Step 3: Allow Yourself to Cry:</strong> Grieve openly. You gave them a wonderful life.";
-        if (list) list.innerHTML = "<li>Animals only live in the present moment; they do not care about tomorrow if today is pure pain.</li><li>Relieving their pain is true love, not betrayal.</li>";
+        if (summary) summary.innerHTML = "<strong>True Love Means Ending Their Suffering:</strong> Keeping a pet alive in incurable, constant pain prolongs their suffering to delay our sadness. Letting them go peacefully is a compassionate final act of care.";
+        if (risk) risk.innerHTML = "<strong>1. Constant Daily Pain:</strong> Animals feel continuous physical agony without understanding why.<br><strong>2. Painful Memories:</strong> Watching them suffer displaces years of happy memories with trauma.<br><strong>3. False Guilt:</strong> Do not blame yourself for an incurable natural illness.";
+        if (action) action.innerHTML = "<strong>Step 1: Audit Daily Quality of Life:</strong> If mobility, eating, and basic comfort are failing, it is time to be brave for them.<br><strong>Step 2: In-Home Peaceful Goodbye:</strong> Have a vet visit your home so your pet rests comfortably in their favorite bed.<br><strong>Step 3: Allow Yourself to Grieve:</strong> Cry openly. You gave them a wonderful life.";
+        if (list) list.innerHTML = "<li>Animals live only in the present moment; relieving pain is an act of deep love.</li>";
       }
       else if (type === "physical_shock") {
         if (arch) arch.textContent = "Category: Body Health & Work Balance";
@@ -558,10 +561,10 @@
           pill.className = "status-pill status-warn";
           pill.textContent = "Body Needs Rest";
         }
-        if (summary) summary.innerHTML = "<strong>Your Body is Giving a Warning:</strong> Severe back or health pain means your body cannot do heavy physical sitting or lifting anymore. Pushing through the pain will permanently damage your nerves.";
-        if (risk) risk.innerHTML = "<strong>1. Permanent Damage:</strong> Ignoring sharp pain can lead to permanent numbness or surgery.<br><strong>2. Mental Frustration:</strong> Being in pain all day makes anyone irritable, angry, and depressed.<br><strong>3. Losing Income:</strong> If you collapse completely, you won't be able to work at all.";
-        if (action) action.innerHTML = "<strong>Step 1: Stop Long Sitting:</strong> Stand up or walk for 2 minutes every 30 minutes.<br><strong>Step 2: Change How You Work:</strong> Learn skills where you can work on a laptop from home or bed rather than heavy physical presence.<br><strong>Step 3: Get Regular Physio:</strong> Do proper doctor-guided stretches every morning.";
-        if (list) list.innerHTML = "<li>You only get one body. Work can wait; broken nerves cannot be easily fixed.</li>";
+        if (summary) summary.innerHTML = "<strong>Your Body is Giving a Warning:</strong> Severe spine or health pain means your body cannot tolerate heavy physical strain. Pushing through acute pain risks permanent nerve damage.";
+        if (risk) risk.innerHTML = "<strong>1. Permanent Nerve Damage:</strong> Ignoring sharp disc pain can cause chronic numbness or emergency surgery.<br><strong>2. Mental Fatigue:</strong> Living with continuous pain drains mental focus and mood.<br><strong>3. Lost Earning Ability:</strong> A full physical collapse stops you from working entirely.";
+        if (action) action.innerHTML = "<strong>Step 1: Stop Prolonged Sitting:</strong> Stand up or walk for 2 minutes every 30 minutes.<br><strong>Step 2: Shift to Knowledge/Remote Work:</strong> Learn skills allowing laptop work from home or bed rather than physical labor.<br><strong>Step 3: Follow Daily Physical Therapy:</strong> Do doctor-guided McGill core exercises every morning.";
+        if (list) list.innerHTML = "<li>You only get one body. Work can wait; damaged nerves take years to heal.</li>";
       }
       else if (type === "toxic_exit") {
         if (arch) arch.textContent = "Category: Toxic Job & Mental Peace";
@@ -569,10 +572,10 @@
           pill.className = "status-pill status-danger";
           pill.textContent = "Plan Your Exit";
         }
-        if (summary) summary.innerHTML = "<strong>Protect Your Peace, But Don't Starve:</strong> A toxic boss destroys your confidence and sleep. But quitting today with zero money will bring a new problem: panic about paying rent and food.";
-        if (risk) risk.innerHTML = "<strong>1. Mental Breakdown:</strong> Hearing daily insults harms your self-worth.<br><strong>2. Panic Hiring:</strong> If your bank account hits zero, you will take another terrible job out of desperation.<br><strong>3. Credit Card Debt:</strong> Never quit without at least 3 months of basic food and rent money saved.";
-        if (action) action.innerHTML = "<strong>Step 1: Stop Caring Emotionally:</strong> Do only what is required during office hours. Do not let their shouting touch your heart.<br><strong>Step 2: Save 3 Months Expenses:</strong> Cut useless spending and build an emergency cash shield.<br><strong>Step 3: Apply to 5 Jobs Daily:</strong> Use your evenings to send resumes quietly. The moment you get an offer, resign with a smile.";
-        if (list) list.innerHTML = "<li>A quiet, planned exit is always 10 times better than an angry, broke exit.</li>";
+        if (summary) summary.innerHTML = "<strong>Protect Your Peace, But Don't Starve:</strong> A toxic boss erodes confidence and sleep. But quitting today with zero savings causes acute panic about rent and food.";
+        if (risk) risk.innerHTML = "<strong>1. Mental Breakdown:</strong> Daily hostility causes chronic burnout.<br><strong>2. Panic Hiring:</strong> Running out of funds forces you into another equally toxic role.<br><strong>3. Debt Spiral:</strong> Never quit without at least 3 months of basic living costs saved.";
+        if (action) action.innerHTML = "<strong>Step 1: Disengage Emotionally:</strong> Do your core duties strictly during office hours without taking criticism to heart.<br><strong>Step 2: Build a 3-Month Cash Buffer:</strong> Save living expenses before submitting your formal resignation.<br><strong>Step 3: Apply Daily:</strong> Dedicate 2 hours every evening to interviews and portfolio building.";
+        if (list) list.innerHTML = "<li>A quiet, planned exit is always ten times better than an impulsive, broke departure.</li>";
       }
       else if (type === "burnout") {
         if (arch) arch.textContent = "Category: Overwork & Tiredness";
@@ -580,9 +583,9 @@
           pill.className = "status-pill status-danger";
           pill.textContent = "Dangerous Burnout";
         }
-        if (summary) summary.innerHTML = "<strong>You Cannot Run a Car on Empty Fuel:</strong> Working 80 hours while sleeping only 4.5 hours is slowly breaking your brain and heart. No amount of salary is worth a hospital visit in your 20s or 30s.";
-        if (risk) risk.innerHTML = "<strong>1. Brain Fog:</strong> Without sleep, you make stupid mistakes that can get you fired anyway.<br><strong>2. Sudden Hospitalization:</strong> Chronic stress leads to sudden heart and stomach issues.<br><strong>3. Money Spent on Doctors:</strong> All the extra money you earn will be handed over to hospitals.";
-        if (action) action.innerHTML = "<strong>Step 1: Sleep 7 Hours Non-Negotiable:</strong> Your body repairs its brain cells only when you sleep.<br><strong>Step 2: Say 'No' to Extra Free Hours:</strong> Leave work on time. The company will replace you in 3 days if you drop dead.<br><strong>Step 3: Take a 3-Day Full Rest:</strong> Keep your phone away for an entire weekend and just sleep and walk in nature.";
+        if (summary) summary.innerHTML = "<strong>You Cannot Drive a Car on Empty Fuel:</strong> Working 80 hours while sleeping 4.5 hours breaks brain function and cardiovascular health. No salary is worth a hospital admission.";
+        if (risk) risk.innerHTML = "<strong>1. Cognitive Brain Fog:</strong> Sleep deprivation increases error rates by over 300%.<br><strong>2. Sudden Health Crash:</strong> High cortisol causes endocrine and heart complications.<br><strong>3. Medical Cost Drag:</strong> Extra earnings get consumed by doctor bills and therapy.";
+        if (action) action.innerHTML = "<strong>Step 1: Enforce 7 Hours Sleep:</strong> Brain tissue repairs only during deep sleep.<br><strong>Step 2: Leave on Time:</strong> Cap work at 50 hours a week and decline unpaid overtime.<br><strong>Step 3: Take a 3-Day Screen Detox:</strong> Spend an entire weekend walking in nature and resting.";
         if (list) list.innerHTML = "<li>Health is wealth. If your body stops working, your bank balance is useless.</li>";
       }
       else {
@@ -591,9 +594,9 @@
           pill.className = "status-pill status-safe";
           pill.textContent = "Balanced Path";
         }
-        if (summary) summary.innerHTML = "<strong>Finding Your Center:</strong> When you feel empty or confused, it means your daily actions do not match what your heart truly wants.";
-        if (risk) risk.innerHTML = "<strong>1. Overthinking:</strong> Sitting in a room thinking in circles never solves life problems.<br><strong>2. Isolation:</strong> Hiding your feelings from everyone makes sadness heavier.";
-        if (action) action.innerHTML = "<strong>Step 1: Talk to One Honest Friend:</strong> Share what is inside your heart.<br><strong>Step 2: Do 30 Minutes of Physical Activity Daily:</strong> Walking or running cleans out mental anxiety.<br><strong>Step 3: Take Small Steps:</strong> Fix today first; do not worry about the next 5 years all at once.";
+        if (summary) summary.innerHTML = "<strong>Finding Your Center:</strong> Feeling empty or confused means your daily routines do not align with your true priorities.";
+        if (risk) risk.innerHTML = "<strong>1. Overthinking Loops:</strong> Ruminating in isolation never solves life problems.<br><strong>2. Emotional Bottling:</strong> Hiding feelings makes stress heavier.";
+        if (action) action.innerHTML = "<strong>Step 1: Confide in a Trusted Friend:</strong> Share what you are feeling honestly.<br><strong>Step 2: 30 Minutes of Daily Movement:</strong> Walking or running clears mental anxiety.<br><strong>Step 3: One Small Step at a Time:</strong> Fix today first instead of stressing over the next five years.";
         if (list) list.innerHTML = "<li>One small good habit every day beats worrying about everything at once.</li>";
       }
     }
