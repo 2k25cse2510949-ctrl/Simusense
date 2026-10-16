@@ -32,7 +32,7 @@ body {
 }
 
 .header {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .header-top {
@@ -68,6 +68,67 @@ body {
   margin-top: 4px;
 }
 
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.dilemma-card {
+  margin-bottom: 24px;
+  border: 1px solid var(--accent);
+  background: #141b2d;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  resize: vertical;
+  outline: none;
+  margin: 10px 0;
+}
+
+textarea:focus {
+  border-color: var(--accent);
+}
+
+.preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chip-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.chip {
+  background: var(--bg-card);
+  color: #cbd5e1;
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: #fff;
+  background: rgba(99, 102, 241, 0.15);
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: 460px 1fr;
@@ -80,28 +141,20 @@ body {
   }
 }
 
-.card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 24px;
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
-.scenario-picker-box {
-  background: #192338;
-  border: 1px solid var(--accent);
-  padding: 14px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-}
-
-.scenario-label {
-  font-size: 12px;
-  text-transform: uppercase;
-  color: #a5b4fc;
+.badge-accent {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  font-size: 11px;
   font-weight: 700;
-  margin-bottom: 6px;
-  display: block;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 h2 {
@@ -183,6 +236,23 @@ input:focus, select:focus {
 
 .btn-primary:hover {
   background: var(--accent-hover);
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-card);
+  color: #fff;
 }
 
 .results-header {
