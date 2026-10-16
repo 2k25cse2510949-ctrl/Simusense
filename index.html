@@ -71,4 +71,509 @@
 
     .chart-container { height: 300px; position: relative; margin-bottom: 16px; }
     .insights-card { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 4px; }
-    .insights-card ul { padding-left: 18px; font-size: 13px; color: var(--text-muted);
+    .insights-card ul { padding-left: 18px; font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .insights-card li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <header class="header">
+      <span class="badge">SimuSense Universal Core</span>
+      <h1>Universal Life & Decision Simulator</h1>
+      <p class="subtitle">Universal Decision Engine: Handles micro & macro investments, psychological burnout, emotional separations, animal ethics, or physical crises.</p>
+    </header>
+
+    <section class="card dilemma-card">
+      <h2 style="font-size: 16px;">1. Describe Any Dilemma (Living Beings, Money, Mind, Health, or Morals)</h2>
+      <textarea id="userDilemma" rows="3" placeholder="Type naturally: e.g. 'I have 1200 rupees where should I invest it?', or 'My dog is 14 years old with terminal cancer, should I put him down?', or 'Working 80 hours a week and feeling depressed...'"></textarea>
+
+      <div class="preset-chips">
+        <span class="chip-label">Quick Scenarios:</span>
+        <button type="button" class="chip" onclick="handlePreset('micro_invest')">💰 Micro-Invest: Best use of ₹1200?</button>
+        <button type="button" class="chip" onclick="handlePreset('burnout')">⚡ Burnout: 80hr work & 5hr sleep?</button>
+        <button type="button" class="chip" onclick="handlePreset('toxic_exit')">💔 Emotional: Quit toxic job without offer?</button>
+        <button type="button" class="chip" onclick="handlePreset('moral_pet')">🐶 Animal/Moral: Terminal pet suffering vs guilt?</button>
+        <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Physical: Severe spine pain reducing work 40%?</button>
+      </div>
+
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Model Trajectory</button>
+    </section>
+
+    <section class="card conclusion-card" id="conclusionCard">
+      <div class="conclusion-header">
+        <div>
+          <span class="status-pill status-safe" id="verdictPill">Balanced</span>
+          <span id="detectedArchetype" style="font-size: 12px; color: #818cf8; margin-left: 10px; font-weight: 600;"></span>
+        </div>
+      </div>
+      <div id="verdictSummary" style="font-size: 14px; color: #cbd5e1; margin-top: 6px; line-height: 1.6;"></div>
+      
+      <div class="conclusion-grid">
+        <div class="conclusion-box">
+          <span>Comprehensive Risk Audit</span>
+          <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
+        </div>
+        <div class="conclusion-box">
+          <span>Actionable Strategic Roadmap</span>
+          <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
+        </div>
+      </div>
+    </section>
+
+    <main class="dashboard-grid">
+      <section class="card">
+        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Extracted State Vectors</h2>
+        
+        <div class="form-row">
+          <div>
+            <label>Available Capital / Savings (₹)</label>
+            <input type="number" id="v_capital" value="1200" step="500" oninput="runSimulation()">
+          </div>
+          <div>
+            <label>Monthly Earning Capacity (₹)</label>
+            <input type="number" id="v_income" value="20000" step="1000" oninput="runSimulation()">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Mental Peace (0–100)</label>
+            <input type="number" id="v_mental" value="70" min="0" max="100" oninput="runSimulation()">
+          </div>
+          <div>
+            <label>Emotional Equilibrium (0–100)</label>
+            <input type="number" id="v_emotional" value="65" min="0" max="100" oninput="runSimulation()">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Physical Vitality (0–100)</label>
+            <input type="number" id="v_vitality" value="80" min="0" max="100" oninput="runSimulation()">
+          </div>
+          <div>
+            <label>Systemic Distress (0–100)</label>
+            <input type="number" id="v_distress" value="30" min="0" max="100" oninput="runSimulation()">
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Projected Capital</div>
+            <div class="stat-value" id="kpi_capital" style="color: var(--accent);">₹1,200</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Mental Health</div>
+            <div class="stat-value" id="kpi_mental" style="color: var(--mental);">70 / 100</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Emotional Heart</div>
+            <div class="stat-value" id="kpi_emotional" style="color: var(--emotional);">65 / 100</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Life Equilibrium</div>
+            <div class="stat-value" id="kpi_equilibrium" style="color: #cbd5e1;">72%</div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="trajectoryChart"></canvas>
+        </div>
+
+        <div class="insights-card">
+          <h4 style="font-size: 13px;">Universal Dynamics & Feedback Loops:</h4>
+          <ul id="insightsList"></ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    let myChart = null;
+
+    const presets = {
+      micro_invest: "I have 1200 rupees, where should I invest it to get the best return?",
+      burnout: "I am working 80 hours a week sleeping 4.5 hours for good money but feeling depressed and completely burnt out. Should I quit?",
+      toxic_exit: "My boss constantly insults me and my workplace is toxic. I have 2 Lakh savings. Should I leave right now without a backup offer?",
+      moral_pet: "My 14-year-old dog has terminal bone cancer and is in severe pain. Doctor says put him down but I feel immense guilt. What should I do?",
+      physical_spine: "I am suffering from severe spine disc pain that limits my daily physical sitting capacity by 40%. How should I adapt my career?"
+    };
+
+    function handlePreset(key) {
+      document.getElementById("userDilemma").value = presets[key];
+      compileAndSimulate();
+    }
+
+    function parseUniversalDilemma(text) {
+      const clean = text.toLowerCase();
+      
+      const res = {
+        capital: 1200,
+        income: 20000,
+        mental: 65,
+        emotional: 65,
+        vitality: 75,
+        distress: 35,
+        type: "investment"
+      };
+
+      const numMatch = clean.match(/(?:₹|rs\.?|inr)?\s*([\d,.]+)\s*(k|lakh|lac|cr|rupees|rs)?/i);
+      if (numMatch && numMatch[1]) {
+        let val = parseFloat(numMatch[1].replace(/,/g, ''));
+        let unit = (numMatch[2] || '').toLowerCase();
+        if (unit === 'k') val *= 1000;
+        else if (unit === 'lakh' || unit === 'lac') val *= 100000;
+        else if (unit === 'cr') val *= 10000000;
+        if (!isNaN(val) && val > 0) res.capital = val;
+      }
+
+      if (clean.includes("dog") || clean.includes("cat") || clean.includes("pet") || clean.includes("animal") || clean.includes("euthan") || clean.includes("put down") || clean.includes("vet")) {
+        res.type = "animal_moral";
+        res.distress = 90;
+        res.emotional = 25;
+        res.mental = 35;
+      } else if (clean.includes("spine") || clean.includes("back pain") || clean.includes("injury") || clean.includes("knee") || clean.includes("physical") || clean.includes("illness") || clean.includes("paralyz")) {
+        res.type = "physical_shock";
+        res.distress = 75;
+        res.vitality = 30;
+        res.mental = 50;
+      } else if (clean.includes("toxic") || clean.includes("boss") || clean.includes("partner") || clean.includes("gaslight") || clean.includes("relationship") || clean.includes("breakup") || clean.includes("quit")) {
+        res.type = "toxic_exit";
+        res.distress = 80;
+        res.emotional = 25;
+        res.mental = 35;
+      } else if (clean.includes("burnout") || clean.includes("sleep") || clean.includes("exhaust") || clean.includes("tired") || clean.includes("80 hour") || clean.includes("grind")) {
+        res.type = "burnout";
+        res.distress = 75;
+        res.vitality = 40;
+        res.mental = 30;
+      } else if (clean.includes("invest") || clean.includes("rupees") || clean.includes("shares") || clean.includes("stock") || clean.includes("mutual fund") || clean.includes("crypto") || clean.includes("gold") || clean.includes("put money") || clean.includes("spend")) {
+        res.type = "investment";
+        res.distress = 20;
+        res.mental = 75;
+      } else if (clean.includes("void") || clean.includes("empty") || clean.includes("depress") || clean.includes("crying") || clean.includes("meaning") || clean.includes("lost")) {
+        res.type = "existential";
+        res.distress = 80;
+        res.mental = 25;
+        res.emotional = 30;
+      }
+
+      return res;
+    }
+
+    function compileAndSimulate() {
+      const text = document.getElementById("userDilemma").value.trim();
+      if (!text) {
+        alert("Please enter a dilemma first!");
+        return;
+      }
+
+      const p = parseUniversalDilemma(text);
+
+      document.getElementById("v_capital").value = p.capital;
+      document.getElementById("v_mental").value = p.mental;
+      document.getElementById("v_emotional").value = p.emotional;
+      document.getElementById("v_vitality").value = p.vitality;
+      document.getElementById("v_distress").value = p.distress;
+
+      runSimulation(p.type, p.capital);
+    }
+
+    function runSimulation(type, cap) {
+      let capital = parseFloat(document.getElementById("v_capital").value) || cap || 1200;
+      let mental = parseFloat(document.getElementById("v_mental").value) || 70;
+      let emotional = parseFloat(document.getElementById("v_emotional").value) || 65;
+      let vitality = parseFloat(document.getElementById("v_vitality").value) || 80;
+
+      const years = 5;
+      let timeline = [];
+      let curCap = capital;
+      let curM = mental;
+      let curE = emotional;
+      let curV = vitality;
+
+      for (let yr = 1; yr <= years; yr++) {
+        if (type === "investment") {
+          if (capital <= 5000) {
+            curCap = Math.round(curCap * 1.35 + 2400);
+          } else {
+            curCap = Math.round(curCap * 1.12);
+          }
+          curM = Math.min(95, curM + 4);
+          curE = Math.min(95, curE + 4);
+        } else if (type === "physical_shock") {
+          curV = Math.min(75, curV + 6);
+          curM = Math.min(90, curM + 8);
+          curE = Math.min(90, curE + 7);
+          curCap = Math.round(curCap * 1.08);
+        } else {
+          curM = Math.min(95, curM + 8);
+          curE = Math.min(95, curE + 8);
+          curV = Math.min(90, curV + 4);
+        }
+
+        timeline.push({
+          year: `Yr ${yr}`,
+          capital: curCap,
+          mental: Math.round(curM),
+          emotional: Math.round(curE),
+          vitality: Math.round(curV),
+          equilibrium: Math.round((curM + curE + curV) / 3)
+        });
+      }
+
+      renderUniversalDiagnosis(type, capital);
+      updateKPIs(timeline[timeline.length - 1]);
+      renderUniversalChart(timeline, type);
+    }
+
+    function renderUniversalDiagnosis(type, capital) {
+      const pill = document.getElementById("verdictPill");
+      const arch = document.getElementById("detectedArchetype");
+      const summary = document.getElementById("verdictSummary");
+      const risk = document.getElementById("riskText");
+      const action = document.getElementById("actionText");
+      const list = document.getElementById("insightsList");
+      list.innerHTML = "";
+
+      if (type === "investment") {
+        arch.textContent = "Archetype: Micro & Macro Capital Allocation";
+        pill.className = "status-pill status-safe";
+        pill.textContent = "High Leverage Opportunity";
+
+        if (capital <= 5000) {
+          summary.innerHTML = `<strong>Micro-Capital Optimization (₹${capital.toLocaleString('en-IN')}):</strong> With ₹${capital.toLocaleString('en-IN')}, market compounding at 12% returns only ~₹144/year. The true 10x–100x return comes from <strong>Human Capital Compounding (High-ROI Skills & Tools)</strong> or starting an automated Micro-SIP to build unshakeable investing discipline.`;
+
+          risk.innerHTML = `
+            <strong>1. Quick-Rich F&O/Crypto Traps:</strong> Chote amounts tempt karte hain options trading ya meme coins me dalne ke liye, jisme 89%+ log pura paisa 30 din me zero kar dete hain.<br>
+            <strong>2. Transaction Fee Drag:</strong> Chote trades par DP charges aur platform fees 5–10% seedha kha jati hain.<br>
+            <strong>3. Inflation Erosion:</strong> Savings account (2.5%) me pada rehne se 6% inflation purchasing power khatam kar deti hai.<br>
+            <strong>4. Illusion of Insignificance:</strong> Yeh sochna ki '₹1,200 se kya hoga' impulsive kharche karwata hai.<br>
+            <strong>5. Unregulated Tips:</strong> Telegram aur Instagram scam channels par bharosa karke capital gawana.<br>
+            <strong>6. Lack of Liquidity Buffer:</strong> Saare chote paise lock kar dena bina daily cash emergency soche.<br>
+            <strong>7. High Opportunity Cost:</strong> Paise ko aisi jagah daalna jahan monthly earnings me koi badhotari na ho.<br>
+            <strong>8. Behavioral Impatience:</strong> 6 mahine me returns na dikhne par account band kar dena.<br>
+            <strong>9. Zero Leverage:</strong> Sirf paise ke returns par depend rehna bina earning skills badhaye.<br>
+            <strong>10. Delaying Systematic Action:</strong> Badi amount aane ka intezar karke saalon ka compounding miss karna.
+          `;
+
+          action.innerHTML = `
+            <strong>Phase 1: High-ROI Skill Asset (100x ROI Potential)</strong><br>
+            • Buy a foundational book (e.g. Psychology of Money, Atomic Habits) or a technical certification tool/course that directly upgrades your monthly earning capacity.<br>
+            • Invest in domain/hosting/portfolio assets to show real work to clients or employers.<br><br>
+            <strong>Phase 2: Index Fund Micro-SIP Discipline</strong><br>
+            • Start a ₹500/month recurring automated SIP in a low-cost Nifty 50 Index Fund via Zerodha Coin or Groww with zero brokerage fees.<br>
+            • Do not stop the SIP even during market corrections; let rupee-cost averaging work for you.<br><br>
+            <strong>Phase 3: Emergency Seed Protection</strong><br>
+            • Place remaining balance in an auto-sweep fixed deposit or liquid fund for instant liquidity.<br>
+            • Scale up contribution by 10% every time your monthly earning increases.
+          `;
+
+          list.innerHTML = `
+            <li>₹1,200 share market me sirf ₹144/saal dega, par agar isse koi skill sikhi to agle mahine ₹10,000+ ban sakte hain.</li>
+            <li>Micro-SIP habit build karne ke liye best hai, waiting mat karo.</li>
+          `;
+        } else {
+          summary.innerHTML = `<strong>Capital Growth Strategy (₹${capital.toLocaleString('en-IN')}):</strong> Substantial corpus ready for diversified equity compounding and risk hedging.`;
+          risk.innerHTML = `<strong>1. Equity Drawdowns:</strong> Short-term volatility.<br><strong>2. Inflation Drag:</strong> Cash holding risks.`;
+          action.innerHTML = `<strong>1. Asset Allocation:</strong> 70% Index Funds, 30% Liquid Debt.<br><strong>2. Emergency Buffer:</strong> 6 months expenses liquid.`;
+          list.innerHTML = `<li>Broad market indexing beats 90% active pickers over 10+ years.</li>`;
+        }
+      }
+      else if (type === "animal_moral") {
+        arch.textContent = "Archetype: Compassionate Ethics & Grief (Animal Companion)";
+        pill.className = "status-pill status-warn";
+        pill.textContent = "Compassion vs Attachment";
+        summary.innerHTML = `<strong>The Mercy Paradox:</strong> Holding onto a companion in terminal, intractable physical pain delays human grief by prolonging their biological agony. Euthanasia in hopeless pain is not quitting; it is taking on their pain yourself so they can finally rest.`;
+
+        risk.innerHTML = `
+          <strong>1. Prolonging Biological Suffering:</strong> Animal companion experiences constant pain without understanding why.<br>
+          <strong>2. Caregiver Traumatic Memories:</strong> Watching them deteriorate displaces joyful memories with trauma.<br>
+          <strong>3. Self-Inflicted Guilt:</strong> Blaming yourself for a biological disease you did not cause.<br>
+          <strong>4. Delayed Acceptance:</strong> Postponing inevitable grief increases emergency hospital trauma.<br>
+          <strong>5. Financial Depletion on Hopeless Interventions:</strong> Invasive end-stage surgeries that only add physical distress.
+        `;
+
+        action.innerHTML = `
+          <strong>1. Objective Quality of Life Audit:</strong> Evaluate mobility, pain management, and feeding capacity.<br>
+          <strong>2. In-Home Veterinary Transition:</strong> Arrange an in-home transition so their final moments are peaceful in their familiar bed.<br>
+          <strong>3. Reframe the Decision as Final Gift:</strong> You promised to protect them from suffering; keeping that promise means bearing the grief yourself.<br>
+          <strong>4. Dedicated Mourning Space:</strong> Allow yourself permission to grieve deeply without guilt.
+        `;
+
+        list.innerHTML = `
+          <li>Animals live in the immediate moment; prolonging hopeless suffering provides zero benefit to them.</li>
+          <li>Releasing them preserves their dignity.</li>
+        `;
+      }
+      else if (type === "physical_shock") {
+        arch.textContent = "Archetype: Somatic Adaptation & Energy Calibration";
+        pill.className = "status-pill status-warn";
+        pill.textContent = "Capacity Pivot Required";
+        summary.innerHTML = `<strong>Physical Constraint vs Human Leverage:</strong> Severe spine disc pain or injury reduces active physical sitting/labor capacity by 40%. Continuing high-strain physical work will accelerate permanent structural nerve damage.`;
+
+        risk.innerHTML = `
+          <strong>1. Structural Nerve Compression:</strong> Ignoring disc pain causes permanent sciatica or motor weakness.<br>
+          <strong>2. Active Income Fragility:</strong> Relying on physical labor creates acute financial vulnerability.<br>
+          <strong>3. Secondary Depression:</strong> Chronic physical pain directly depletes serotonin and executive mental energy.<br>
+          <strong>4. Escalating Medical Interventions:</strong> Emergency spine surgeries when conservative recovery is ignored.<br>
+          <strong>5. Burnout through Overcompensation:</strong> Forcing 100% output with a 60% capacity body guarantees breakdown.
+        `;
+
+        action.innerHTML = `
+          <strong>1. Ergonomic & Physical Therapy Protocol:</strong> Enforce strict standing desk rotation, lumbar decompression, and structured physio.<br>
+          <strong>2. Pivot to Asynchronous/Remote Knowledge Work:</strong> Shift from physical presence jobs to knowledge, consulting, or automated digital roles.<br>
+          <strong>3. Cap Continuous Sitting to 35 Minutes:</strong> Use pomodoro timers to break lumbar pressure cycles.<br>
+          <strong>4. Automate Savings & Health Cover:</strong> Secure comprehensive medical insurance with zero room-rent caps immediately.
+        `;
+
+        list.innerHTML = `
+          <li>Physical capacity constraints force transition to intellectual and digital leverage.</li>
+          <li>Early adaptation prevents permanent nerve and spinal damage.</li>
+        `;
+      }
+      else if (type === "toxic_exit") {
+        arch.textContent = "Archetype: Interpersonal Sovereignty & Safety";
+        pill.className = "status-pill status-danger";
+        pill.textContent = "Exit Architecture Required";
+        summary.innerHTML = `<strong>Sovereignty vs Survival Runway:</strong> Chronic workplace toxicity or emotional abuse destroys mental health. However, quitting impulsively without a runway creates acute financial panic. You need an orderly, structured transition plan.`;
+
+        risk.innerHTML = `
+          <strong>1. Chronic Neurocognitive Erosion:</strong> Abusive dynamics keep cortisol high, destroying immune function.<br>
+          <strong>2. Panic Rehiring Trap:</strong> Running out of money forces you to accept the next equally toxic offer.<br>
+          <strong>3. Identity Fracture:</strong> Gaslighting makes you doubt your professional competence.<br>
+          <strong>4. Emergency Fund Depletion:</strong> Spending your buffer on unplanned sabbaticals leaves zero emergency cushion.<br>
+          <strong>5. Social Withdrawal:</strong> Isolation from supportive friends and professional mentors.
+        `;
+
+        action.innerHTML = `
+          <strong>1. Execute 'Emotional Detachment' (Quiet Quitting):</strong> Do your core duties strictly within hours while disengaging emotionally.<br>
+          <strong>2. Build 3-to-6 Month Survival Buffer:</strong> Save essential living expenses before handing in your formal resignation.<br>
+          <strong>3. Channel Energy into Daily Job Applications:</strong> Dedicate 2 hours every evening to interviews and portfolio building.<br>
+          <strong>4. Secure Independent Health Insurance:</strong> Ensure you are medically protected during the job transition window.
+        `;
+
+        list.innerHTML = `
+          <li>Mental health recovery requires clear boundaries and an orderly exit runway.</li>
+        `;
+      }
+      else if (type === "burnout") {
+        arch.textContent = "Archetype: Systemic Biological & Cognitive Burnout";
+        pill.className = "status-pill status-danger";
+        pill.textContent = "Biological Deficit Warning";
+        summary.innerHTML = `<strong>Involuntary Biological Crash:</strong> Sleeping under 5 hours while working 80 hours a week produces diminishing marginal returns. By Year 2, physical and cognitive bandwidth collapse, forcing medical leaves and lost income.`;
+
+        risk.innerHTML = `
+          <strong>1. Executive Cognitive Breakdown:</strong> Prefrontal cortex decision-making deteriorates drastically.<br>
+          <strong>2. False Productivity Trap:</strong> Mistake rates rise 300%, neutralizing extra hours worked.<br>
+          <strong>3. Involuntary Medical Crash:</strong> Endocrine and cardiovascular collapse after 24 months of high cortisol.<br>
+          <strong>4. Reversal of Financial Gains:</strong> Medical rehab and therapy consume excess earnings.<br>
+          <strong>5. Relationship Atrophy:</strong> Zero bandwidth for personal connections breeds severe isolation.
+        `;
+
+        action.innerHTML = `
+          <strong>1. Enforce 7-Hour Sleep Protocol:</strong> Treat sleep as a core non-negotiable performance asset.<br>
+          <strong>2. Cap Work at 50 Hours/Week:</strong> Eliminate low-yield side hustles immediately.<br>
+          <strong>3. Schedule a 7-Day Screen Detox:</strong> Reset autonomic nervous system and lower baseline stress.<br>
+          <strong>4. Shift from Hours to Outcomes:</strong> Delegate or automate low-impact tasks.
+        `;
+
+        list.innerHTML = `
+          <li>Human biology cannot out-earn chronic sleep deprivation.</li>
+        `;
+      }
+      else {
+        arch.textContent = "Archetype: Existential Integration & Value Alignment";
+        pill.className = "status-pill status-safe";
+        pill.textContent = "Equilibrium Achievable";
+        summary.innerHTML = `<strong>Holistic Realignment:</strong> Resolving the friction between internal values, personal peace, and external daily demands.`;
+        risk.innerHTML = `<strong>1. Chronic Stress Drag:</strong> Small frictions accumulate into apathy.<br><strong>2. Reactive Living:</strong> Operating on autopilot without clear priorities.`;
+        action.innerHTML = `<strong>1. Daily Rest Boundaries:</strong> Protect personal downtime.<br><strong>2. Pursue Intrinsically Rewarding Goals:</strong> Reclaim creative curiosity.`;
+        list.innerHTML = `<li>Balanced daily habits sustain lifelong mental resilience.</li>`;
+      }
+    }
+
+    function updateKPIs(last) {
+      document.getElementById("kpi_capital").textContent = `₹${last.capital.toLocaleString('en-IN')}`;
+      document.getElementById("kpi_mental").textContent = `${last.mental} / 100`;
+      document.getElementById("kpi_emotional").textContent = `${last.emotional} / 100`;
+      document.getElementById("kpi_equilibrium").textContent = `${last.equilibrium}%`;
+    }
+
+    function renderUniversalChart(timeline, type) {
+      const labels = timeline.map(d => d.year);
+      const capData = timeline.map(d => d.capital);
+      const mData = timeline.map(d => d.mental);
+      const eData = timeline.map(d => d.emotional);
+
+      if (myChart) myChart.destroy();
+
+      const ctx = document.getElementById("trajectoryChart").getContext("2d");
+      myChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Capital (₹)",
+              data: capData,
+              borderColor: "#6366f1",
+              backgroundColor: "rgba(99, 102, 241, 0.15)",
+              yAxisID: 'y',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: "Mental Peace (0–100)",
+              data: mData,
+              borderColor: "#38bdf8",
+              borderDash: [3, 3],
+              yAxisID: 'y1',
+              fill: false,
+              tension: 0.3
+            },
+            {
+              label: "Emotional Heart (0–100)",
+              data: eData,
+              borderColor: "#ec4899",
+              borderDash: [5, 5],
+              yAxisID: 'y1',
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { grid: { color: "#243352" }, ticks: { color: "#94a3b8" } },
+            y: {
+              type: 'linear',
+              position: 'left',
+              grid: { color: "#243352" },
+              ticks: { color: "#818cf8", callback: (v) => "₹" + v.toLocaleString('en-IN') }
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              min: 0,
+              max: 100,
+              grid: { drawOnChartArea: false },
+              ticks: { color: "#38bdf8", callback: (v) => v + " pts" }
+            }
+          },
+          plugins: { legend: { labels: { color: "#f8fafc" } } }
+        }
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      compileAndSimulate();
+    });
+  </script>
+</body>
+</html>
