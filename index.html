@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SimuSense — Life Dilemma Decision Engine</title>
+  <title>SimuSense — Universal Life Decision & Dilemma Engine</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -18,6 +18,9 @@
       --accent-hover: #4f46e5;
       --danger: #ef4444;
       --success: #10b981;
+      --warning: #f59e0b;
+      --mental: #38bdf8;
+      --emotional: #ec4899;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -27,7 +30,7 @@
     .badge { background: rgba(99, 102, 241, 0.2); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
     h1 { font-size: 26px; font-weight: 700; margin-top: 6px; }
     .subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
-    
+
     .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
     .dilemma-card { border: 1px solid var(--accent); background: #141b2d; }
     textarea { width: 100%; padding: 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 14px; resize: vertical; outline: none; margin: 10px 0; }
@@ -36,7 +39,7 @@
     .chip-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
     .chip { background: var(--bg-card); color: #cbd5e1; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
     .chip:hover { border-color: var(--accent); color: #fff; background: rgba(99, 102, 241, 0.15); }
-    
+
     .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
     .btn-primary:hover { background: var(--accent-hover); }
 
@@ -46,22 +49,25 @@
     .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
     .status-safe { background: rgba(16, 185, 129, 0.2); color: #34d399; }
     .status-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-    
+    .status-warn { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+
     .conclusion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
     .conclusion-box { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
     .conclusion-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px; }
 
     .dashboard-grid { display: grid; grid-template-columns: 440px 1fr; gap: 20px; }
     @media (max-width: 950px) { .dashboard-grid { grid-template-columns: 1fr; } .conclusion-grid { grid-template-columns: 1fr; } }
-    
+
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
     input, select { width: 100%; padding: 9px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 13px; outline: none; }
-    
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-    .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; text-align: center; }
-    .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
-    .stat-value { font-size: 16px; font-weight: 700; margin-top: 4px; }
+
+    /* 4-Vector Health Stats */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; text-align: center; }
+    .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+    .stat-value { font-size: 15px; font-weight: 700; margin-top: 4px; }
 
     .chart-container { height: 280px; position: relative; margin-bottom: 16px; }
     .insights-card { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
@@ -73,42 +79,42 @@
   <div class="app-container">
     
     <header class="header">
-      <span class="badge">SimuSense AI Core v4.0</span>
-      <h1>Real-Life What-If Dilemma Simulator</h1>
-      <p class="subtitle">Enter any scenario in plain English. SimuSense compiles your profile, projects 15-year outcomes, and provides detailed risk audits.</p>
+      <span class="badge">SimuSense Universal Core</span>
+      <h1>Universal Holistic Decision Simulator</h1>
+      <p class="subtitle">Simulate real-life dilemmas across 4 interconnected human pillars: Financial, Physical Vitality, Mental Health, and Emotional Stability.</p>
     </header>
 
     <!-- Dilemma Input -->
     <section class="card dilemma-card">
-      <h2 style="font-size: 16px;">1. Describe Your Real-Life Dilemma</h2>
-      <textarea id="userDilemma" rows="3" placeholder="Type here, e.g.: I earn 75k and have 4L savings. What if I quit my job for 2 years to study?"></textarea>
+      <h2 style="font-size: 16px;">1. State Any Real-Life Dilemma</h2>
+      <textarea id="userDilemma" rows="3" placeholder="Type naturally, e.g.: I am working 80 hours a week sleeping 5 hours for 1 Lakh/month, but feeling burned out and depressed. Should I quit or push through?"></textarea>
 
       <div class="preset-chips">
-        <span class="chip-label">Quick Presets:</span>
-        <button type="button" class="chip" onclick="handlePreset('death')">What if I pass away tomorrow?</button>
-        <button type="button" class="chip" onclick="handlePreset('upsc')">What if I quit job for 2 yrs to study?</button>
-        <button type="button" class="chip" onclick="handlePreset('rich')">What if I earn 3x salary with lifestyle creep?</button>
-        <button type="button" class="chip" onclick="handlePreset('medical')">What if a ₹12L medical emergency hits?</button>
+        <span class="chip-label">Quick Dilemma Presets:</span>
+        <button type="button" class="chip" onclick="handlePreset('burnout')">Burnout: 80hr work & 5hr sleep for money?</button>
+        <button type="button" class="chip" onclick="handlePreset('toxic_exit')">Toxic Exit: Quit toxic job/boss with no backup?</button>
+        <button type="button" class="chip" onclick="handlePreset('chronic_health')">Health Shock: Illness cuts working capacity by 40%?</button>
+        <button type="button" class="chip" onclick="handlePreset('family_loss')">Contingency: Demise of primary earner?</button>
       </div>
 
-      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Compile Life Profile</button>
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Model Holistic State</button>
     </section>
 
-    <!-- Diagnosis & Recommendations Banner -->
+    <!-- Verdict Banner -->
     <section class="card conclusion-card" id="conclusionCard">
       <div class="conclusion-header">
-        <span class="status-pill status-safe" id="verdictPill">Stable</span>
-        <h3 id="verdictTitle" style="font-size: 16px;">AI Stress-Test Diagnosis</h3>
+        <span class="status-pill status-safe" id="verdictPill">Balanced</span>
+        <h3 id="verdictTitle" style="font-size: 16px;">Holistic Systemic Diagnosis</h3>
       </div>
       <div id="verdictSummary" style="font-size: 14px; color: #cbd5e1; margin-top: 6px; line-height: 1.5;"></div>
       
       <div class="conclusion-grid">
         <div class="conclusion-box">
-          <span>Detailed Core Risk Breakdown (10-Point Audit)</span>
+          <span>Detailed Multi-Pillar Risk Audit (10 Points)</span>
           <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
         <div class="conclusion-box">
-          <span>Actionable Strategic Roadmap (Multi-Phase Guide)</span>
+          <span>Integrated Strategic Action Plan (Multi-Phase)</span>
           <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
       </div>
@@ -117,68 +123,84 @@
     <!-- Main Workspace -->
     <main class="dashboard-grid">
       
-      <!-- Auto-Compiled Profile Fields -->
+      <!-- Compiled 4-Pillar State Profile -->
       <section class="card">
-        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Compiled State Profile</h2>
+        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Compiled Human State Profile</h2>
         
         <div class="form-row">
           <div>
             <label>Current Age</label>
-            <input type="number" id="prof_age" value="28" oninput="runSimulation()">
+            <input type="number" id="prof_age" value="27" oninput="runSimulation()">
           </div>
           <div>
-            <label>Savings & Assets (₹)</label>
-            <input type="number" id="prof_savings" value="500000" step="50000" oninput="runSimulation()">
+            <label>Liquid Capital (₹)</label>
+            <input type="number" id="prof_savings" value="400000" step="50000" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
           <div>
             <label>Monthly Income (₹)</label>
-            <input type="number" id="prof_income" value="75000" step="5000" oninput="runSimulation()">
+            <input type="number" id="prof_income" value="70000" step="5000" oninput="runSimulation()">
           </div>
           <div>
-            <label>Monthly Expenses (₹)</label>
-            <input type="number" id="prof_expenses" value="40000" step="2000" oninput="runSimulation()">
+            <label>Monthly Living Burn (₹)</label>
+            <input type="number" id="prof_expenses" value="38000" step="2000" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
           <div>
-            <label>Existing Insurance (₹)</label>
-            <input type="number" id="prof_insurance" value="2500000" step="250000" oninput="runSimulation()">
+            <label>Physical Vitality Index (0–100)</label>
+            <input type="number" id="prof_vitality" value="80" min="0" max="100" oninput="runSimulation()">
           </div>
           <div>
-            <label>Outstanding Debt (₹)</label>
-            <input type="number" id="prof_debt" value="500000" step="50000" oninput="runSimulation()">
+            <label>Mental Bandwidth (0–100)</label>
+            <input type="number" id="prof_mental" value="75" min="0" max="100" oninput="runSimulation()">
           </div>
         </div>
 
-        <div style="margin-top: 15px;">
-          <label>Identified Shock Archetype</label>
+        <div class="form-row">
+          <div>
+            <label>Emotional Well-Being (0–100)</label>
+            <input type="number" id="prof_emotional" value="70" min="0" max="100" oninput="runSimulation()">
+          </div>
+          <div>
+            <label>Average Daily Sleep (Hours)</label>
+            <input type="number" id="prof_sleep" value="7.5" step="0.5" min="3" max="12" oninput="runSimulation()">
+          </div>
+        </div>
+
+        <div style="margin-top: 8px;">
+          <label>Identified Dilemma Archetype</label>
           <select id="scenarioType" onchange="runSimulation()">
-            <option value="death">Contingency: Sudden Demise of Primary Earner</option>
-            <option value="sabbatical">Career Sabbatical / Study: 2-Year Zero Income</option>
-            <option value="rich">Income Surge: 3x Earnings with Lifestyle Creep</option>
-            <option value="medical">Medical Shock: ₹12 Lakh Hospitalization</option>
+            <option value="burnout">Hustle/Burnout Trap: Sleep Deprivation & Work Pressure</option>
+            <option value="toxic_exit">Toxic Environment Exit: Immediate Job/Relationship Resignation</option>
+            <option value="chronic_health">Health Shock: Illness Restricts Work Capacity by 40%</option>
+            <option value="family_loss">Family Contingency: Demise of Primary Provider</option>
           </select>
         </div>
       </section>
 
       <!-- Trajectory Chart & Key Findings -->
       <section class="card">
+        <!-- 4-Pillar State Metrics -->
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">Solvency Runway</div>
-            <div class="stat-value" id="runwayMetric">15+ Years</div>
+            <div class="stat-label">Capital Runway</div>
+            <div class="stat-value" id="runwayMetric">15+ Yrs</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">15-Yr Delta</div>
-            <div class="stat-value" id="deltaMetric">₹0</div>
+            <div class="stat-label">Physical Vitality</div>
+            <div class="stat-value" id="vitalityMetric" style="color: #34d399;">80 / 100</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Vulnerability</div>
-            <div class="stat-value" id="vulnerabilityMetric">Low Risk</div>
+            <div class="stat-label">Mental Health</div>
+            <div class="stat-value" id="mentalMetric" style="color: var(--mental);">75 / 100</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Emotional Index</div>
+            <div class="stat-value" id="emotionalMetric" style="color: var(--emotional);">70 / 100</div>
           </div>
         </div>
 
@@ -187,7 +209,7 @@
         </div>
 
         <div class="insights-card">
-          <h4 style="font-size: 13px;">Key Findings & Economic Factors:</h4>
+          <h4 style="font-size: 13px;">Integrated Systems Findings:</h4>
           <ul id="insightsList"></ul>
         </div>
       </section>
@@ -199,10 +221,10 @@
     let myChart = null;
 
     const presets = {
-      death: "I am 30 years old earning ₹85,000/month with ₹6 Lakh in savings and a ₹10 Lakh home loan. What happens to my family if I die tomorrow with ₹30 Lakh insurance and a 3-year-old child?",
-      upsc: "I am 26 years old earning ₹60,000 per month with ₹3.5 Lakh savings. I want to quit my job for 2 years to prepare for exams. Can my savings survive without income?",
-      rich: "I am 25 years old earning ₹45,000/month. What happens if I get a 3x salary jump but spend 60% of the raise on luxury and upgrades?",
-      medical: "I am 32 years old with ₹5 Lakh savings and ₹75,000 monthly income. What if a sudden medical emergency requires ₹12 Lakhs and insurance only covers ₹4 Lakh?"
+      burnout: "I am 26 earning ₹90,000/month with ₹3 Lakh savings. I am working 80 hours a week and sleeping only 4.5 to 5 hours. I feel mentally drained and exhausted. Should I continue this grind for the money?",
+      toxic_exit: "I am 28 earning ₹65,000/month with ₹2.5 Lakh savings and high daily stress. My workplace is extremely toxic and destroying my mental health. What happens if I quit tomorrow with no job offer in hand?",
+      chronic_health: "I am 32 earning ₹80,000/month with ₹5 Lakh savings. A physical spine and health condition has reduced my work energy and productivity by 40%. How does this impact my long-term life?",
+      family_loss: "I am 30 earning ₹85,000/month with ₹6 Lakh savings, ₹10 Lakh home loan, and a 3-year-old child. What happens to my family if I pass away tomorrow with ₹30 Lakh insurance cover?"
     };
 
     function handlePreset(key) {
@@ -213,25 +235,32 @@
       }
     }
 
+    /**
+     * Universal Natural Language Parser: Multi-Dimensional Life Dilemmas
+     */
     function parseDilemmaText(text) {
       const clean = text.toLowerCase();
       const profile = {
-        age: 26,
-        income: 50000,
-        expenses: 28000,
-        savings: 200000,
-        debt: 0,
-        insurance: 1500000,
-        scenario: "sabbatical"
+        age: 27,
+        income: 60000,
+        expenses: 35000,
+        savings: 300000,
+        vitality: 80,
+        mental: 75,
+        emotional: 70,
+        sleep: 7.5,
+        scenario: "burnout"
       };
 
+      // 1. Age
       const ageMatch = clean.match(/(?:age|aged|am|i am)\s*(\d{2})/i) || clean.match(/(\d{2})\s*(?:years|yr|y\/o)/i);
       if (ageMatch && ageMatch[1]) profile.age = parseInt(ageMatch[1]);
 
+      // 2. Financial Amount Extractor Helper
       function extractAmount(keywords) {
         for (let kw of keywords) {
-          const pattern = new RegExp(kw + "\\s*(?:of|is|:)?\\s*(?:₹|rs\\.?|inr)?\\s*([\\d,.]+)\\s*(k|lakh|lac|l|cr|crore)?", "i");
-          const revPattern = new RegExp("([\\d,.]+)\\s*(k|lakh|lac|l|cr|crore)?\\s*(?:in|as)?\\s*" + kw, "i");
+          const pattern = new RegExp(kw + "\\s*(?:of|is|:)?\\s*(?:₹|rs\\.?|inr)?\\s*([\\d,.]+)\\s*(k|lakh|lac|l|cr)?", "i");
+          const revPattern = new RegExp("([\\d,.]+)\\s*(k|lakh|lac|l|cr)?\\s*(?:in|as|of)?\\s*" + kw, "i");
           let m = clean.match(pattern) || clean.match(revPattern);
           if (m) {
             let numStr = m[1].replace(/,/g, '');
@@ -239,36 +268,48 @@
             let unit = (m[2] || '').toLowerCase();
             if (unit === 'k') val *= 1000;
             else if (unit === 'lakh' || unit === 'lac' || unit === 'l') val *= 100000;
-            else if (unit === 'cr' || unit === 'crore') val *= 10000000;
+            else if (unit === 'cr') val *= 10000000;
             if (!isNaN(val) && val > 0) return val;
           }
         }
         return null;
       }
 
-      const incomeVal = extractAmount(["salary", "earning", "earn", "income", "make", "pm", "per month"]);
-      if (incomeVal) {
-        profile.income = incomeVal;
-        profile.expenses = Math.round(incomeVal * 0.55);
+      const inc = extractAmount(["salary", "earning", "earn", "income", "make", "pm", "per month"]);
+      if (inc) {
+        profile.income = inc;
+        profile.expenses = Math.round(inc * 0.55);
       }
 
-      const savingsVal = extractAmount(["saving", "savings", "saved", "liquid", "fund", "net worth", "bank"]);
-      if (savingsVal) profile.savings = savingsVal;
+      const sav = extractAmount(["saving", "savings", "saved", "liquid", "fund", "bank"]);
+      if (sav) profile.savings = sav;
 
-      const debtVal = extractAmount(["debt", "loan", "emi", "mortgage", "owe"]);
-      if (debtVal) profile.debt = debtVal;
+      // 3. Sleep & Work Hours Extraction
+      const sleepMatch = clean.match(/([\d.]+)\s*(?:hours|hr|hrs)?\s*(?:of)?\s*sleep/i) || clean.match(/sleeping\s*(?:only|around)?\s*([\d.]+)/i);
+      if (sleepMatch && sleepMatch[1]) profile.sleep = parseFloat(sleepMatch[1]);
 
-      const insVal = extractAmount(["insurance", "cover", "term insurance", "policy"]);
-      if (insVal) profile.insurance = insVal;
-
-      if (clean.includes("die") || clean.includes("death") || clean.includes("pass away") || clean.includes("family")) {
-        profile.scenario = "death";
-      } else if (clean.includes("quit") || clean.includes("study") || clean.includes("exam") || clean.includes("upsc") || clean.includes("startup") || clean.includes("sabbatical")) {
-        profile.scenario = "sabbatical";
-      } else if (clean.includes("rich") || clean.includes("2x") || clean.includes("3x") || clean.includes("5x") || clean.includes("jump") || clean.includes("raise")) {
-        profile.scenario = "rich";
-      } else if (clean.includes("medic") || clean.includes("hospital") || clean.includes("ill") || clean.includes("emergency")) {
-        profile.scenario = "medical";
+      // 4. Multi-Dimensional Dilemma Intent Classification
+      if (clean.includes("burnout") || clean.includes("exhaust") || clean.includes("80 hour") || clean.includes("sleep") || clean.includes("grind") || clean.includes("overwork")) {
+        profile.scenario = "burnout";
+        profile.vitality = 50;
+        profile.mental = 40;
+        profile.emotional = 45;
+        if (!sleepMatch) profile.sleep = 5;
+      } else if (clean.includes("toxic") || clean.includes("boss") || clean.includes("quit") || clean.includes("leave job") || clean.includes("depress") || clean.includes("mental health") || clean.includes("anxiety")) {
+        profile.scenario = "toxic_exit";
+        profile.vitality = 65;
+        profile.mental = 35;
+        profile.emotional = 30;
+      } else if (clean.includes("health") || clean.includes("illness") || clean.includes("spine") || clean.includes("injury") || clean.includes("chronic") || clean.includes("physical") || clean.includes("disease")) {
+        profile.scenario = "chronic_health";
+        profile.vitality = 45;
+        profile.mental = 60;
+        profile.emotional = 55;
+      } else if (clean.includes("die") || clean.includes("death") || clean.includes("pass away") || clean.includes("family") || clean.includes("mortality")) {
+        profile.scenario = "family_loss";
+        profile.vitality = 0;
+        profile.mental = 0;
+        profile.emotional = 20;
       }
 
       return profile;
@@ -279,32 +320,40 @@
       const rawText = area ? area.value.trim() : "";
 
       if (!rawText) {
-        alert("Please enter a question or dilemma first!");
+        alert("Please describe your dilemma in the box first!");
         return;
       }
 
-      const profile = parseDilemmaText(rawText);
+      const p = parseDilemmaText(rawText);
 
-      document.getElementById("prof_age").value = profile.age;
-      document.getElementById("prof_savings").value = profile.savings;
-      document.getElementById("prof_income").value = profile.income;
-      document.getElementById("prof_expenses").value = profile.expenses;
-      document.getElementById("prof_insurance").value = profile.insurance;
-      document.getElementById("prof_debt").value = profile.debt;
-      document.getElementById("scenarioType").value = profile.scenario;
+      document.getElementById("prof_age").value = p.age;
+      document.getElementById("prof_savings").value = p.savings;
+      document.getElementById("prof_income").value = p.income;
+      document.getElementById("prof_expenses").value = p.expenses;
+      document.getElementById("prof_vitality").value = p.vitality;
+      document.getElementById("prof_mental").value = p.mental;
+      document.getElementById("prof_emotional").value = p.emotional;
+      document.getElementById("prof_sleep").value = p.sleep;
+      document.getElementById("scenarioType").value = p.scenario;
 
       runSimulation();
     }
 
+    /**
+     * Deterministic Multi-Pillar Trajectory Simulation Engine
+     */
     function runSimulation() {
-      const age = parseInt(document.getElementById("prof_age").value) || 26;
+      const age = parseInt(document.getElementById("prof_age").value) || 27;
       const initialSavings = parseFloat(document.getElementById("prof_savings").value) || 0;
       const monthlyIncome = parseFloat(document.getElementById("prof_income").value) || 0;
       const annualIncome = monthlyIncome * 12;
       const monthlyExpense = parseFloat(document.getElementById("prof_expenses").value) || 0;
       let annualExpense = monthlyExpense * 12;
-      const insurance = parseFloat(document.getElementById("prof_insurance").value) || 0;
-      const debt = parseFloat(document.getElementById("prof_debt").value) || 0;
+      
+      let vitality = parseFloat(document.getElementById("prof_vitality").value) || 80;
+      let mental = parseFloat(document.getElementById("prof_mental").value) || 75;
+      let emotional = parseFloat(document.getElementById("prof_emotional").value) || 70;
+      const sleep = parseFloat(document.getElementById("prof_sleep").value) || 7.5;
       const scenario = document.getElementById("scenarioType").value;
 
       const years = 15;
@@ -314,66 +363,92 @@
       let baselineTraj = [];
       let whatifTraj = [];
       let depletedYear = null;
+      let burnoutCrashYear = null;
 
       // 1. Status Quo Baseline
       let bNW = initialSavings;
       let bExp = annualExpense;
       for (let yr = 1; yr <= years; yr++) {
         bNW = (bNW + (annualIncome - bExp)) * (1 + yieldRate);
-        baselineTraj.push({ yr, age: age + yr, nw: Math.round(bNW) });
+        baselineTraj.push({ yr, age: age + yr, nw: Math.round(bNW), vitality: 75, mental: 70, emotional: 70 });
         bExp *= (1 + inflation);
       }
 
-      // 2. What-If Trajectory
+      // 2. Multi-Pillar What-If Trajectory
       let wNW = initialSavings;
       let wExp = annualExpense;
+      let curVit = vitality;
+      let curMen = mental;
+      let curEmo = emotional;
 
-      if (scenario === "death") {
-        wNW = (initialSavings + insurance) - debt;
-        for (let yr = 1; yr <= years; yr++) {
-          if (wNW > 0) {
-            wNW = (wNW - wExp) * (1 + yieldRate);
-            if (wNW <= 0) { wNW = 0; if (!depletedYear) depletedYear = yr; }
-          } else {
-            wNW = 0;
-            if (!depletedYear) depletedYear = yr;
+      for (let yr = 1; yr <= years; yr++) {
+        let earned = annualIncome;
+
+        if (scenario === "burnout") {
+          // Sleeping < 6 hours creates compounding cognitive decline and medical drain
+          if (sleep < 6) {
+            curVit = Math.max(10, curVit - (6 - sleep) * 4);
+            curMen = Math.max(10, curMen - (6 - sleep) * 5);
+            curEmo = Math.max(10, curEmo - 6);
           }
-          whatifTraj.push({ yr, age: age + yr, nw: Math.round(wNW) });
-          wExp *= (1 + inflation);
+          // Peak income for 2 years, then severe biological crash and medical overhead
+          if (yr >= 3 && (curVit < 35 || curMen < 30)) {
+            if (!burnoutCrashYear) burnoutCrashYear = yr;
+            earned *= 0.4; // 60% loss of earning power due to medical leave/burnout
+            wExp += 150000; // Therapy, hospital, and medical recovery costs
+          } else {
+            earned *= 1.25; // Overwork income bonus
+          }
+        } 
+        else if (scenario === "toxic_exit") {
+          if (yr === 1) {
+            earned = 0; // Immediate exit, 1 year unemployment/transition
+            curEmo = Math.min(90, curEmo + 35); // Dramatic emotional relief from leaving toxicity
+            curMen = Math.min(85, curMen + 30);
+            curVit = Math.min(85, curVit + 15);
+          } else {
+            earned = annualIncome * 1.1; // Recovery in healthier workplace
+            curEmo = Math.min(95, curEmo + 5);
+          }
         }
-      } else if (scenario === "sabbatical") {
-        for (let yr = 1; yr <= years; yr++) {
-          let income = yr <= 2 ? 0 : annualIncome * 1.5;
-          wNW = (wNW + (income - wExp)) * (1 + yieldRate);
-          if (wNW <= 0) { wNW = 0; if (!depletedYear) depletedYear = yr; }
-          whatifTraj.push({ yr, age: age + yr, nw: Math.round(wNW) });
-          wExp *= (1 + inflation);
+        else if (scenario === "chronic_health") {
+          earned *= 0.60; // 40% reduction in working capacity
+          curVit = Math.max(25, curVit - 2);
+          curMen = Math.max(40, curMen - 1);
+          wExp += 80000; // Chronic maintenance medication costs
         }
-      } else if (scenario === "rich") {
-        const boosted = annualIncome * 3;
-        const extraSpend = (boosted - annualIncome) * 0.6;
-        wExp += extraSpend;
-        for (let yr = 1; yr <= years; yr++) {
-          wNW = (wNW + (boosted - wExp)) * (1 + yieldRate);
-          whatifTraj.push({ yr, age: age + yr, nw: Math.round(wNW) });
-          wExp *= (1 + inflation);
+        else if (scenario === "family_loss") {
+          earned = 0;
+          curVit = 0;
+          curMen = 0;
+          curEmo = 20;
+          if (yr === 1) wNW += 3000000; // Term insurance payout assumption
         }
-      } else if (scenario === "medical") {
-        const outOfPocket = Math.max(0, 1200000 - insurance);
-        wNW = Math.max(0, initialSavings - outOfPocket);
-        for (let yr = 1; yr <= years; yr++) {
-          wNW = (wNW + (annualIncome - wExp)) * (1 + yieldRate);
-          whatifTraj.push({ yr, age: age + yr, nw: Math.round(wNW) });
-          wExp *= (1 + inflation);
+
+        wNW = (wNW + (earned - wExp)) * (1 + yieldRate);
+        if (wNW <= 0) {
+          wNW = 0;
+          if (!depletedYear) depletedYear = yr;
         }
+
+        whatifTraj.push({
+          yr,
+          age: age + yr,
+          nw: Math.round(wNW),
+          vitality: Math.round(curVit),
+          mental: Math.round(curMen),
+          emotional: Math.round(curEmo)
+        });
+
+        wExp *= (1 + inflation);
       }
 
-      updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings, insurance, debt, monthlyIncome);
-      updateMetrics(baselineTraj, whatifTraj, depletedYear);
+      updateHolisticDiagnosis(scenario, depletedYear, burnoutCrashYear, annualExpense, initialSavings, curVit, curMen, curEmo, sleep);
+      updateMetrics(baselineTraj, whatifTraj, depletedYear, curVit, curMen, curEmo);
       renderChart(baselineTraj, whatifTraj);
     }
 
-    function updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings, insurance, debt, monthlyIncome) {
+    function updateHolisticDiagnosis(scenario, depletedYear, burnoutCrashYear, annualExpense, initialSavings, vit, men, emo, sleep) {
       const pill = document.getElementById("verdictPill");
       const summary = document.getElementById("verdictSummary");
       const risk = document.getElementById("riskText");
@@ -383,278 +458,161 @@
       if (!pill || !summary) return;
       if (list) list.innerHTML = "";
 
-      // 1. Sudden Demise of Primary Earner
-      if (scenario === "death") {
-        const netPool = (initialSavings + insurance) - debt;
-        const requiredPool = Math.round(annualExpense * 18);
-        const shortfall = Math.max(0, requiredPool - netPool);
-
-        if (depletedYear) {
-          pill.className = "status-pill status-danger";
-          pill.textContent = "Severe Capital Deficit";
-          
-          summary.innerHTML = `<strong>Critical Capital Cliff in Year ${depletedYear}:</strong> Your family will fully deplete all liquid savings, assets, and insurance benefits within <strong>${depletedYear} years</strong>. Day-one debt clearance of ₹${debt.toLocaleString('en-IN')} consumes ${(debt / (initialSavings + insurance || 1) * 100).toFixed(1)}% of your gross payout before household expenses can be served.`;
-          
-          risk.innerHTML = `
-            <strong>1. Immediate Debt Drain:</strong> Liquidating ₹${debt.toLocaleString('en-IN')} upfront creates a permanent capital gap, instantly removing money that should have compounded over the next decade.<br>
-            <strong>2. Compound Inflation Erosion:</strong> At a standard 6% inflation rate, current monthly living expenses of ₹${Math.round(annualExpense/12).toLocaleString('en-IN')} double to ₹${Math.round((annualExpense * Math.pow(1.06, 12))/12).toLocaleString('en-IN')} by Year 12, overwhelming fixed payouts.<br>
-            <strong>3. Dependent Dependency Mismatch:</strong> Funds dry up in Year ${depletedYear}, leaving minor children or dependent family members vulnerable years before they achieve financial self-reliance.<br>
-            <strong>4. Emergency Asset Firesales:</strong> When liquid funds hit zero, surviving family members are often forced into distress selling of illiquid assets or jewelry at steep discounts.<br>
-            <strong>5. Unsecured Debt Spiral:</strong> Meeting baseline health and education costs post-depletion forces recourse to high-interest personal loans or credit lines at 18–36% APR.<br>
-            <strong>6. Loss of Human Capital Compounding:</strong> Demise eliminates all future salary increments, annual bonuses, and equity upside that would have expanded the family nest egg.<br>
-            <strong>7. Healthcare Volatility:</strong> Without corporate group medical coverage provided by an employer, private individual healthcare costs fall entirely on shrinking reserves.<br>
-            <strong>8. Lack of Financial Management Literacy:</strong> Handing a lump-sum payout to financially inexperienced dependents exposes capital to fraudulent schemes or poor mutual fund choices.<br>
-            <strong>9. Academic Interruption Risk:</strong> Depletion midway through high school or college cycles forces dependents to compromise on higher education quality or drop out.<br>
-            <strong>10. Terminal Ruin Probability:</strong> Deterministic models indicate a near-certain probability of capital ruin without structural, external financial intervention.
-          `;
-          
-          action.innerHTML = `
-            <strong>Phase 1: Immediate Protection Shield (Month 1)</strong><br>
-            • Purchase pure Term Life Insurance with an added cover target of at least <strong>₹${(Math.round(shortfall / 100000) * 100000).toLocaleString('en-IN')}</strong> immediately.<br>
-            • Select an unbundled pure term policy without Return of Premium (TROP) or endowment riders to keep premiums low.<br>
-            • Opt for the Married Women's Property Act (MWPA) endorsement so insurance payouts bypass bank attachments and creditors directly to your family.<br><br>
-            <strong>Phase 2: Debt Ringfencing & Liability Structure (Month 2–3)</strong><br>
-            • Secure loan-protection insurance on high-ticket liabilities like home loans to prevent mortgage foreclosures.<br>
-            • Refinance high-interest credit lines into low-cost collateralized options to lower monthly interest drag.<br>
-            • Create an explicit legal registry of outstanding liabilities and clear debt repayment priority lists.<br><br>
-            <strong>Phase 3: Automated Payout Deployment Architecture (Month 4–6)</strong><br>
-            • Establish a Systematic Withdrawal Plan (SWP) in hybrid debt/equity mutual funds to pay out predictable monthly stipends.<br>
-            • Avoid holding large payouts as idle cash in savings accounts where purchasing power is eaten by inflation.<br>
-            • Maintain an escrow contingency reserve of 12 months' expenses in sweep-in fixed deposits for emergencies.<br><br>
-            <strong>Phase 4: Estate and Nominee Governance (Ongoing)</strong><br>
-            • Audit and register updated primary and secondary nominees across all bank accounts, demat folios, and PF assets.<br>
-            • Draft a clear, registered legal Will specifying asset distribution timelines and educational trust protections.<br>
-            • Appoint a trusted legal executor or financial guardian to guide minor dependents during payout disbursements.<br>
-            • Review insurance coverage every 3 years or upon life events (marriage, newborn child, major home loans).
-          `;
-
-          list.innerHTML = `
-            <li><strong>Upfront Debt Drain:</strong> Outstanding liabilities of ₹${debt.toLocaleString('en-IN')} severely impair starting runway.</li>
-            <li><strong>Inflation Deficit:</strong> Fixed cash reserves lose over 42% real purchasing power by Year 10.</li>
-            <li><strong>Structural Insolvency:</strong> Family funds hit zero in Year ${depletedYear} without additional term cover.</li>
-          `;
-        } else {
-          pill.className = "status-pill status-safe";
-          pill.textContent = "Family Protection Intact";
-
-          summary.innerHTML = `<strong>Solvency Maintained Over 15-Year Horizon:</strong> Existing liquid savings of ₹${initialSavings.toLocaleString('en-IN')} alongside ₹${insurance.toLocaleString('en-IN')} in insurance payouts safely clear ₹${debt.toLocaleString('en-IN')} in debt and fund household living costs.`;
-          
-          risk.innerHTML = `
-            <strong>1. Real Purchasing Power Degradation:</strong> Even with positive net worth, inflation reduces buying power by roughly 58% across the 15-year timeline.<br>
-            <strong>2. Yield Reinvestment Risk:</strong> Projections rely on an 8% portfolio return; if assets sit in low-yielding fixed deposits (5–6%), runway drops dramatically.<br>
-            <strong>3. Sudden Critical Healthcare Events:</strong> Uninsured critical illness episodes among survivors could extract unexpected lump sums of ₹10–25 Lakhs.<br>
-            <strong>4. Taxation on Capital Drawdowns:</strong> Capital gains tax on equity or fixed-income withdrawals can increase effective expenses by 10–15%.<br>
-            <strong>5. Macroeconomic Volatility:</strong> Multi-year equity bear markets coinciding with initial drawdown years create sequence-of-returns risk.<br>
-            <strong>6. Sudden Large One-Off Outlays:</strong> Family emergencies or real estate maintenance could disrupt steady-state drawdown schedules.<br>
-            <strong>7. Nominee Dispute Friction:</strong> Incomplete nominations or intestate succession rules can lock funds in court probate proceedings for years.<br>
-            <strong>8. Behavioral Drawdown Creep:</strong> Heirs may overestimate long-term safety and increase discretionary burn rate early on.<br>
-            <strong>9. Dependent Higher Education Inflation:</strong> College fees frequently rise at 10–12% per year, outpacing standard CPI inflation.<br>
-            <strong>10. Long-Term Capital Stagnation:</strong> Capital acts as a pure survival reservoir rather than generating multigenerational growth.
-          `;
-
-          action.innerHTML = `
-            <strong>1. Formalize Legal Nominations:</strong> Ensure 100% of insurance, provident funds, and mutual fund folios have unambiguous, recorded nominees.<br>
-            <strong>2. Deploy Asset Allocation Strategy:</strong> Split the net insurance payout into a 60/40 conservative hybrid portfolio to outpace 6% inflation.<br>
-            <strong>3. Structure Guaranteed Cashflows:</strong> Setup systematic withdrawal plans (SWP) directly to survivor accounts on the 1st of every month.<br>
-            <strong>4. Secure Independent Health Policies:</strong> Shift family members onto dedicated family-floater health insurance plans rather than relying on employer policies.<br>
-            <strong>5. Ringfence Education Milestones:</strong> Pre-fund separate target-date mutual funds specifically earmarked for higher education.<br>
-            <strong>6. Create an Emergency Liquidity Bucket:</strong> Keep 18–24 months of mandatory living expenses in high-liquidity sweep fixed deposits.<br>
-            <strong>7. Review Estate Planning:</strong> Draft an unambiguous legal Will to eliminate potential civil disputes or intestate distribution hurdles.<br>
-            <strong>8. Cap Unsecured Borrowing:</strong> Avoid cosigning or taking high-interest consumer credit that could burden the capital pool.<br>
-            <strong>9. Schedule Annual Financial Audits:</strong> Re-evaluate portfolio burn rate every 12 months to calibrate for inflation adjustments.<br>
-            <strong>10. Family Financial Literacy Onboarding:</strong> Train dependents on basic money budgeting, scam avoidance, and digital banking discipline.
-          `;
-
-          list.innerHTML = `
-            <li>Positive capital reserve sustained through Year 15.</li>
-            <li>Portfolio compounding balances out annual household living expenses.</li>
-          `;
-        }
-      }
-
-      // 2. Career Sabbatical / Study / UPSC / Startup
-      else if (scenario === "sabbatical") {
-        const twoYearBurn = Math.round(annualExpense * 2 * 1.06);
-        const runwayMonths = Math.floor(initialSavings / (annualExpense / 12));
-
-        if (depletedYear) {
-          pill.className = "status-pill status-danger";
-          pill.textContent = "Runway Deficit / Distress Risk";
-
-          summary.innerHTML = `<strong>Capital Exhaustion in Year ${depletedYear}:</strong> Current liquid savings of ₹${initialSavings.toLocaleString('en-IN')} provide only <strong>${runwayMonths} months</strong> of runway. Liquid reserves hit zero well before the 2-year transition pays off.`;
-
-          risk.innerHTML = `
-            <strong>1. Complete Liquidity Evaporation:</strong> Liquid cash hits ₹0 in Year ${depletedYear}, triggering an immediate financial and psychological emergency.<br>
-            <strong>2. Forced Panic Hiring:</strong> Zero cash forces you to accept any low-paying, mismatched job just to meet rent and food obligations.<br>
-            <strong>3. Sunk Preparation Cost:</strong> Exam preparation, venture building, or certifications must be abandoned just before compounding results occur.<br>
-            <strong>4. Debt Servicing Default:</strong> Any existing debt or loan obligations enter delinquent status, damaging your credit bureau score permanently.<br>
-            <strong>5. Severe Borrowing Drag:</strong> Resorting to emergency personal loans (14–22% APR) or credit cards (36–42% APR) creates high compounding debt traps.<br>
-            <strong>6. Lost Compounding Returns:</strong> Draining 100% of savings means starting retirement and long-term investment building back from scratch.<br>
-            <strong>7. Social and Mental Strain:</strong> Financial vulnerability creates acute chronic stress, impairing mental clarity during exams or interviews.<br>
-            <strong>8. Inability to Absorb Medical Surprises:</strong> A single minor health mishap during this period guarantees a descent into debt.<br>
-            <strong>9. Resume Gap Penalty:</strong> Unsuccessful transition timelines without completed deliverables or degrees weaken post-pivot compensation leverage.<br>
-            <strong>10. Extended Financial Recovery Time:</strong> Recovering from an aborted sabbatical can take 3 to 5 years of aggressive post-return saving.
-          `;
-
-          action.innerHTML = `
-            <strong>Phase 1: Capital Runway Accumulation (Next 6–12 Months)</strong><br>
-            • Postpone your resignation until liquid savings hit at least <strong>₹${twoYearBurn.toLocaleString('en-IN')}</strong> (24 months of essential burn).<br>
-            • Strip personal lifestyle spending by 25–30% immediately to speed up your pre-pivot cash accumulation.<br>
-            • Liquidate non-essential physical assets, dormant subscriptions, or excess gadgets to inject emergency cash.<br><br>
-            <strong>Phase 2: Transition Cashflow Engineering (During Sabbatical)</strong><br>
-            • Lock down freelance, tutoring, or micro-consulting projects delivering 25–40% of monthly burn to stretch your runway.<br>
-            • Relocate temporarily to lower-cost geographies or shared living spaces to halve fixed rent overheads.<br>
-            • Move your 24-month survival budget into safe ultra-short duration debt funds or sweep-in accounts.<br><br>
-            <strong>Phase 3: Hard Stop Milestone Discipline</strong><br>
-            • Set a strict 15-month progress evaluation gate: If primary milestones aren't achieved, trigger active job searches.<br>
-            • Never allow liquid reserves to breach a protected 6-month baseline survival floor under any circumstance.<br>
-            • Maintain an active professional network on LinkedIn and industry forums to ensure quick re-entry if needed.<br><br>
-            <strong>Phase 4: Risk Mitigation & Contingencies</strong><br>
-            • Secure an independent baseline health insurance cover before leaving corporate employer insurance.<br>
-            • Prepare structured portfolio project proofs to showcase full accountability for the resume sabbatical gap.<br>
-            • Keep zero active unsecured revolving debt before stepping out of full-time employment.
-          `;
-
-          list.innerHTML = `
-            <li>Fixed expenses drain savings faster than portfolio yield can replenish.</li>
-            <li>Zero-income phase is mathematically unviable with current liquidity.</li>
-          `;
-        } else {
-          pill.className = "status-pill status-safe";
-          pill.textContent = "Feasible / Sustainable Runway";
-
-          summary.innerHTML = `<strong>Safe Transition Runway:</strong> Your ₹${initialSavings.toLocaleString('en-IN')} reserves comfortably absorb 2 years of zero income, outperforming baseline lifetime wealth after transition.`;
-
-          risk.innerHTML = `
-            <strong>1. Two-Year Compounding Opportunity Cost:</strong> You forfeit 24 months of continuous retirement contributions and salary compounding.<br>
-            <strong>2. Extended Pivot Horizon Risk:</strong> If target job hiring cycles or venture revenues take 30 months instead of 24, cash buffers become thin.<br>
-            <strong>3. Inflation Acceleration:</strong> Living costs compound at 6% annually, increasing your monthly burn rate in Year 2.<br>
-            <strong>4. Re-Entry Salary Volatility:</strong> The job market may not immediately deliver expected salary multiples due to macroeconomic cycles.<br>
-            <strong>5. Health Insurance Gap:</strong> Relying on private health insurance without corporate coverage leaves you exposed to out-of-pocket costs.<br>
-            <strong>6. Mental Burnout & Isolation:</strong> Solitary study or startup building can decrease productivity if not properly balanced.<br>
-            <strong>7. Emergency Fund Co-Mingling:</strong> Using emergency funds to pay business or exam fees compromises personal safety buffers.<br>
-            <strong>8. Post-Pivot Lifestyle Inflation:</strong> Once income returns at higher levels, overspending can quickly erase accumulated gains.<br>
-            <strong>9. Market Sequence Risk:</strong> If liquid assets are tied to equity during an economic downturn, forced withdrawals lock in losses.<br>
-            <strong>10. Tax Inefficiencies on Asset Liquidation:</strong> Selling investments to fund living expenses could trigger unexpected short-term capital gains tax.
-          `;
-
-          action.innerHTML = `
-            <strong>1. Ringfence Survival Reserves:</strong> Move the entire 24-month living budget into liquid mutual funds and fixed deposits today.<br>
-            <strong>2. Enforce Hard Checkpoints:</strong> Establish an 18-month evaluation gate to assess progress before dipping into your final survival reserve.<br>
-            <strong>3. Maintain Independent Health Cover:</strong> Purchase an individual 5–10 Lakh health policy before ending corporate employment.<br>
-            <strong>4. Establish Strict Zero-EMI Discipline:</strong> Completely eliminate credit card balances and short-term consumer loans before starting.<br>
-            <strong>5. Cap Discretionary Outlays:</strong> Freeze major luxury purchases, expensive vacations, and car upgrades until your new income stabilizes.<br>
-            <strong>6. Build Portfolio Proofs:</strong> Document your projects, mock results, or prototypes continuously to streamline post-pivot hiring.<br>
-            <strong>7. Maintain Industry Connections:</strong> Check in quarterly with former colleagues and mentors to keep your professional pipeline active.<br>
-            <strong>8. Protect Emergency Buffers:</strong> Never divert personal survival funds into exploratory business expenses or speculative investments.<br>
-            <strong>9. Plan Post-Pivot Tax Strategy:</strong> Plan how higher post-pivot compensation will be sheltered through tax-advantaged instruments.<br>
-            <strong>10. Automate Wealth Reinvestment:</strong> Pre-commit to channeling 50% of your new, higher salary directly into index funds once re-employed.
-          `;
-
-          list.innerHTML = `
-            <li>Liquid runway comfortably sustains the 24-month zero-income phase.</li>
-            <li>Outpaces baseline net worth within 4 years of career re-entry.</li>
-          `;
-        }
-      }
-
-      // 3. Wealth Surge / 3x Income Jump
-      else if (scenario === "rich") {
-        const extraIncomeMonthly = Math.round(monthlyIncome * 2);
-        const lifestyleBurnMonthly = Math.round(extraIncomeMonthly * 0.6);
-
-        pill.className = "status-pill status-safe";
-        pill.textContent = "Wealth Expansion / Caution";
-
-        summary.innerHTML = `<strong>Accelerated Wealth Accumulation:</strong> Tripling your income provides substantial compounding tailwinds, expanding 15-year net worth significantly while raising lifestyle burn.`;
-
-        risk.innerHTML = `
-          <strong>1. Golden Handcuffs & Lifestyle Creep:</strong> Spending 60% of your raise adds an extra ₹${lifestyleBurnMonthly.toLocaleString('en-IN')}/mo in permanent recurring expenses.<br>
-          <strong>2. High Burn Rate Fragility:</strong> An elevated monthly lifestyle makes unexpected layoffs or market downturns much more dangerous.<br>
-          <strong>3. Upgraded Long-Term Debt Traps:</strong> Higher salaries often tempt people into 20-year luxury home mortgages or expensive luxury car EMIs.<br>
-          <strong>4. Significant Tax Bracket Drag:</strong> A 3x income leap places you in higher income tax slabs (30%+ bracket), reducing effective cash gains.<br>
-          <strong>5. Underfunded Emergency Runway:</strong> An emergency fund that was adequate for ₹${Math.round(annualExpense/12).toLocaleString('en-IN')}/mo covers only 2 months of an inflated lifestyle.<br>
-          <strong>6. Peer Comparison & Status Spending:</strong> Social circles often shift toward higher-spending peers, accelerating non-essential lifestyle inflation.<br>
-          <strong>7. Speculative Asset Temptations:</strong> High surplus cash often tempts investors into risky options trading, crypto, or unvetted private deals.<br>
-          <strong>8. Neglecting Disability/Insurance Upgrades:</strong> Higher incomes require higher term cover; keeping old coverage leaves a wide protection gap.<br>
-          <strong>9. Asset Illiquidity Trap:</strong> Sinking excess cash into real estate can make your net worth illiquid and difficult to access in a crisis.<br>
-          <strong>10. Psychological Burnout Trap:</strong> High-paying roles often demand long hours; lifestyle spending becomes an emotional coping mechanism.
-        `;
-
-        action.innerHTML = `
-          <strong>1. Implement Reverse Budgeting:</strong> Automatically deduct 50% of every new paycheck on Day 1 into index funds before discretionary spending begins.<br>
-          <strong>2. Enforce the 72-Hour Rule on Big Purchases:</strong> Wait 72 hours before completing any major luxury purchase to eliminate impulse spending.<br>
-          <strong>3. Upgrade Emergency Buffers:</strong> Expand liquid emergency savings to cover 6 to 9 months of your new, higher monthly burn rate.<br>
-          <strong>4. Scale Term Insurance Proportionately:</strong> Increase term life cover to 15–20x your new higher annual income to protect the expanded lifestyle.<br>
-          <strong>5. Resist Multi-Year Fixed Debt Commitments:</strong> Rent luxury or upgrade vacations rather than taking on 15–20 year high-EMI liabilities.<br>
-          <strong>6. Optimize Tax Deductions:</strong> Utilize statutory tax-saving instruments (NPS, health checkups, equity savings) to reduce tax bracket drag.<br>
-          <strong>7. Build a Low-Cost Index Core:</strong> Channel 70% of long-term investments into low-cost Nifty 50 / S&P 500 index funds.<br>
-          <strong>8. Keep Base Living Expenses Controlled:</strong> Let discretionary spending rise, but keep fixed obligations (rent, basic utilities) close to baseline.<br>
-          <strong>9. Consult a Fee-Only Financial Planner:</strong> Partner with a SEBI-registered, fee-only advisor to build an objective portfolio allocation.<br>
-          <strong>10. Track Real Savings Rate Monthly:</strong> Ensure your actual savings rate stays above 40–50% of net in-hand income every quarter.
-        `;
-
-        list.innerHTML = `
-          <li>Net worth expands significantly over the 15-year simulation.</li>
-          <li>Lifestyle creep increases monthly burn fragility if an income shock strikes.</li>
-        `;
-      }
-
-      // 4. Medical Shock & Critical Illness
-      else if (scenario === "medical") {
-        const outOfPocket = Math.max(0, 1200000 - insurance);
-
+      // 1. Burnout & Hustle Trap
+      if (scenario === "burnout") {
         pill.className = "status-pill status-danger";
-        pill.textContent = "Health Shock / Liquidity Drain";
+        pill.textContent = "High Systemic Burnout Risk";
 
-        summary.innerHTML = `<strong>Out-of-Pocket Hospitalization Shock:</strong> An emergency medical bill of ₹12,00,000 forces an immediate out-of-pocket blow of <strong>₹${outOfPocket.toLocaleString('en-IN')}</strong>, consuming ${(outOfPocket / (initialSavings || 1) * 100).toFixed(1)}% of your liquid net worth.`;
+        summary.innerHTML = `<strong>Biological & Mental Crash in Year ${burnoutCrashYear || 3}:</strong> Sacrificing sleep (${sleep} hrs/day) for extra income creates a compounding biological deficit. By Year ${burnoutCrashYear || 3}, your Physical Vitality (${vit}/100) and Mental Bandwidth (${men}/100) collapse, forcing an involuntary 60% drop in earning capacity alongside mounting medical rehab costs.`;
 
         risk.innerHTML = `
-          <strong>1. Severe Capital Pool Depletion:</strong> An immediate out-of-pocket expense of ₹${outOfPocket.toLocaleString('en-IN')} drains emergency reserves in a single week.<br>
-          <strong>2. Destructive Compounding Interruption:</strong> Selling investments to pay hospital bills permanently eliminates future compound growth on that capital.<br>
-          <strong>3. Distress Equity Liquidation:</strong> If medical emergencies coincide with market downturns, you are forced to lock in steep investment losses.<br>
-          <strong>4. High-Interest Emergency Borrowing:</strong> If savings fall short, families often resort to emergency personal loans carrying 14–24% interest rates.<br>
-          <strong>5. Temporary Income Interruption:</strong> Major medical events usually involve 3 to 6 months of recovery, leading to lost bonuses or income pauses.<br>
-          <strong>6. Ongoing Post-Care Medication Drain:</strong> Surgeries require ongoing medications, diagnostics, and therapy that standard base policies exclude.<br>
-          <strong>7. Employer Policy Vulnerability:</strong> Depending solely on corporate health cover leaves you unprotected if illness forces you to leave your job.<br>
-          <strong>8. Room-Rent Capping Penalties:</strong> Base health plans with room-rent limits (e.g., 1% of sum insured) trigger proportionate deductions across the entire bill.<br>
-          <strong>9. Critical Illness Income Replacement Void:</strong> Medical insurance pays hospitals, but does not replace monthly living expenses during long recovery periods.<br>
-          <strong>10. Long-Term Financial Stagnation:</strong> Recovering from an uncovered ₹10–15 Lakh health shock can set lifetime wealth accumulation back by 4–6 years.
+          <strong>1. Neurocognitive Fatigue Accumulation:</strong> Chronic sleep below 6 hours destroys executive function, prefrontal cortex decision-making, and emotional regulation.<br>
+          <strong>2. The False Productivity Paradox:</strong> Working 80 hours yields diminishing marginal returns; mistake rates increase by over 300%, negating nominal income gains.<br>
+          <strong>3. Involuntary Biological Crash:</strong> Human biology cannot sustain high cortisol for more than 24–36 months without triggering chronic immune/endocrine breakdown.<br>
+          <strong>4. Reversal of Financial Gains:</strong> Hospitalization, psychotherapy, and burnout recovery expenses quickly consume the surplus income earned during overwork.<br>
+          <strong>5. Emotional Alienation:</strong> Isolation from personal relationships destroys emotional support systems, creating a negative feedback loop with work.<br>
+          <strong>6. Forced Career Interruption:</strong> A sudden burnout-induced crash often forces unmanaged multi-month gaps that harm long-term career momentum.<br>
+          <strong>7. Addiction & Maladaptive Coping:</strong> Chronic fatigue regularly leads to reliance on stimulants (excess caffeine, nicotine) and depressants for sleep.<br>
+          <strong>8. Permanent Vitality Penalty:</strong> Severe chronic burnout can leave lasting metabolic and autonomic nervous system dysfunction.<br>
+          <strong>9. Relationship Atrophy:</strong> Zero bandwidth for family or friends leaves you with no emotional cushion during critical life crises.<br>
+          <strong>10. Terminal Loss of Purpose:</strong> Converting all life energy into pure capital accumulation consistently triggers severe existential depression.
         `;
 
         action.innerHTML = `
-          <strong>1. Add High-Deductible Super Top-Up Insurance:</strong> Purchase a ₹25–50 Lakh Super Top-Up policy with a ₹5 Lakh deductible (costs only ₹3,000–₹5,000/year).<br>
-          <strong>2. Secure Standalone Personal Health Cover:</strong> Do not rely solely on employer policies; maintain an independent family policy across job transitions.<br>
-          <strong>3. Verify Zero Room-Rent Sub-Limits:</strong> Ensure your base policy has no room-category caps to avoid proportionate claim deductions.<br>
-          <strong>4. Secure Critical Illness Rider:</strong> Add a critical illness policy providing a lump-sum payout on diagnosis to replace lost recovery-period income.<br>
-          <strong>5. Maintain Dedicated Medical Emergency Reserves:</strong> Keep at least ₹3 Lakhs in an instant-access sweep fixed deposit dedicated purely to medical emergencies.<br>
-          <strong>6. Audit Cashless Hospital Network:</strong> Ensure top-tier multi-specialty hospitals near your residence are part of your insurer's cashless list.<br>
-          <strong>7. Check Restoration Benefits:</strong> Choose policies that automatically restore 100% of the sum insured if the limit is exhausted in a single claim.<br>
-          <strong>8. Monitor Pre-Existing Disease (PED) Waiting Times:</strong> Maintain continuity in policies to clear the 2-to-3-year waiting window for pre-existing conditions.<br>
-          <strong>9. Avoid High-Cost Medical Credit:</strong> Never finance hospital treatment with revolving credit cards or unsecured fintech personal loans.<br>
-          <strong>10. Schedule Annual Preventive Health Screenings:</strong> Utilize free annual health checkups included with insurance to detect issues before they escalate.
+          <strong>Phase 1: Physiological Stabilization (Immediate)</strong><br>
+          • Enforce a non-negotiable 7-hour minimum sleep buffer; treat sleep as an essential performance variable.<br>
+          • Cap weekly professional hours at 50–55 hours max; eliminate low-leverage side hustles immediately.<br>
+          • Take a structured 7-to-10 day zero-screen biological reset vacation to lower systemic cortisol.<br><br>
+          <strong>Phase 2: High-Leverage Boundary Engineering (Month 1–3)</strong><br>
+          • Shift from "hours worked" to "outcomes achieved" by automating or delegating low-yield tasks.<br>
+          • Establish strict work cutoffs at 7:30 PM with zero work email notifications permitted on personal phones.<br>
+          • Schedule 3 weekly sessions of zone-2 aerobic exercise to rebuild autonomic cardiovascular resilience.<br><br>
+          <strong>Phase 3: Financial Decoupling & Sustainable Scaling</strong><br>
+          • Build a 12-month living buffer so you never feel forced to sacrifice health out of fear of income loss.<br>
+          • Rebalance compensation goals toward sustainable roles with high autonomy rather than pure hours-for-pay trades.
         `;
 
         list.innerHTML = `
-          <li>Emergency hospitalization drains savings immediately.</li>
-          <li>Long-term net worth curve drops below baseline due to lost compound growth.</li>
+          <li><strong>Biological Deficit:</strong> ${sleep} hours of sleep creates an unrecoverable cognitive deficit within 24 months.</li>
+          <li><strong>Income Inversion:</strong> Post-crash medical and rehabilitation costs offset nominal earnings gains.</li>
+        `;
+      }
+
+      // 2. Toxic Workplace / Relationship Exit
+      else if (scenario === "toxic_exit") {
+        if (depletedYear) {
+          pill.className = "status-pill status-warn";
+          pill.textContent = "Mental Relief / Financial Deficit";
+
+          summary.innerHTML = `<strong>Immediate Emotional Recovery vs. Capital Depletion:</strong> Resigning from toxicity instantly restores Emotional Well-Being (${emo}/100) and Mental Health (${men}/100), but your liquid savings exhaust in <strong>Year ${depletedYear}</strong> without active transition income.`;
+
+          risk.innerHTML = `
+            <strong>1. Financial Distress Compounder:</strong> While leaving toxicity saves your mental health, zero cash in Year ${depletedYear} creates a new wave of acute financial panic.<br>
+            <strong>2. Desperation Hiring Trap:</strong> Running out of money forces you to accept the next available job, which often ends up being equally toxic.<br>
+            <strong>3. Premature Emergency Fund Depletion:</strong> Spending your entire emergency reserve on an unplanned sabbatical leaves zero buffer for medical crises.<br>
+            <strong>4. Loss of Professional Confidence:</strong> Abrupt departures without structured transition narratives can create interview friction.<br>
+            <strong>5. Compounding Investment Disruption:</strong> Liquidating assets to pay monthly rent permanently stops your investment compounding curve.
+          `;
+
+          action.innerHTML = `
+            <strong>Phase 1: Emotional Detachment Strategy (Pre-Resignation)</strong><br>
+            • Mentally "quiet quit": Perform your core duties strictly within working hours while disengaging emotionally from toxic dynamics.<br>
+            • Build an immediate 6-to-9 month survival cash runway before submitting your formal resignation.<br>
+            • Direct all non-working energy into daily job applications, networking calls, and portfolio modernization.<br><br>
+            <strong>Phase 2: Strategic Exit Execution</strong><br>
+            • Secure an independent health insurance policy so departure does not leave you medically vulnerable.<br>
+            • Frame your departure narrative positively around seeking higher ownership rather than complaining about past toxicity.
+          `;
+        } else {
+          pill.className = "status-pill status-safe";
+          pill.textContent = "High Life Quality Upgrade";
+
+          summary.innerHTML = `<strong>Optimal Strategic Exit:</strong> Your savings safely support your transition. Exiting toxicity raises your Mental Health to ${men}/100 and Emotional Index to ${emo}/100 while preserving long-term capital runway.`;
+
+          risk.innerHTML = `
+            <strong>1. Temporary Career Stagnation:</strong> Transition pauses resume momentum for 6–12 months.<br>
+            <strong>2. Inertia Risk:</strong> Relief from leaving toxicity can lead to prolonged procrastination if strict job-search routines aren't kept.<br>
+            <strong>3. Sequence Risk:</strong> Downturns in your specific industry could lengthen your planned search timeline.
+          `;
+
+          action.innerHTML = `
+            <strong>1. Execute Planned Resignation:</strong> Submit your notice cleanly without burning bridges.<br>
+            <strong>2. Treat the Transition as a Full-Time Role:</strong> Spend 4 hours every morning on structured learning, networking, and applications.<br>
+            <strong>3. Protect Your Morning Routine:</strong> Prioritize outdoor daylight, sleep regularity, and exercise to sustain mental clarity.
+          `;
+        }
+
+        list.innerHTML = `
+          <li>Emotional Well-Being increases significantly upon leaving chronic toxicity.</li>
+          <li>Financial runway determines whether the exit leads to permanent growth or panic hiring.</li>
+        `;
+      }
+
+      // 3. Chronic Physical Health Shock
+      else if (scenario === "chronic_health") {
+        pill.className = "status-pill status-danger";
+        pill.textContent = "Capacity Constraint";
+
+        summary.innerHTML = `<strong>Permanent 40% Work Capacity Reduction:</strong> Physical Vitality drops to ${vit}/100 with ongoing healthcare costs of ₹80,000/year. Long-term net worth lags baseline path unless high-leverage passive or flexible income streams are established.`;
+
+        risk.innerHTML = `
+          <strong>1. Diminished Human Capital Velocity:</strong> Inability to work extended hours caps promotion speed and performance bonuses.<br>
+          <strong>2. Recurring Healthcare Inflation:</strong> Chronic illness maintenance costs inflate at 10–12% per year, outpacing general consumer inflation.<br>
+          <strong>3. Secondary Mental Health Strain:</strong> Ongoing physical pain or limitations frequently triggers secondary depressive episodes.<br>
+          <strong>4. Energy Allocation Scarcity:</strong> Expending all available energy on basic work leaves zero vitality for family, fitness, or leisure.
+        `;
+
+        action.innerHTML = `
+          <strong>1. Pivot to High-Leverage Asynchronous Work:</strong> Transition into specialized knowledge work, consulting, or remote roles that reward judgment over physical presence.<br>
+          <strong>2. Automate Aggressive Index Investing:</strong> Make capital work harder by automating investments to offset diminished physical labor capacity.<br>
+          <strong>3. Secure Comprehensive Health Cover:</strong> Lock in comprehensive health insurance and critical illness policies to cap out-of-pocket costs.
+        `;
+
+        list.innerHTML = `
+          <li>Physical capacity constraints cap active labor income potential.</li>
+          <li>Shifting to knowledge leverage and automated capital compounding becomes mandatory.</li>
+        `;
+      }
+
+      // 4. Family Mortality Shock
+      else if (scenario === "family_loss") {
+        pill.className = "status-pill status-danger";
+        pill.textContent = "Contingency Shock";
+
+        summary.innerHTML = `<strong>Family Survivorship & Solvency:</strong> Provider demise drops physical and mental inputs to zero. The family's survivability is entirely determined by whether net assets and life insurance payouts cover household inflation through dependent maturity.`;
+
+        risk.innerHTML = `
+          <strong>1. Total Loss of Future Human Capital:</strong> Future salary appraisals, equity incentives, and promotions vanish instantly.<br>
+          <strong>2. Immediate Debt Encumbrance:</strong> Outstanding loans consume early insurance proceeds unless debt-protection riders are in place.<br>
+          <strong>3. High Dependent Vulnerability:</strong> Minor dependents face severe educational disruption if assets run dry before age 22.
+        `;
+
+        action.innerHTML = `
+          <strong>1. Maintain Pure Term Cover:</strong> Keep term insurance scaled to at least 15–20x annual household expenses.<br>
+          <strong>2. Register Clear Nominees:</strong> Ensure all bank accounts, mutual fund folios, and policies have unambiguous legal nominees.<br>
+          <strong>3. Set Up an SWP Payout Plan:</strong> Ensure insurance proceeds are deployed into structured monthly withdrawal plans rather than sitting in low-yield cash.
+        `;
+
+        list.innerHTML = `
+          <li>Family solvency depends completely on upfront insurance and asset ringfencing.</li>
         `;
       }
     }
 
-    function updateMetrics(bTraj, wTraj, depletedYear) {
-      const runwayEl = document.getElementById("runwayMetric");
-      const vulnEl = document.getElementById("vulnerabilityMetric");
-      const deltaEl = document.getElementById("deltaMetric");
+    function updateMetrics(bTraj, wTraj, depletedYear, vit, men, emo) {
+      document.getElementById("runwayMetric").textContent = depletedYear ? `Yr ${depletedYear}` : "15+ Yrs";
+      
+      const vEl = document.getElementById("vitalityMetric");
+      vEl.textContent = `${vit} / 100`;
+      vEl.style.color = vit < 40 ? "var(--danger)" : (vit < 70 ? "var(--warning)" : "var(--success)");
 
-      if (runwayEl) runwayEl.textContent = depletedYear ? `Year ${depletedYear}` : "15+ Years";
-      if (vulnEl) vulnEl.textContent = depletedYear ? "Severe" : "Resilient";
+      const mEl = document.getElementById("mentalMetric");
+      mEl.textContent = `${men} / 100`;
+      mEl.style.color = men < 40 ? "var(--danger)" : "var(--mental)";
 
-      if (deltaEl && bTraj.length && wTraj.length) {
-        const delta = wTraj[wTraj.length - 1].nw - bTraj[bTraj.length - 1].nw;
-        const sign = delta >= 0 ? "+" : "";
-        deltaEl.textContent = `${sign}₹${Math.round(delta).toLocaleString('en-IN')}`;
-      }
+      const eEl = document.getElementById("emotionalMetric");
+      eEl.textContent = `${emo} / 100`;
+      eEl.style.color = emo < 40 ? "var(--danger)" : "var(--emotional)";
     }
 
     function renderChart(bTraj, wTraj) {
@@ -662,8 +620,12 @@
       if (!chartCanvas || typeof Chart === "undefined") return;
 
       const labels = bTraj.map(d => `Age ${d.age} (Yr ${d.yr})`);
-      const bData = bTraj.map(d => d.nw);
-      const wData = wTraj.map(d => d.nw);
+      
+      // Holistic Comparative Datasets
+      const netWorthData = wTraj.map(d => d.nw);
+      const vitalityData = wTraj.map(d => d.vitality);
+      const mentalData = wTraj.map(d => d.mental);
+      const emoData = wTraj.map(d => d.emotional);
 
       if (myChart) myChart.destroy();
 
@@ -674,18 +636,40 @@
           labels: labels,
           datasets: [
             {
-              label: "Baseline (Status Quo)",
-              data: bData,
-              borderColor: "#94a3b8",
-              borderDash: [5, 5],
-              fill: false
+              label: "Net Worth (₹)",
+              data: netWorthData,
+              borderColor: "#6366f1",
+              backgroundColor: "rgba(99, 102, 241, 0.1)",
+              yAxisID: 'y',
+              fill: true,
+              tension: 0.2
             },
             {
-              label: "What-If Path",
-              data: wData,
-              borderColor: "#6366f1",
-              backgroundColor: "rgba(99, 102, 241, 0.15)",
-              fill: true
+              label: "Physical Vitality (0-100)",
+              data: vitalityData,
+              borderColor: "#10b981",
+              borderDash: [4, 4],
+              yAxisID: 'y1',
+              fill: false,
+              tension: 0.2
+            },
+            {
+              label: "Mental Health (0-100)",
+              data: mentalData,
+              borderColor: "#38bdf8",
+              borderDash: [2, 2],
+              yAxisID: 'y1',
+              fill: false,
+              tension: 0.2
+            },
+            {
+              label: "Emotional Stability (0-100)",
+              data: emoData,
+              borderColor: "#ec4899",
+              borderDash: [5, 5],
+              yAxisID: 'y1',
+              fill: false,
+              tension: 0.2
             }
           ]
         },
@@ -694,7 +678,22 @@
           maintainAspectRatio: false,
           scales: {
             x: { grid: { color: "#27334a" }, ticks: { color: "#94a3b8" } },
-            y: { grid: { color: "#27334a" }, ticks: { color: "#94a3b8", callback: (v) => "₹" + (v/100000).toFixed(1) + "L" } }
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              grid: { color: "#27334a" },
+              ticks: { color: "#818cf8", callback: (v) => "₹" + (v/100000).toFixed(1) + "L" }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              min: 0,
+              max: 100,
+              grid: { drawOnChartArea: false },
+              ticks: { color: "#34d399", callback: (v) => v + " pts" }
+            }
           },
           plugins: { legend: { labels: { color: "#f8fafc" } } }
         }
