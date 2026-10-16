@@ -1,129 +1,182 @@
 let chartInstance = null;
 
-const scenarioSelect = document.getElementById("scenarioSelect");
-const dynamicInputs = document.getElementById("dynamicInputs");
-const runBtn = document.getElementById("runBtn");
-const ageSlider = document.getElementById("age");
-const ageVal = document.getElementById("ageVal");
-const scenarioDescText = document.getElementById("scenarioDescText");
-const scenarioSubTitle = document.getElementById("scenarioSubTitle");
+const presets = {
+  family_loss: "I am 30 years old earning ₹85,000/month with ₹6 Lakh in savings and a ₹10 Lakh home loan. I have a 3-year-old child. What happens to my family if I die tomorrow with ₹30 Lakh insurance?",
+  career_upsc: "I am 26, earning ₹60,000 per month with ₹3.5 Lakh savings. I want to quit my job for 2 years to prepare for UPSC civil services exam. Can my savings survive without income?",
+  income_jump: "I am 25 years old earning ₹45,000/month. What happens if I switch to a US-based remote startup offering 3x my current salary, but I spend 50% of the raise on luxury and upgrades?",
+  medical_crisis: "I am 32 years old with ₹5 Lakh savings and ₹75,000 monthly income. What if a sudden critical illness strikes requiring ₹15 Lakhs in emergency hospital treatment and I only have ₹5 Lakh insurance cover?"
+};
 
-ageSlider.addEventListener("input", (e) => {
-  ageVal.textContent = e.target.value;
-});
+function loadPreset(key) {
+  document.getElementById("userDilemma").value = presets[key];
+  compileAndSimulate();
+}
 
-scenarioSelect.addEventListener("change", renderDynamicInputs);
+/**
+ * Natural Language Dilemma Compiler
+ * Extracts profile state (Age, Income, Savings, Debts, Insurance)
+ * and classifies the dilemma archetype from unstructured text.
+ */
+function parseDilemmaText(text) {
+  const profile = {
+    age: 26,
+    savings: 400000,
+    income: 65000,
+    expenses: 38000,
+    insurance: 2500000,
+    debt: 0,
+    scenario: "career_sabbatical"
+  };
 
-function renderDynamicInputs() {
-  const scenario = scenarioSelect.value;
-  dynamicInputs.innerHTML = "";
+  const lower = text.toLowerCase();
 
-  if (scenario === "death") {
-    scenarioDescText.textContent = "Simulate financial survival of family if primary earner passes away today.";
-    scenarioSubTitle.textContent = "Family Fund Depletion Curve vs. Child Independence";
-    dynamicInputs.innerHTML = `
+  // 1. Age Extraction
+  const ageMatch = lower.match(/(?:i am|age|aged|am)\s*(\d{2})/i) || lower.match(/(\d{2})\s*(?:years|yr|y\/o)/i);
+  if (ageMatch) profile.age = parseInt(ageMatch[1]);
+
+  // 2. Income Extraction (Look for K, Lakh, per month)
+  const incomeMatch = lower.match(/(?:earning|salary|income|earn|make)\s*(?:of|is|around)?\s*(?:₹|rs\.?|inr)?\s*([\d,.]+)\s*(k|lakh|lac|pm|per month)?/i);
+  if (incomeMatch) {
+    let val = parseFloat(incomeMatch[1].replace(/,/g, ''));
+    let unit = incomeMatch[2] ? incomeMatch[2].toLowerCase() : '';
+    if (unit === 'k') val *= 1000;
+    else if (unit === 'lakh' || unit === 'lac') val *= 100000;
+    profile.income = val;
+    profile.expenses = Math.round(val * 0.55); // Default realistic expense assumption (55%)
+  }
+
+  // 3. Savings Extraction
+  const savingsMatch = lower.match(/([\d,.]+)\s*(k|lakh|lac)?\s*(?:in|as|of)?\s*(?:savings|liquid|saved|fund|investments)/i) ||
+                       lower.match(/(?:savings|saved)\s*(?:of|is|around)?\s*(?:₹|rs\.?|inr)?\s*([\d,.]+)\s*(k|lakh|lac)?/i);
+  if (savingsMatch) {
+    let val = parseFloat((savingsMatch[1] || savingsMatch[2]).replace(/,/g, ''));
+    let unit = (savingsMatch[2] || savingsMatch[3] || '').toLowerCase();
+    if (unit === 'k') val *= 1000;
+    else if (unit === 'lakh' || unit === 'lac') val *= 100000;
+    profile.savings = val;
+  }
+
+  // 4. Debt Extraction
+  const debtMatch = lower.match(/([\d,.]+)\s*(k|lakh|lac)?\s*(?:debt|loan|emi|mortgage)/i) ||
+                    lower.match(/(?:loan|debt|emi)\s*(?:of|is)?\s*(?:₹|rs\.?|inr)?\s*([\d,.]+)\s*(k|lakh|lac)?/i);
+  if (debtMatch) {
+    let val = parseFloat((debtMatch[1] || debtMatch[2]).replace(/,/g, ''));
+    let unit = (debtMatch[2] || debtMatch[3] || '').toLowerCase();
+    if (unit === 'k') val *= 1000;
+    else if (unit === 'lakh' || unit === 'lac') val *= 100000;
+    profile.debt = val;
+  }
+
+  // 5. Insurance Extraction
+  const insMatch = lower.match(/([\d,.]+)\s*(k|lakh|lac)?\s*(?:insurance|cover|term insurance)/i) ||
+                   lower.match(/(?:insurance|cover)\s*(?:of|is)?\s*(?:₹|rs\.?|inr)?\s*([\d,.]+)\s*(k|lakh|lac)?/i);
+  if (insMatch) {
+    let val = parseFloat((insMatch[1] || insMatch[2]).replace(/,/g, ''));
+    let unit = (insMatch[2] || insMatch[3] || '').toLowerCase();
+    if (unit === 'k') val *= 1000;
+    else if (unit === 'lakh' || unit === 'lac') val *= 100000;
+    profile.insurance = val;
+  }
+
+  // 6. Scenario Intent Classification
+  if (lower.includes("die") || lower.includes("death") || lower.includes("pass away") || lower.includes("family survival")) {
+    profile.scenario = "contingency_death";
+  } else if (lower.includes("upsc") || lower.includes("quit") || lower.includes("study") || lower.includes("startup") || lower.includes("sabbatical")) {
+    profile.scenario = "career_sabbatical";
+  } else if (lower.includes("rich") || lower.includes("multiplier") || lower.includes("3x") || lower.includes("2x") || lower.includes("raise")) {
+    profile.scenario = "income_multiplier";
+  } else if (lower.includes("medical") || lower.includes("illness") || lower.includes("hospital") || lower.includes("emergency")) {
+    profile.scenario = "medical_shock";
+  }
+
+  return profile;
+}
+
+function compileAndSimulate() {
+  const text = document.getElementById("userDilemma").value.trim();
+  if (!text) {
+    alert("Please write your dilemma or click one of the quick presets!");
+    return;
+  }
+
+  const parsed = parseDilemmaText(text);
+
+  // Populate UI inputs with compiled profile
+  document.getElementById("prof_age").value = parsed.age;
+  document.getElementById("prof_age_val").textContent = parsed.age;
+  document.getElementById("prof_savings").value = parsed.savings;
+  document.getElementById("prof_income").value = parsed.income;
+  document.getElementById("prof_expenses").value = parsed.expenses;
+  document.getElementById("prof_insurance").value = parsed.insurance;
+  document.getElementById("prof_debt").value = parsed.debt;
+  document.getElementById("detectedScenario").value = parsed.scenario;
+
+  renderScenarioParameters(parsed.scenario);
+  runDeterministicSimulation();
+}
+
+function renderScenarioParameters(scenario) {
+  const container = document.getElementById("scenarioParameters");
+  container.innerHTML = "";
+
+  if (scenario === "contingency_death") {
+    container.innerHTML = `
       <div class="form-group">
-        <label>Term Insurance Payout (₹)</label>
-        <input type="number" id="insurance" value="3000000" step="500000">
-      </div>
-      <div class="form-group">
-        <label>Outstanding Debts / Loans (₹)</label>
-        <input type="number" id="debt" value="800000" step="100000">
-      </div>
-      <div class="form-group">
-        <label>Age of Youngest Child / Dependent</label>
-        <input type="number" id="dependentAge" value="4" min="0" max="25">
+        <label>Youngest Child / Dependent Age</label>
+        <input type="number" id="childAge" value="3" min="0" max="25">
       </div>
     `;
-  } else if (scenario === "rich") {
-    scenarioDescText.textContent = "Simulate the true impact of salary doubling/tripling with lifestyle inflation.";
-    scenarioSubTitle.textContent = "Baseline vs. High Income with Lifestyle Creep";
-    dynamicInputs.innerHTML = `
+  } else if (scenario === "career_sabbatical") {
+    container.innerHTML = `
       <div class="form-group">
-        <label>Income Jump Multiplier</label>
-        <select id="multiplier">
-          <option value="2">2x Salary Jump</option>
-          <option value="3" selected>3x Salary Jump</option>
-          <option value="5">5x High-Growth Jump</option>
+        <label>Duration of Zero Income (Years)</label>
+        <input type="number" id="pivotYears" value="2" min="1" max="5">
+      </div>
+      <div class="form-group">
+        <label>Target Post-Pivot Monthly Income (₹)</label>
+        <input type="number" id="targetIncome" value="150000" step="20000">
+      </div>
+    `;
+  } else if (scenario === "income_multiplier") {
+    container.innerHTML = `
+      <div class="form-group">
+        <label>Salary Surge Multiplier</label>
+        <select id="surgeMultiplier">
+          <option value="2">2x Income Jump</option>
+          <option value="3" selected>3x Income Jump</option>
+          <option value="5">5x Income Jump</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Lifestyle Inflation (% of extra raise spent on luxuries)</label>
-        <select id="creep">
-          <option value="0.2">Frugal (Saves 80% of raise)</option>
-          <option value="0.5" selected>Moderate (Spends 50% of raise)</option>
-          <option value="0.85">Heavy Creep (Spends 85% on luxury EMIs & status)</option>
+        <label>Lifestyle Inflation / Creep (% of raise spent)</label>
+        <select id="lifestyleCreep">
+          <option value="0.2">Frugal (Spends only 20% on luxuries)</option>
+          <option value="0.5" selected>Moderate (Spends 50% on upgrades)</option>
+          <option value="0.85">Heavy Creep (Spends 85% on status & EMIs)</option>
         </select>
-      </div>
-    `;
-  } else if (scenario === "career_pivot") {
-    scenarioDescText.textContent = "Simulate leaving a stable job to pursue a startup, higher studies, or exam prep.";
-    scenarioSubTitle.textContent = "Zero-Income Runway vs. Post-Pivot Recovery";
-    dynamicInputs.innerHTML = `
-      <div class="form-group">
-        <label>Years Without Income (Sabbatical / Runway)</label>
-        <input type="number" id="burnYears" value="2" min="1" max="5">
-      </div>
-      <div class="form-group">
-        <label>Expected Post-Transition Monthly Income (₹)</label>
-        <input type="number" id="targetIncome" value="160000" step="20000">
-      </div>
-    `;
-  } else if (scenario === "rent_vs_buy") {
-    scenarioDescText.textContent = "Simulate buying a home on a 20-year EMI vs. renting and investing surplus in index funds.";
-    scenarioSubTitle.textContent = "Buying on EMI vs. Renting & Investing Portfolio";
-    dynamicInputs.innerHTML = `
-      <div class="form-group">
-        <label>Property Value (₹)</label>
-        <input type="number" id="propertyValue" value="7000000" step="500000">
-      </div>
-      <div class="form-group">
-        <label>Monthly Rent Alternative (₹)</label>
-        <input type="number" id="rentCost" value="22000" step="2000">
-      </div>
-      <div class="form-group">
-        <label>Loan Downpayment (₹)</label>
-        <input type="number" id="downpayment" value="1400000" step="200000">
       </div>
     `;
   } else if (scenario === "medical_shock") {
-    scenarioDescText.textContent = "Simulate an unpredicted major health catastrophe requiring critical care.";
-    scenarioSubTitle.textContent = "Asset Shock Recovery Curve";
-    dynamicInputs.innerHTML = `
+    container.innerHTML = `
       <div class="form-group">
-        <label>Medical Emergency Cost (₹)</label>
-        <input type="number" id="medicalShock" value="1500000" step="200000">
-      </div>
-      <div class="form-group">
-        <label>Existing Health Insurance Cover (₹)</label>
-        <input type="number" id="healthCover" value="500000" step="100000">
-      </div>
-    `;
-  } else if (scenario === "burnout_grind") {
-    scenarioDescText.textContent = "Simulate working 20+ extra hours weekly by sleeping only 4.5–5 hours per night.";
-    scenarioSubTitle.textContent = "Income vs. Cognitive Vitality & Burnout Curve";
-    dynamicInputs.innerHTML = `
-      <div class="form-group">
-        <label>Extra Work Hours per Week</label>
-        <input type="number" id="extraWorkHrs" value="25" min="5" max="40">
-      </div>
-      <div class="form-group">
-        <label>Sleep Hours per Day</label>
-        <input type="number" id="dailySleep" value="5" min="3" max="8" step="0.5">
+        <label>Emergency Medical Bill (₹)</label>
+        <input type="number" id="medicalShock" value="1200000" step="100000">
       </div>
     `;
   }
 }
 
-function runSimulation() {
-  const currentAge = parseInt(ageSlider.value);
-  let initialSavings = parseFloat(document.getElementById("net_worth").value) || 0;
-  const monthlyIncome = parseFloat(document.getElementById("monthly_income").value) || 0;
+function runDeterministicSimulation() {
+  const currentAge = parseInt(document.getElementById("prof_age").value);
+  const initialSavings = parseFloat(document.getElementById("prof_savings").value) || 0;
+  const monthlyIncome = parseFloat(document.getElementById("prof_income").value) || 0;
   const annualIncome = monthlyIncome * 12;
-  const monthlyExpense = parseFloat(document.getElementById("monthly_expense").value) || 0;
+  const monthlyExpense = parseFloat(document.getElementById("prof_expenses").value) || 0;
   const annualExpense = monthlyExpense * 12;
+  const insuranceCover = parseFloat(document.getElementById("prof_insurance").value) || 0;
+  const outstandingDebt = parseFloat(document.getElementById("prof_debt").value) || 0;
 
-  const scenario = scenarioSelect.value;
+  const scenario = document.getElementById("detectedScenario").value;
   const years = 15;
   const inflation = 0.06;
   const investmentYield = 0.08;
@@ -131,30 +184,25 @@ function runSimulation() {
   let baselineTraj = [];
   let whatifTraj = [];
   let insights = [];
-  let vitalityScore = 85;
   let depletedYear = null;
 
-  // 1. Calculate Baseline Path (Status Quo)
+  // 1. Compute Status-Quo Baseline
   let baseNW = initialSavings;
   let baseExp = annualExpense;
   for (let yr = 1; yr <= years; yr++) {
     let savings = annualIncome - baseExp;
     baseNW = (baseNW + savings) * (1 + investmentYield);
-    baselineTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(baseNW), vitality: 85 });
+    baselineTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(baseNW) });
     baseExp *= (1 + inflation);
   }
 
-  // 2. Scenario-Specific Engines
+  // 2. Compute Shock Trajectory
   let whatifNW = initialSavings;
   let whatifExp = annualExpense;
 
-  if (scenario === "death") {
-    const insurance = parseFloat(document.getElementById("insurance")?.value || 0);
-    const debt = parseFloat(document.getElementById("debt")?.value || 0);
-    const depAge = parseInt(document.getElementById("dependentAge")?.value || 0);
-
-    whatifNW = (initialSavings + insurance) - debt;
-    vitalityScore = 0;
+  if (scenario === "contingency_death") {
+    const childAge = parseInt(document.getElementById("childAge")?.value || 3);
+    whatifNW = (initialSavings + insuranceCover) - outstandingDebt;
 
     for (let yr = 1; yr <= years; yr++) {
       if (whatifNW > 0) {
@@ -167,92 +215,65 @@ function runSimulation() {
         whatifNW = 0;
         if (!depletedYear) depletedYear = yr;
       }
-      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW), vitality: 0 });
+      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW) });
       whatifExp *= (1 + inflation);
     }
 
-    const independenceTargetYr = Math.max(0, 22 - depAge);
+    const independenceTargetYr = Math.max(0, 22 - childAge);
     if (depletedYear && depletedYear < independenceTargetYr) {
-      insights.push(`🚨 CRITICAL DEFICIT: Family funds run dry in Year ${depletedYear}. Your youngest dependent will be only age ${depAge + depletedYear} (Target: age 22).`);
+      insights.push(`🚨 CRITICAL VULNERABILITY: Family funds deplete in Year ${depletedYear}. Your dependent child will be only ${childAge + depletedYear} years old (Target independence: age 22).`);
       const gapYears = independenceTargetYr - depletedYear;
-      insights.push(`Recommended Action: Secure an additional ₹${Math.round(gapYears * annualExpense * 1.4).toLocaleString('en-IN')} in pure term insurance immediately.`);
+      insights.push(`Financial Shield Gap: Increase term life insurance by ₹${Math.round(gapYears * annualExpense * 1.4).toLocaleString('en-IN')} to ensure complete childhood coverage.`);
     } else {
-      insights.push(`✅ Financially Protected: Existing cover + assets sustain the family past the youngest child's 22nd birthday.`);
+      insights.push(`✅ Fully Protected: Combined assets and term cover secure your family through the youngest dependent's 22nd birthday.`);
     }
 
-  } else if (scenario === "rich") {
-    const multiplier = parseFloat(document.getElementById("multiplier").value);
-    const creep = parseFloat(document.getElementById("creep").value);
-    const boostedAnnualIncome = annualIncome * multiplier;
-    const addedSpend = (boostedAnnualIncome - annualIncome) * creep;
-    whatifExp += addedSpend;
+  } else if (scenario === "career_sabbatical") {
+    const pivotYears = parseInt(document.getElementById("pivotYears")?.value || 2);
+    const targetIncome = (parseFloat(document.getElementById("targetIncome")?.value || 150000)) * 12;
 
     for (let yr = 1; yr <= years; yr++) {
-      let savings = boostedAnnualIncome - whatifExp;
-      whatifNW = (whatifNW + savings) * (1 + investmentYield);
-      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW), vitality: 85 });
-      whatifExp *= (1 + inflation);
-    }
-
-    const extraWealth = whatifTraj[years - 1].netWorth - baselineTraj[years - 1].netWorth;
-    insights.push(`📈 Net Worth Expansion: Produces an additional ₹${extraWealth.toLocaleString('en-IN')} in assets by Year 15.`);
-    if (creep >= 0.8) {
-      insights.push(`⚠️ Lifestyle Creep Vulnerability: Fixed expenses ballooned to ₹${Math.round(whatifExp/12).toLocaleString('en-IN')}/mo. If a layoff occurs, funds deplete 3x faster than your current modest lifestyle.`);
-    }
-
-  } else if (scenario === "career_pivot") {
-    const burnYears = parseInt(document.getElementById("burnYears").value);
-    const targetAnnual = parseFloat(document.getElementById("targetIncome").value) * 12;
-
-    for (let yr = 1; yr <= years; yr++) {
-      let income = yr <= burnYears ? 0 : targetAnnual;
+      let income = yr <= pivotYears ? 0 : targetIncome;
       let savings = income - whatifExp;
       whatifNW = (whatifNW + savings) * (1 + investmentYield);
       if (whatifNW < 0) {
         whatifNW = 0;
         if (!depletedYear) depletedYear = yr;
       }
-      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW), vitality: yr <= burnYears ? 70 : 88 });
+      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW) });
       whatifExp *= (1 + inflation);
     }
 
     if (depletedYear) {
-      insights.push(`🚨 Sabbatical Failure: Liquidity runs out in Year ${depletedYear} before the career pivot pays off. You need a larger safety buffer.`);
+      insights.push(`🚨 Runway Depletion: Cash buffer is exhausted in Year ${depletedYear}. You cannot sustain a ${pivotYears}-year sabbatical with current savings.`);
+      insights.push(`Actionable Remedy: Accumulate at least ₹${Math.round(pivotYears * annualExpense).toLocaleString('en-IN')} before resigning.`);
     } else {
-      insights.push(`✅ Viable Transition: Savings safely sustain the ${burnYears}-year zero-income period, outperforming the baseline path after recovery.`);
+      insights.push(`✅ Viable Transition: Savings safely sustain the ${pivotYears}-year study/startup phase, surpassing baseline wealth by Year ${pivotYears + 2}.`);
     }
 
-  } else if (scenario === "rent_vs_buy") {
-    const propVal = parseFloat(document.getElementById("propertyValue").value);
-    const rentCost = parseFloat(document.getElementById("rentCost").value) * 12;
-    const downpayment = parseFloat(document.getElementById("downpayment").value);
-    
-    // 20-year EMI at 8.5% interest
-    const loanAmount = propVal - downpayment;
-    const monthlyRate = 0.085 / 12;
-    const n = 240;
-    const monthlyEMI = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
-    const annualEMI = monthlyEMI * 12;
-
-    whatifNW = Math.max(0, initialSavings - downpayment);
-    let propertyEquity = downpayment;
+  } else if (scenario === "income_multiplier") {
+    const mult = parseFloat(document.getElementById("surgeMultiplier")?.value || 3);
+    const creep = parseFloat(document.getElementById("lifestyleCreep")?.value || 0.5);
+    const boostedIncome = annualIncome * mult;
+    const addedSpend = (boostedIncome - annualIncome) * creep;
+    whatifExp += addedSpend;
 
     for (let yr = 1; yr <= years; yr++) {
-      // Home appreciates ~5% annually
-      propertyEquity *= 1.05;
-      let savings = annualIncome - annualEMI - whatifExp;
+      let savings = boostedIncome - whatifExp;
       whatifNW = (whatifNW + savings) * (1 + investmentYield);
-      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW + propertyEquity), vitality: 80 });
+      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW) });
       whatifExp *= (1 + inflation);
     }
 
-    insights.push(`🏡 Real Estate Analysis: Monthly EMI locks in ₹${Math.round(monthlyEMI).toLocaleString('en-IN')}/mo for 20 years.`);
-    insights.push(`💡 Opportunity Cost: Renting at ₹${Math.round(rentCost/12).toLocaleString('en-IN')}/mo and investing the surplus yields higher liquid freedom.`);
+    const netWorthDiff = whatifTraj[years - 1].netWorth - baselineTraj[years - 1].netWorth;
+    insights.push(`📈 Accelerated Accumulation: Your 15-year net worth increases by ₹${netWorthDiff.toLocaleString('en-IN')}.`);
+    if (creep >= 0.8) {
+      insights.push(`⚠️ Golden Handcuffs Warning: A lifestyle creep of 85% traps you into an inflated ₹${Math.round(whatifExp/12).toLocaleString('en-IN')}/mo fixed burn rate.`);
+    }
 
   } else if (scenario === "medical_shock") {
-    const medicalCost = parseFloat(document.getElementById("medicalShock").value);
-    const healthCover = parseFloat(document.getElementById("healthCover").value);
-    const outOfPocket = Math.max(0, medicalCost - healthCover);
+    const shockBill = parseFloat(document.getElementById("medicalShock")?.value || 1200000);
+    const outOfPocket = Math.max(0, shockBill - 500000); // 5L assumed base health cover
 
     whatifNW = Math.max(0, initialSavings - outOfPocket);
 
@@ -263,60 +284,34 @@ function runSimulation() {
         whatifNW = 0;
         if (!depletedYear) depletedYear = yr;
       }
-      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW), vitality: 75 });
+      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW) });
       whatifExp *= (1 + inflation);
     }
 
-    insights.push(`🏥 Out-Of-Pocket Shock: You absorbed an immediate uninsurable blow of ₹${outOfPocket.toLocaleString('en-IN')}.`);
-    if (outOfPocket > initialSavings) {
-      insights.push(`🚨 Emergency Debt Alert: Medical costs exceeded all liquid cash, forcing expensive emergency borrowing.`);
-    } else {
-      insights.push(`✅ Liquid Buffer Absorbed Shock: Savings survived without forcing loan defaults.`);
-    }
-
-  } else if (scenario === "burnout_grind") {
-    const extraHrs = parseFloat(document.getElementById("extraWorkHrs").value);
-    const sleep = parseFloat(document.getElementById("dailySleep").value);
-    const extraIncome = (annualIncome * 0.35); // 35% moonlighting boost
-    let currentVit = 85;
-
-    for (let yr = 1; yr <= years; yr++) {
-      if (sleep < 6.0) currentVit = Math.max(15, currentVit - 9);
-      let savings = (annualIncome + extraIncome) - whatifExp;
-      whatifNW = (whatifNW + savings) * (1 + investmentYield);
-      whatifTraj.push({ year: yr, age: currentAge + yr, netWorth: Math.round(whatifNW), vitality: Math.round(currentVit) });
-      whatifExp *= (1 + inflation);
-    }
-
-    vitalityScore = currentVit;
-    insights.push(`⚠️ Cognitive Vitality Dropped to ${currentVit}/100: Sleep deprivation triggers exponential burnout within 18–24 months.`);
-    insights.push(`🩺 Hidden Medical Expense: Financial gains from moonlighting risk being wiped out by health rehabilitation costs.`);
+    insights.push(`🏥 Emergency Impact: An out-of-pocket medical hit of ₹${outOfPocket.toLocaleString('en-IN')} wiped out ${Math.round((outOfPocket / (initialSavings || 1)) * 100)}% of your liquid capital.`);
+    insights.push(`Recommended Action: Upgrade family health insurance to a ₹25 Lakh super top-up policy to avoid depleting wealth on hospital stays.`);
   }
 
-  updateUI(baselineTraj, whatifTraj, depletedYear, vitalityScore, insights);
+  updateResultsUI(baselineTraj, whatifTraj, depletedYear, insights);
 }
 
-function updateUI(baselineTraj, whatifTraj, depletedYear, vitalityScore, insights) {
+function updateResultsUI(baselineTraj, whatifTraj, depletedYear, insights) {
   const statusBadge = document.getElementById("statusBadge");
   const runwayMetric = document.getElementById("runwayMetric");
-  const solvencyMetric = document.getElementById("vitalityMetric");
   const deltaMetric = document.getElementById("deltaMetric");
+  const vulnerabilityMetric = document.getElementById("vulnerabilityMetric");
 
   if (depletedYear) {
     statusBadge.className = "status-pill status-danger";
     statusBadge.textContent = "High Risk / Depleted";
     runwayMetric.textContent = `Year ${depletedYear}`;
-  } else if (vitalityScore < 40) {
-    statusBadge.className = "status-pill status-warn";
-    statusBadge.textContent = "Burnout Warning";
-    runwayMetric.textContent = "15+ Years";
+    vulnerabilityMetric.textContent = "Severe";
   } else {
     statusBadge.className = "status-pill status-safe";
     statusBadge.textContent = "Secure";
     runwayMetric.textContent = "15+ Years";
+    vulnerabilityMetric.textContent = "Resilient";
   }
-
-  solvencyMetric.textContent = `${vitalityScore} / 100`;
 
   const delta = whatifTraj[whatifTraj.length - 1].netWorth - baselineTraj[baselineTraj.length - 1].netWorth;
   const sign = delta >= 0 ? "+" : "";
@@ -351,7 +346,7 @@ function renderChart(baselineTraj, whatifTraj) {
           tension: 0.2
         },
         {
-          label: "What-If Scenario Path",
+          label: "What-If Dilemma Path",
           data: whatifData,
           borderColor: "#6366f1",
           backgroundColor: "rgba(99, 102, 241, 0.15)",
@@ -382,9 +377,7 @@ function renderChart(baselineTraj, whatifTraj) {
 }
 
 // Initialize on page load
-renderDynamicInputs();
-runSimulation();
-runBtn.addEventListener("click", runSimulation);
-renderDynamicInputs();
-runSimulation();
-runBtn.addEventListener("click", runSimulation);
+document.addEventListener("DOMContentLoaded", () => {
+  renderScenarioParameters("career_sabbatical");
+  runDeterministicSimulation();
+});
