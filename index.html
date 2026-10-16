@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SimuSense — Life Dilemma Decision Engine</title>
-  <!-- Chart.js for graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -41,7 +40,6 @@
     .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
     .btn-primary:hover { background: var(--accent-hover); }
 
-    /* Verdict Card */
     .conclusion-card { border-left: 4px solid var(--accent); background: #151f33; }
     .conclusion-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
     .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
@@ -74,15 +72,14 @@
   <div class="app-container">
     
     <header class="header">
-      <span class="badge">SimuSense AI Core v2.5</span>
+      <span class="badge">SimuSense AI Core v3.0</span>
       <h1>Real-Life What-If Dilemma Simulator</h1>
       <p class="subtitle">Enter any scenario in plain English. SimuSense compiles your profile and simulates 15-year outcomes.</p>
     </header>
 
-    <!-- Dilemma Input -->
     <section class="card dilemma-card">
       <h2 style="font-size: 16px;">1. Describe Your Real-Life Dilemma</h2>
-      <textarea id="userDilemma" rows="3" placeholder="Click any preset below or type: e.g. I am 28 earning ₹75,000/month with ₹5 Lakh in savings. What happens if I pass away tomorrow with ₹25 Lakh insurance?"></textarea>
+      <textarea id="userDilemma" rows="3" placeholder="Type here, e.g.: I earn 75k and have 4L savings. What if I quit my job for 2 years to study?"></textarea>
 
       <div class="preset-chips">
         <span class="chip-label">Quick Presets:</span>
@@ -95,7 +92,6 @@
       <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Compile Life Profile</button>
     </section>
 
-    <!-- Verdict Banner -->
     <section class="card conclusion-card" id="conclusionCard">
       <div class="conclusion-header">
         <span class="status-pill status-safe" id="verdictPill">Stable</span>
@@ -114,10 +110,7 @@
       </div>
     </section>
 
-    <!-- Main Workspace -->
     <main class="dashboard-grid">
-      
-      <!-- Auto-Compiled Inputs -->
       <section class="card">
         <h2 style="font-size: 15px; margin-bottom: 12px;">2. Compiled State Profile</h2>
         
@@ -165,7 +158,6 @@
         </div>
       </section>
 
-      <!-- Chart & Results -->
       <section class="card">
         <div class="stats-row">
           <div class="stat-card">
@@ -191,11 +183,9 @@
           <ul id="insightsList"></ul>
         </div>
       </section>
-
     </main>
   </div>
 
-  <!-- Embedded Robust Engine -->
   <script>
     let myChart = null;
 
@@ -207,57 +197,98 @@
     };
 
     function handlePreset(key) {
-      document.getElementById("userDilemma").value = presets[key];
-      compileAndSimulate();
+      const input = document.getElementById("userDilemma");
+      if (input && presets[key]) {
+        input.value = presets[key];
+        compileAndSimulate();
+      }
+    }
+
+    function parseDilemmaText(text) {
+      const clean = text.toLowerCase();
+      const profile = {
+        age: 26,
+        income: 50000,
+        expenses: 28000,
+        savings: 200000,
+        debt: 0,
+        insurance: 1500000,
+        scenario: "sabbatical"
+      };
+
+      const ageMatch = clean.match(/(?:age|aged|am|i am)\s*(\d{2})/i) || clean.match(/(\d{2})\s*(?:years|yr|y\/o)/i);
+      if (ageMatch && ageMatch[1]) profile.age = parseInt(ageMatch[1]);
+
+      function extractAmount(keywords) {
+        for (let kw of keywords) {
+          const pattern = new RegExp(kw + "\\s*(?:of|is|:)?\\s*(?:₹|rs\\.?|inr)?\\s*([\\d,.]+)\\s*(k|lakh|lac|l|cr|crore)?", "i");
+          const revPattern = new RegExp("([\\d,.]+)\\s*(k|lakh|lac|l|cr|crore)?\\s*(?:in|as)?\\s*" + kw, "i");
+          let m = clean.match(pattern) || clean.match(revPattern);
+          if (m) {
+            let numStr = m[1].replace(/,/g, '');
+            let val = parseFloat(numStr);
+            let unit = (m[2] || '').toLowerCase();
+            if (unit === 'k') val *= 1000;
+            else if (unit === 'lakh' || unit === 'lac' || unit === 'l') val *= 100000;
+            else if (unit === 'cr' || unit === 'crore') val *= 10000000;
+            if (!isNaN(val) && val > 0) return val;
+          }
+        }
+        return null;
+      }
+
+      const incomeVal = extractAmount(["salary", "earning", "earn", "income", "make", "pm", "per month"]);
+      if (incomeVal) {
+        profile.income = incomeVal;
+        profile.expenses = Math.round(incomeVal * 0.55);
+      }
+
+      const savingsVal = extractAmount(["saving", "savings", "saved", "liquid", "fund", "net worth", "bank"]);
+      if (savingsVal) profile.savings = savingsVal;
+
+      const debtVal = extractAmount(["debt", "loan", "emi", "mortgage", "owe"]);
+      if (debtVal) profile.debt = debtVal;
+
+      const insVal = extractAmount(["insurance", "cover", "term insurance", "policy"]);
+      if (insVal) profile.insurance = insVal;
+
+      if (clean.includes("die") || clean.includes("death") || clean.includes("pass away") || clean.includes("family")) {
+        profile.scenario = "death";
+      } else if (clean.includes("quit") || clean.includes("study") || clean.includes("exam") || clean.includes("upsc") || clean.includes("startup") || clean.includes("sabbatical")) {
+        profile.scenario = "sabbatical";
+      } else if (clean.includes("rich") || clean.includes("2x") || clean.includes("3x") || clean.includes("5x") || clean.includes("jump") || clean.includes("raise")) {
+        profile.scenario = "rich";
+      } else if (clean.includes("medic") || clean.includes("hospital") || clean.includes("ill") || clean.includes("emergency")) {
+        profile.scenario = "medical";
+      }
+
+      return profile;
     }
 
     function compileAndSimulate() {
-      const text = (document.getElementById("userDilemma").value || "").toLowerCase();
+      const area = document.getElementById("userDilemma");
+      const rawText = area ? area.value.trim() : "";
 
-      // 1. Age extraction
-      const ageMatch = text.match(/(?:i am|age|aged|am)\s*(\d{2})/i) || text.match(/(\d{2})\s*(?:years|yr|y\/o)/i);
-      if (ageMatch && ageMatch[1]) document.getElementById("prof_age").value = parseInt(ageMatch[1]);
-
-      // 2. Income extraction
-      const incMatch = text.match(/(?:earning|salary|income|earn|make)\s*(?:of|is)?\s*(?:₹|rs\.?)?\s*([\d,.]+)\s*(k|lakh|lac|pm)?/i);
-      if (incMatch) {
-        let val = parseFloat(incMatch[1].replace(/,/g, ''));
-        let unit = (incMatch[2] || '').toLowerCase();
-        if (unit === 'k') val *= 1000;
-        if (unit === 'lakh' || unit === 'lac') val *= 100000;
-        if (!isNaN(val) && val > 0) {
-          document.getElementById("prof_income").value = val;
-          document.getElementById("prof_expenses").value = Math.round(val * 0.55);
-        }
+      if (!rawText) {
+        alert("Please enter a question or dilemma first!");
+        return;
       }
 
-      // 3. Savings extraction
-      const savMatch = text.match(/([\d,.]+)\s*(k|lakh|lac)?\s*(?:in|as|of)?\s*(?:savings|liquid|saved|fund)/i);
-      if (savMatch) {
-        let val = parseFloat(savMatch[1].replace(/,/g, ''));
-        let unit = (savMatch[2] || '').toLowerCase();
-        if (unit === 'k') val *= 1000;
-        if (unit === 'lakh' || unit === 'lac') val *= 100000;
-        if (!isNaN(val) && val > 0) document.getElementById("prof_savings").value = val;
-      }
+      const profile = parseDilemmaText(rawText);
 
-      // 4. Inferred Archetype
-      const scenarioSelect = document.getElementById("scenarioType");
-      if (text.includes("die") || text.includes("death") || text.includes("pass away")) {
-        scenarioSelect.value = "death";
-      } else if (text.includes("quit") || text.includes("study") || text.includes("exam") || text.includes("upsc")) {
-        scenarioSelect.value = "sabbatical";
-      } else if (text.includes("3x") || text.includes("2x") || text.includes("rich") || text.includes("jump")) {
-        scenarioSelect.value = "rich";
-      } else if (text.includes("medical") || text.includes("emergency") || text.includes("illness")) {
-        scenarioSelect.value = "medical";
-      }
+      document.getElementById("prof_age").value = profile.age;
+      document.getElementById("prof_savings").value = profile.savings;
+      document.getElementById("prof_income").value = profile.income;
+      document.getElementById("prof_expenses").value = profile.expenses;
+      document.getElementById("prof_insurance").value = profile.insurance;
+      document.getElementById("prof_debt").value = profile.debt;
+      document.getElementById("scenarioType").value = profile.scenario;
 
       runSimulation();
     }
 
     function runSimulation() {
-      const age = parseInt(document.getElementById("prof_age").value) || 28;
+      const age = parseInt(document.getElementById("prof_age").value) || 26;
       const initialSavings = parseFloat(document.getElementById("prof_savings").value) || 0;
       const monthlyIncome = parseFloat(document.getElementById("prof_income").value) || 0;
       const annualIncome = monthlyIncome * 12;
@@ -275,7 +306,6 @@
       let whatifTraj = [];
       let depletedYear = null;
 
-      // 1. Baseline Projection
       let bNW = initialSavings;
       let bExp = annualExpense;
       for (let yr = 1; yr <= years; yr++) {
@@ -284,7 +314,6 @@
         bExp *= (1 + inflation);
       }
 
-      // 2. What-If Projection
       let wNW = initialSavings;
       let wExp = annualExpense;
 
@@ -311,7 +340,7 @@
         }
       } else if (scenario === "rich") {
         const boosted = annualIncome * 3;
-        const extraSpend = (boosted - annualIncome) * 0.6; // 60% lifestyle creep
+        const extraSpend = (boosted - annualIncome) * 0.6;
         wExp += extraSpend;
         for (let yr = 1; yr <= years; yr++) {
           wNW = (wNW + (boosted - wExp)) * (1 + yieldRate);
@@ -328,85 +357,96 @@
         }
       }
 
-      // 3. Update Diagnosis Cards
-      updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings);
+      updateDiagnosis(scenario, depletedYear, annualExpense);
       updateMetrics(baselineTraj, whatifTraj, depletedYear);
       renderChart(baselineTraj, whatifTraj);
     }
 
-    function updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings) {
+    function updateDiagnosis(scenario, depletedYear, annualExpense) {
       const pill = document.getElementById("verdictPill");
       const summary = document.getElementById("verdictSummary");
       const risk = document.getElementById("riskText");
       const action = document.getElementById("actionText");
       const list = document.getElementById("insightsList");
-      list.innerHTML = "";
+
+      if (!pill || !summary) return;
+      if (list) list.innerHTML = "";
 
       if (scenario === "death") {
         if (depletedYear) {
           pill.className = "status-pill status-danger";
           pill.textContent = "High Risk";
           summary.textContent = `CRITICAL DEFICIT: Family savings and insurance will be completely exhausted in Year ${depletedYear}.`;
-          risk.textContent = `Funds deplete before dependents reach financial independence.`;
+          risk.textContent = "Funds deplete before dependents reach financial independence.";
           action.textContent = `Increase term insurance cover by at least ₹${Math.round(annualExpense * 10).toLocaleString('en-IN')}.`;
-          list.innerHTML = `<li>Immediate capital shortage during child dependency years.</li><li>Outstanding debt settlement draws heavily on initial insurance payout.</li>`;
+          if (list) list.innerHTML = "<li>Immediate capital shortfall during dependency years.</li><li>Debt settlements drain a large portion of the initial payout.</li>";
         } else {
           pill.className = "status-pill status-safe";
           pill.textContent = "Protected";
-          summary.textContent = `STABLE: Insurance payout and current assets sustain family expenses through the 15-year horizon.`;
-          risk.textContent = "Low risk of immediate family bankruptcy.";
-          action.textContent = "Maintain existing term policy and avoid high-interest unsecured loans.";
-          list.innerHTML = `<li>Sufficient liquid runway to preserve standard of living.</li>`;
+          summary.textContent = "STABLE: Insurance payout and current assets sustain family expenses through 15 years.";
+          risk.textContent = "Low risk of immediate family insolvency.";
+          action.textContent = "Maintain existing term policy and avoid high-interest loans.";
+          if (list) list.innerHTML = "<li>Adequate runway to preserve standard of living.</li>";
         }
       } else if (scenario === "sabbatical") {
         if (depletedYear) {
           pill.className = "status-pill status-danger";
           pill.textContent = "Deficit";
-          summary.textContent = `INSUFFICIENT BUFFER: Liquid reserves run out in Year ${depletedYear} before the career pivot pays off.`;
-          risk.textContent = "Forced abandonment of sabbatical due to zero cash flow.";
-          action.textContent = `Accumulate at least ₹${Math.round(annualExpense * 2).toLocaleString('en-IN')} before resigning.`;
-          list.innerHTML = `<li>Fixed household burn rate exceeds liquid safety net.</li>`;
+          summary.textContent = `INSUFFICIENT BUFFER: Reserves run out in Year ${depletedYear} before the career pivot pays off.`;
+          risk.textContent = "Forced abandonment of study/startup due to cash exhaustion.";
+          action.textContent = `Accumulate at least ₹${Math.round(annualExpense * 2).toLocaleString('en-IN')} before quitting your job.`;
+          if (list) list.innerHTML = "<li>Fixed household living costs exceed liquid safety buffer.</li>";
         } else {
           pill.className = "status-pill status-safe";
           pill.textContent = "Feasible";
-          summary.textContent = `VIABLE: Your savings safely absorb 2 years of zero income, recovering wealth strongly after the pivot.`;
+          summary.textContent = "VIABLE: Your savings safely absorb 2 years of zero income, with assets accelerating strongly afterwards.";
           risk.textContent = "Short-term savings stagnation.";
           action.textContent = "Proceed with transition while capping non-essential expenses.";
-          list.innerHTML = `<li>Surpasses baseline net worth within 4 years.</li>`;
+          if (list) list.innerHTML = "<li>Surpasses baseline net worth within 4 years.</li>";
         }
       } else if (scenario === "rich") {
         pill.className = "status-pill status-safe";
         pill.textContent = "Expansion";
-        summary.textContent = `WEALTH SURGE: Higher income dramatically increases 15-year capital accumulation.`;
-        risk.textContent = "Lifestyle inflation creates higher permanent burn rate.";
+        summary.textContent = "WEALTH SURGE: Higher income dramatically increases 15-year net worth.";
+        risk.textContent = "Lifestyle inflation creates higher fixed monthly overheads.";
         action.textContent = "Automate investing 50%+ of all raises into diversified index equity.";
-        list.innerHTML = `<li>Lifestyle creep increases fixed monthly obligations.</li>`;
+        if (list) list.innerHTML = "<li>Lifestyle creep increases permanent monthly commitments.</li>";
       } else if (scenario === "medical") {
         pill.className = "status-pill status-danger";
         pill.textContent = "Shock Hit";
-        summary.textContent = `OUT-OF-POCKET SHOCK: Uncovered hospital bills deplete a large fraction of your liquid wealth.`;
-        risk.textContent = "Loss of compound growth on emergency-spent capital.";
+        summary.textContent = "OUT-OF-POCKET SHOCK: Uncovered emergency medical costs deplete a major portion of liquid wealth.";
+        risk.textContent = "Permanent loss of compounding returns on emergency-spent capital.";
         action.textContent = "Purchase a ₹25 Lakh super top-up health insurance policy.";
-        list.innerHTML = `<li>Emergency costs force liquidation of investment assets.</li>`;
+        if (list) list.innerHTML = "<li>Emergency forces liquidation of investment assets.</li>";
       }
     }
 
     function updateMetrics(bTraj, wTraj, depletedYear) {
-      document.getElementById("runwayMetric").textContent = depletedYear ? `Year ${depletedYear}` : "15+ Years";
-      document.getElementById("vulnerabilityMetric").textContent = depletedYear ? "Severe" : "Resilient";
-      const delta = wTraj[wTraj.length - 1].nw - bTraj[bTraj.length - 1].nw;
-      const sign = delta >= 0 ? "+" : "";
-      document.getElementById("deltaMetric").textContent = `${sign}₹${Math.round(delta).toLocaleString('en-IN')}`;
+      const runwayEl = document.getElementById("runwayMetric");
+      const vulnEl = document.getElementById("vulnerabilityMetric");
+      const deltaEl = document.getElementById("deltaMetric");
+
+      if (runwayEl) runwayEl.textContent = depletedYear ? `Year ${depletedYear}` : "15+ Years";
+      if (vulnEl) vulnEl.textContent = depletedYear ? "Severe" : "Resilient";
+
+      if (deltaEl && bTraj.length && wTraj.length) {
+        const delta = wTraj[wTraj.length - 1].nw - bTraj[bTraj.length - 1].nw;
+        const sign = delta >= 0 ? "+" : "";
+        deltaEl.textContent = `${sign}₹${Math.round(delta).toLocaleString('en-IN')}`;
+      }
     }
 
     function renderChart(bTraj, wTraj) {
+      const chartCanvas = document.getElementById("trajectoryChart");
+      if (!chartCanvas || typeof Chart === "undefined") return;
+
       const labels = bTraj.map(d => `Age ${d.age} (Yr ${d.yr})`);
       const bData = bTraj.map(d => d.nw);
       const wData = wTraj.map(d => d.nw);
 
       if (myChart) myChart.destroy();
 
-      const ctx = document.getElementById("trajectoryChart").getContext("2d");
+      const ctx = chartCanvas.getContext("2d");
       myChart = new Chart(ctx, {
         type: "line",
         data: {
@@ -440,9 +480,9 @@
       });
     }
 
-    window.onload = () => {
+    window.addEventListener("DOMContentLoaded", () => {
       runSimulation();
-    };
+    });
   </script>
 </body>
 </html>
