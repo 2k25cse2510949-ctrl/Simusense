@@ -22,7 +22,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg-primary); color: var(--text-main); padding: 24px 16px; line-height: 1.5; }
-    .app-container { max-width: 1200px; margin: 0 auto; }
+    .app-container { max-width: 1250px; margin: 0 auto; }
     .header { margin-bottom: 20px; }
     .badge { background: rgba(99, 102, 241, 0.2); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
     h1 { font-size: 26px; font-weight: 700; margin-top: 6px; }
@@ -40,19 +40,19 @@
     .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
     .btn-primary:hover { background: var(--accent-hover); }
 
+    /* Verdict Card */
     .conclusion-card { border-left: 4px solid var(--accent); background: #151f33; }
     .conclusion-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
     .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
     .status-safe { background: rgba(16, 185, 129, 0.2); color: #34d399; }
     .status-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; }
     
-    .conclusion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-    .conclusion-box { background: var(--bg-card); padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border-color); }
-    .conclusion-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; display: block; }
-    .conclusion-box strong { font-size: 13px; color: #f8fafc; }
+    .conclusion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+    .conclusion-box { background: var(--bg-card); padding: 14px 16px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .conclusion-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px; font-weight: 700; }
 
     .dashboard-grid { display: grid; grid-template-columns: 440px 1fr; gap: 20px; }
-    @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } .conclusion-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 950px) { .dashboard-grid { grid-template-columns: 1fr; } .conclusion-grid { grid-template-columns: 1fr; } }
     
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
@@ -66,17 +66,19 @@
     .chart-container { height: 280px; position: relative; margin-bottom: 16px; }
     .insights-card { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
     .insights-card ul { padding-left: 18px; font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .insights-card li { margin-bottom: 4px; }
   </style>
 </head>
 <body>
   <div class="app-container">
     
     <header class="header">
-      <span class="badge">SimuSense AI Core v3.0</span>
+      <span class="badge">SimuSense AI Core v3.5</span>
       <h1>Real-Life What-If Dilemma Simulator</h1>
-      <p class="subtitle">Enter any scenario in plain English. SimuSense compiles your profile and simulates 15-year outcomes.</p>
+      <p class="subtitle">Enter any scenario in plain English. SimuSense compiles your profile and stress-tests your future.</p>
     </header>
 
+    <!-- Dilemma Input -->
     <section class="card dilemma-card">
       <h2 style="font-size: 16px;">1. Describe Your Real-Life Dilemma</h2>
       <textarea id="userDilemma" rows="3" placeholder="Type here, e.g.: I earn 75k and have 4L savings. What if I quit my job for 2 years to study?"></textarea>
@@ -92,25 +94,30 @@
       <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Compile Life Profile</button>
     </section>
 
+    <!-- Diagnosis & Recommendations Banner -->
     <section class="card conclusion-card" id="conclusionCard">
       <div class="conclusion-header">
         <span class="status-pill status-safe" id="verdictPill">Stable</span>
         <h3 id="verdictTitle" style="font-size: 16px;">AI Stress-Test Diagnosis</h3>
       </div>
-      <p id="verdictSummary" style="font-size: 13px; color: #cbd5e1;"></p>
+      <div id="verdictSummary" style="font-size: 14px; color: #cbd5e1; margin-top: 6px; line-height: 1.5;"></div>
+      
       <div class="conclusion-grid">
         <div class="conclusion-box">
-          <span>Identified Core Risk</span>
-          <strong id="riskText">-</strong>
+          <span>Detailed Core Risk Breakdown</span>
+          <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.5;">-</div>
         </div>
         <div class="conclusion-box">
-          <span>Recommended Action</span>
-          <strong id="actionText">-</strong>
+          <span>Actionable Strategic Roadmap</span>
+          <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.5;">-</div>
         </div>
       </div>
     </section>
 
+    <!-- Main Workspace -->
     <main class="dashboard-grid">
+      
+      <!-- Auto-Compiled Profile Fields -->
       <section class="card">
         <h2 style="font-size: 15px; margin-bottom: 12px;">2. Compiled State Profile</h2>
         
@@ -158,6 +165,7 @@
         </div>
       </section>
 
+      <!-- Trajectory Chart & Key Findings -->
       <section class="card">
         <div class="stats-row">
           <div class="stat-card">
@@ -179,10 +187,11 @@
         </div>
 
         <div class="insights-card">
-          <h4 style="font-size: 13px;">Key Findings:</h4>
+          <h4 style="font-size: 13px;">Key Findings & Economic Factors:</h4>
           <ul id="insightsList"></ul>
         </div>
       </section>
+
     </main>
   </div>
 
@@ -306,6 +315,7 @@
       let whatifTraj = [];
       let depletedYear = null;
 
+      // 1. Status Quo Baseline
       let bNW = initialSavings;
       let bExp = annualExpense;
       for (let yr = 1; yr <= years; yr++) {
@@ -314,6 +324,7 @@
         bExp *= (1 + inflation);
       }
 
+      // 2. What-If Trajectory
       let wNW = initialSavings;
       let wExp = annualExpense;
 
@@ -340,7 +351,7 @@
         }
       } else if (scenario === "rich") {
         const boosted = annualIncome * 3;
-        const extraSpend = (boosted - annualIncome) * 0.6;
+        const extraSpend = (boosted - annualIncome) * 0.6; // 60% lifestyle creep
         wExp += extraSpend;
         for (let yr = 1; yr <= years; yr++) {
           wNW = (wNW + (boosted - wExp)) * (1 + yieldRate);
@@ -357,12 +368,13 @@
         }
       }
 
-      updateDiagnosis(scenario, depletedYear, annualExpense);
+      // Detailed diagnosis with breakdown & recommendations
+      updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings, insurance, debt, monthlyIncome);
       updateMetrics(baselineTraj, whatifTraj, depletedYear);
       renderChart(baselineTraj, whatifTraj);
     }
 
-    function updateDiagnosis(scenario, depletedYear, annualExpense) {
+    function updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings, insurance, debt, monthlyIncome) {
       const pill = document.getElementById("verdictPill");
       const summary = document.getElementById("verdictSummary");
       const risk = document.getElementById("riskText");
@@ -372,52 +384,174 @@
       if (!pill || !summary) return;
       if (list) list.innerHTML = "";
 
+      // 1. Sudden Demise of Primary Earner
       if (scenario === "death") {
+        const netPool = (initialSavings + insurance) - debt;
+        const requiredPool = Math.round(annualExpense * 18);
+        const shortfall = Math.max(0, requiredPool - netPool);
+
         if (depletedYear) {
           pill.className = "status-pill status-danger";
-          pill.textContent = "High Risk";
-          summary.textContent = `CRITICAL DEFICIT: Family savings and insurance will be completely exhausted in Year ${depletedYear}.`;
-          risk.textContent = "Funds deplete before dependents reach financial independence.";
-          action.textContent = `Increase term insurance cover by at least ₹${Math.round(annualExpense * 10).toLocaleString('en-IN')}.`;
-          if (list) list.innerHTML = "<li>Immediate capital shortfall during dependency years.</li><li>Debt settlements drain a large portion of the initial payout.</li>";
+          pill.textContent = "Critical Protection Deficit";
+          
+          summary.innerHTML = `<strong>Capital Depletion in Year ${depletedYear}:</strong> Your family exhausts all liquid savings and insurance payouts within <strong>${depletedYear} years</strong>. Immediate debt liquidation of ₹${debt.toLocaleString('en-IN')} drains ${(debt / (initialSavings + insurance || 1) * 100).toFixed(1)}% of the initial capital pool on Day 1.`;
+          
+          risk.innerHTML = `
+            <strong>Premature Dependent Insolvency:</strong>
+            <p style="margin-top:4px; color:#cbd5e1;">At 6% annual inflation, your family's ₹${Math.round(annualExpense/12).toLocaleString('en-IN')}/mo living costs will reach ₹${Math.round((annualExpense * Math.pow(1.06, depletedYear))/12).toLocaleString('en-IN')}/mo by Year ${depletedYear}. Capital runs dry during dependent schooling years, exposing them to debt traps or forced asset sales.</p>
+          `;
+          
+          action.innerHTML = `
+            <strong>Target Term Cover Shortfall: ₹${(Math.round(shortfall / 100000) * 100000).toLocaleString('en-IN')}</strong>
+            <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
+              <li><strong>Buy Pure Term Insurance:</strong> Secure an unbundled term policy (15–20x annual income) immediately without endowment return features.</li>
+              <li><strong>Debt Ringfencing:</strong> Add loan-protection insurance on home/car loans so bank liabilities don't erode your family's death benefit.</li>
+              <li><strong>Systematic SWP Setup:</strong> Direct your family to place payouts into low-risk monthly systematic withdrawal plans (SWPs) rather than keeping it all in savings accounts.</li>
+            </ul>
+          `;
+
+          list.innerHTML = `
+            <li><strong>Debt Drag:</strong> ₹${debt.toLocaleString('en-IN')} in loans drastically cuts family survival time.</li>
+            <li><strong>Inflation Drag:</strong> Fixed insurance money loses ~42% of its purchasing value within 10 years at 6% inflation.</li>
+          `;
         } else {
           pill.className = "status-pill status-safe";
-          pill.textContent = "Protected";
-          summary.textContent = "STABLE: Insurance payout and current assets sustain family expenses through 15 years.";
-          risk.textContent = "Low risk of immediate family insolvency.";
-          action.textContent = "Maintain existing term policy and avoid high-interest loans.";
-          if (list) list.innerHTML = "<li>Adequate runway to preserve standard of living.</li>";
+          pill.textContent = "Family Fully Protected";
+
+          summary.innerHTML = `<strong>Adequate Capital Buffer:</strong> Your combined insurance (₹${insurance.toLocaleString('en-IN')}) and liquid assets provide cash flow past the 15-year projection window.`;
+          
+          risk.innerHTML = `
+            <strong>Reinvestment & Yield Risk:</strong>
+            <p style="margin-top:4px; color:#cbd5e1;">Solvency is secure as long as funds yield at least 7–8% annually. If yields drop below inflation, runway depletes much quicker.</p>
+          `;
+
+          action.innerHTML = `
+            <strong>Formalize Estate Details:</strong>
+            <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
+              <li><strong>Verify Nominees:</strong> Ensure bank accounts, term plans, and demat folios have clear registered nominees.</li>
+              <li><strong>Avoid High-Interest Liabilities:</strong> Do not take on large personal loans that would weaken your family's financial safety net.</li>
+            </ul>
+          `;
+
+          list.innerHTML = `
+            <li>Survives all 15 projected years with positive reserves.</li>
+            <li>Inflation is counterbalanced by the 8% annual portfolio yield assumption.</li>
+          `;
         }
-      } else if (scenario === "sabbatical") {
+      }
+
+      // 2. Career Sabbatical / UPSC / Startup
+      else if (scenario === "sabbatical") {
+        const twoYearBurn = Math.round(annualExpense * 2 * 1.06);
+        const runwayMonths = Math.floor(initialSavings / (annualExpense / 12));
+
         if (depletedYear) {
           pill.className = "status-pill status-danger";
-          pill.textContent = "Deficit";
-          summary.textContent = `INSUFFICIENT BUFFER: Reserves run out in Year ${depletedYear} before the career pivot pays off.`;
-          risk.textContent = "Forced abandonment of study/startup due to cash exhaustion.";
-          action.textContent = `Accumulate at least ₹${Math.round(annualExpense * 2).toLocaleString('en-IN')} before quitting your job.`;
-          if (list) list.innerHTML = "<li>Fixed household living costs exceed liquid safety buffer.</li>";
+          pill.textContent = "Runway Deficit";
+
+          summary.innerHTML = `<strong>Liquid Capital Exhaustion in Year ${depletedYear}:</strong> Your current reserves of ₹${initialSavings.toLocaleString('en-IN')} provide only <strong>${runwayMonths} months</strong> of runway. You will run out of cash midway through your 2-year transition period.`;
+
+          risk.innerHTML = `
+            <strong>Forced Goal Abandonment:</strong>
+            <p style="margin-top:4px; color:#cbd5e1;">When liquid cash hits ₹0 in Year ${depletedYear}, you face a forced return to the job market under distress, high credit card borrowing interest (36–42% APR), or abandonment of your venture before compounding returns can begin.</p>
+          `;
+
+          action.innerHTML = `
+            <strong>Mandatory Minimum Runway: ₹${twoYearBurn.toLocaleString('en-IN')}</strong>
+            <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
+              <li><strong>Delay Resignation:</strong> Postpone quitting by 6–12 months until your emergency runway covers at least 24 full months of mandatory living costs (₹${twoYearBurn.toLocaleString('en-IN')}).</li>
+              <li><strong>Compress Fixed Costs:</strong> Temporarily lower discretionary expenses by 25–30% before quitting to stretch runway months.</li>
+              <li><strong>Part-Time Micro-Income:</strong> Seek freelance or consulting work bringing in even 20–30% of living expenses to avoid a pure zero-cash trajectory.</li>
+            </ul>
+          `;
+
+          list.innerHTML = `
+            <li>Fixed expenses drain savings faster than portfolio yield can replenish.</li>
+            <li>Zero-income phase is mathematically unviable with current liquidity.</li>
+          `;
         } else {
           pill.className = "status-pill status-safe";
-          pill.textContent = "Feasible";
-          summary.textContent = "VIABLE: Your savings safely absorb 2 years of zero income, with assets accelerating strongly afterwards.";
-          risk.textContent = "Short-term savings stagnation.";
-          action.textContent = "Proceed with transition while capping non-essential expenses.";
-          if (list) list.innerHTML = "<li>Surpasses baseline net worth within 4 years.</li>";
+          pill.textContent = "Feasible / Sustainable Runway";
+
+          summary.innerHTML = `<strong>Safe Transition Runway:</strong> Your ₹${initialSavings.toLocaleString('en-IN')} reserves safely absorb the 2-year zero-income period, outperforming your baseline path after career recovery.`;
+
+          risk.innerHTML = `
+            <strong>Opportunity Cost & Time-to-Payoff:</strong>
+            <p style="margin-top:4px; color:#cbd5e1;">You sacrifice 2 years of compounding wealth and salary appraisals. If the post-pivot target salary is delayed past 24 months, reserve depletion accelerates.</p>
+          `;
+
+          action.innerHTML = `
+            <strong>Establish Hard Checkpoints:</strong>
+            <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
+              <li><strong>Milestone Deadlines:</strong> Set a strict 18-month evaluation checkpoint. If target milestones aren't met, begin market re-entry before touching the final 6-month survival buffer.</li>
+              <li><strong>Segregate Liquid Funds:</strong> Park the 24-month survival budget into liquid mutual funds or sweep-in fixed deposits rather than volatile equity.</li>
+            </ul>
+          `;
+
+          list.innerHTML = `
+            <li>Reserves absorb the 24-month zero-income phase without debt.</li>
+            <li>Crosses baseline lifetime net worth by Year 4.</li>
+          `;
         }
-      } else if (scenario === "rich") {
+      }
+
+      // 3. Wealth Surge / 3x Income
+      else if (scenario === "rich") {
+        const extraIncomeMonthly = Math.round(monthlyIncome * 2);
+        const lifestyleBurnMonthly = Math.round(extraIncomeMonthly * 0.6);
+
         pill.className = "status-pill status-safe";
-        pill.textContent = "Expansion";
-        summary.textContent = "WEALTH SURGE: Higher income dramatically increases 15-year net worth.";
-        risk.textContent = "Lifestyle inflation creates higher fixed monthly overheads.";
-        action.textContent = "Automate investing 50%+ of all raises into diversified index equity.";
-        if (list) list.innerHTML = "<li>Lifestyle creep increases permanent monthly commitments.</li>";
-      } else if (scenario === "medical") {
+        pill.textContent = "Wealth Expansion";
+
+        summary.innerHTML = `<strong>Significant Capital Accumulation:</strong> Tripling your income creates massive compounding tailwinds, increasing long-term capital assets dramatically over 15 years.`;
+
+        risk.innerHTML = `
+          <strong>The "Golden Handcuffs" & Lifestyle Creep Vulnerability:</strong>
+          <p style="margin-top:4px; color:#cbd5e1;">Spending 60% of your raise on lifestyle increases your permanent living cost by ₹${lifestyleBurnMonthly.toLocaleString('en-IN')}/mo. If an unexpected layoff or health shock occurs later, your monthly survival cost is 2.5x higher than before, requiring a significantly larger emergency fund.</p>
+        `;
+
+        action.innerHTML = `
+          <strong>Implement Automated Wealth Capture:</strong>
+          <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
+            <li><strong>Reverse Budgeting:</strong> Automatically deduct 50% of each new paycheck on Day 1 into diversified index equity before discretionary spending starts.</li>
+            <li><strong>Avoid High Long-Term Fixed EMIs:</strong> Limit upgrades to variable expenses (travel, dining) rather than 10-to-20-year car or luxury home debt obligations.</li>
+            <li><strong>Expand Emergency Fund:</strong> Increase liquid emergency buffer to match the new, higher monthly burn rate (6 months of new expenses).</li>
+          </ul>
+        `;
+
+        list.innerHTML = `
+          <li>Accelerates net worth expansion past baseline within 12 months.</li>
+          <li>Increased fixed cost baseline creates higher fragility during income dips.</li>
+        `;
+      }
+
+      // 4. Medical Shock & Critical Illness
+      else if (scenario === "medical") {
+        const outOfPocket = Math.max(0, 1200000 - insurance);
+
         pill.className = "status-pill status-danger";
-        pill.textContent = "Shock Hit";
-        summary.textContent = "OUT-OF-POCKET SHOCK: Uncovered emergency medical costs deplete a major portion of liquid wealth.";
-        risk.textContent = "Permanent loss of compounding returns on emergency-spent capital.";
-        action.textContent = "Purchase a ₹25 Lakh super top-up health insurance policy.";
-        if (list) list.innerHTML = "<li>Emergency forces liquidation of investment assets.</li>";
+        pill.textContent = "Health Shock / Liquidity Drain";
+
+        summary.innerHTML = `<strong>Uncovered Hospitalization Shock:</strong> An emergency medical bill of ₹12,00,000 forces an immediate out-of-pocket blow of <strong>₹${outOfPocket.toLocaleString('en-IN')}</strong>, consuming ${(outOfPocket / (initialSavings || 1) * 100).toFixed(1)}% of your liquid net worth.`;
+
+        risk.innerHTML = `
+          <strong>Compounding Interruption & Distress Liquidations:</strong>
+          <p style="margin-top:4px; color:#cbd5e1;">Liquidating investment assets at market lows to pay hospital bills permanently destroys the compounding snowball effect. If liquid savings are insufficient, emergency personal loans carry interest rates between 14% and 24%.</p>
+        `;
+
+        action.innerHTML = `
+          <strong>Upgrade to a High-Deductible Super Top-Up Plan:</strong>
+          <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
+            <li><strong>Super Top-Up Insurance:</strong> Add a ₹25 Lakh to ₹50 Lakh Super Top-Up health policy with a ₹5 Lakh deductible. This costs very little annually (₹3,000–₹5,000/year) but caps out-of-pocket hospital costs.</li>
+            <li><strong>Separate Dedicated Medical Buffer:</strong> Maintain at least ₹3 Lakhs in a dedicated liquid account completely distinct from daily operational funds.</li>
+            <li><strong>Check Critical Illness Rider:</strong> Add a critical illness rider that gives a lump-sum payout upon diagnosis to offset lost income during recovery.</li>
+          </ul>
+        `;
+
+        list.innerHTML = `
+          <li>Emergency hospitalization drains liquid reserves immediately.</li>
+          <li>Long-term net worth curve falls below baseline due to lost compound growth.</li>
+        `;
       }
     }
 
