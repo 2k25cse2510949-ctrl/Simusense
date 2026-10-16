@@ -3,155 +3,446 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SimuSense — AI Life Dilemma Compiler & Simulator</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>SimuSense — Life Dilemma Decision Engine</title>
+  <!-- Chart.js for graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-surface: #121826;
+      --bg-card: #1a2234;
+      --border-color: #27334a;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-main); padding: 24px 16px; line-height: 1.5; }
+    .app-container { max-width: 1200px; margin: 0 auto; }
+    .header { margin-bottom: 20px; }
+    .badge { background: rgba(99, 102, 241, 0.2); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
+    h1 { font-size: 26px; font-weight: 700; margin-top: 6px; }
+    .subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+    
+    .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .dilemma-card { border: 1px solid var(--accent); background: #141b2d; }
+    textarea { width: 100%; padding: 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 14px; resize: vertical; outline: none; margin: 10px 0; }
+    
+    .preset-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+    .chip-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .chip { background: var(--bg-card); color: #cbd5e1; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+    .chip:hover { border-color: var(--accent); color: #fff; background: rgba(99, 102, 241, 0.15); }
+    
+    .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    /* Verdict Card */
+    .conclusion-card { border-left: 4px solid var(--accent); background: #151f33; }
+    .conclusion-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+    .status-safe { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .status-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    
+    .conclusion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .conclusion-box { background: var(--bg-card); padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border-color); }
+    .conclusion-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; display: block; }
+    .conclusion-box strong { font-size: 13px; color: #f8fafc; }
+
+    .dashboard-grid { display: grid; grid-template-columns: 440px 1fr; gap: 20px; }
+    @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } .conclusion-grid { grid-template-columns: 1fr; } }
+    
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+    input, select { width: 100%; padding: 9px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 13px; outline: none; }
+    
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; text-align: center; }
+    .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+    .stat-value { font-size: 16px; font-weight: 700; margin-top: 4px; }
+
+    .chart-container { height: 280px; position: relative; margin-bottom: 16px; }
+    .insights-card { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
+    .insights-card ul { padding-left: 18px; font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+  </style>
 </head>
 <body>
   <div class="app-container">
     
-    <!-- Header -->
     <header class="header">
-      <div class="header-top">
-        <span class="badge">SimuSense AI Core</span>
-        <span class="version-tag">Compiler & Decision Engine v2.5</span>
-      </div>
-      <h1>Natural Language Life Dilemma Simulator</h1>
-      <p>Type your personal or financial dilemma. SimuSense compiles your profile, models the variables, and outputs the stress-tested verdict.</p>
+      <span class="badge">SimuSense AI Core v2.5</span>
+      <h1>Real-Life What-If Dilemma Simulator</h1>
+      <p class="subtitle">Enter any scenario in plain English. SimuSense compiles your profile and simulates 15-year outcomes.</p>
     </header>
 
-    <!-- 1. Dilemma Input Section -->
+    <!-- Dilemma Input -->
     <section class="card dilemma-card">
-      <h2>1. Describe Your Real-Life Dilemma</h2>
-      <p class="section-desc">Type your scenario in plain English, or click any preset to test instantly.</p>
+      <h2 style="font-size: 16px;">1. Describe Your Real-Life Dilemma</h2>
+      <textarea id="userDilemma" rows="3" placeholder="Click any preset below or type: e.g. I am 28 earning ₹75,000/month with ₹5 Lakh in savings. What happens if I pass away tomorrow with ₹25 Lakh insurance?"></textarea>
 
-      <textarea id="userDilemma" rows="3" placeholder="e.g., I am 28 years old earning ₹75,000/month with ₹5 Lakh in savings. What happens to my family if I die tomorrow with ₹25 Lakh insurance cover?"></textarea>
-
-      <!-- Preset Chips -->
       <div class="preset-chips">
         <span class="chip-label">Quick Presets:</span>
-        <button type="button" class="chip" onclick="loadPreset('family_loss')">What if I pass away tomorrow?</button>
-        <button type="button" class="chip" onclick="loadPreset('career_upsc')">What if I quit job for 2 yrs to study?</button>
-        <button type="button" class="chip" onclick="loadPreset('income_jump')">What if I earn 3x salary with lifestyle creep?</button>
-        <button type="button" class="chip" onclick="loadPreset('medical_crisis')">What if a ₹12L medical emergency hits?</button>
+        <button type="button" class="chip" onclick="handlePreset('death')">What if I pass away tomorrow?</button>
+        <button type="button" class="chip" onclick="handlePreset('upsc')">What if I quit job for 2 yrs to study?</button>
+        <button type="button" class="chip" onclick="handlePreset('rich')">What if I earn 3x salary with lifestyle creep?</button>
+        <button type="button" class="chip" onclick="handlePreset('medical')">What if a ₹12L medical emergency hits?</button>
       </div>
 
-      <button type="button" id="analyzeBtn" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Compile Life Profile</button>
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Compile Life Profile</button>
     </section>
 
-    <!-- 2. Analysis & Conclusion Banner -->
-    <section class="card conclusion-card" id="conclusionCard" style="display: none;">
+    <!-- Verdict Banner -->
+    <section class="card conclusion-card" id="conclusionCard">
       <div class="conclusion-header">
-        <span class="status-pill" id="verdictPill">Pending</span>
-        <h3 id="verdictTitle">AI Scenario Diagnosis</h3>
+        <span class="status-pill status-safe" id="verdictPill">Stable</span>
+        <h3 id="verdictTitle" style="font-size: 16px;">AI Stress-Test Diagnosis</h3>
       </div>
-      <p id="verdictSummary" class="verdict-text"></p>
+      <p id="verdictSummary" style="font-size: 13px; color: #cbd5e1;"></p>
       <div class="conclusion-grid">
         <div class="conclusion-box">
-          <span class="conclusion-label">Compiled Core Risk</span>
+          <span>Identified Core Risk</span>
           <strong id="riskText">-</strong>
         </div>
         <div class="conclusion-box">
-          <span class="conclusion-label">Recommended Action</span>
+          <span>Recommended Action</span>
           <strong id="actionText">-</strong>
         </div>
       </div>
     </section>
 
-    <!-- Main Workspace Grid -->
+    <!-- Main Workspace -->
     <main class="dashboard-grid">
       
-      <!-- Left Column: Auto-Compiled Profile Form -->
-      <section class="card input-section">
-        <div class="profile-header">
-          <h2>2. Compiled State Profile</h2>
-          <span class="badge-accent" id="extractedBadge">Awaiting Input</span>
-        </div>
-        <p class="section-desc">Extracted from your text. You can also edit these values manually.</p>
-
+      <!-- Auto-Compiled Inputs -->
+      <section class="card">
+        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Compiled State Profile</h2>
+        
         <div class="form-row">
-          <div class="form-group">
-            <label for="prof_age">Age: <strong id="prof_age_val">27</strong></label>
-            <input type="range" id="prof_age" min="18" max="65" value="27" oninput="document.getElementById('prof_age_val').textContent = this.value" />
+          <div>
+            <label>Current Age</label>
+            <input type="number" id="prof_age" value="28" oninput="runSimulation()">
           </div>
-          <div class="form-group">
-            <label for="prof_savings">Current Liquid Savings (₹)</label>
-            <input type="number" id="prof_savings" value="400000" step="50000" />
+          <div>
+            <label>Savings & Assets (₹)</label>
+            <input type="number" id="prof_savings" value="500000" step="50000" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
-          <div class="form-group">
-            <label for="prof_income">Monthly In-Hand Income (₹)</label>
-            <input type="number" id="prof_income" value="70000" step="5000" />
+          <div>
+            <label>Monthly Income (₹)</label>
+            <input type="number" id="prof_income" value="75000" step="5000" oninput="runSimulation()">
           </div>
-          <div class="form-group">
-            <label for="prof_expenses">Monthly Living Expenses (₹)</label>
-            <input type="number" id="prof_expenses" value="40000" step="2000" />
+          <div>
+            <label>Monthly Expenses (₹)</label>
+            <input type="number" id="prof_expenses" value="40000" step="2000" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
-          <div class="form-group">
-            <label for="prof_insurance">Existing Insurance (₹)</label>
-            <input type="number" id="prof_insurance" value="2500000" step="250000" />
+          <div>
+            <label>Existing Insurance (₹)</label>
+            <input type="number" id="prof_insurance" value="2500000" step="250000" oninput="runSimulation()">
           </div>
-          <div class="form-group">
-            <label for="prof_debt">Total Outstanding Debt (₹)</label>
-            <input type="number" id="prof_debt" value="500000" step="50000" />
+          <div>
+            <label>Outstanding Debt (₹)</label>
+            <input type="number" id="prof_debt" value="500000" step="50000" oninput="runSimulation()">
           </div>
         </div>
 
-        <div class="divider"></div>
-
-        <h2>3. Identified Scenario Parameters</h2>
-        <div class="form-group">
-          <label for="detectedScenario">Inferred Event Archetype:</label>
-          <select id="detectedScenario" onchange="onScenarioDropdownChange()">
-            <option value="contingency_death">Contingency: Sudden Loss of Primary Earner</option>
-            <option value="career_sabbatical">Career Sabbatical: Zero Income Runway</option>
-            <option value="income_multiplier">Wealth Growth: Salary Surge & Lifestyle Creep</option>
-            <option value="medical_shock">Health Crisis: Heavy Out-of-Pocket Shock</option>
+        <div style="margin-top: 15px;">
+          <label>Identified Shock Archetype</label>
+          <select id="scenarioType" onchange="runSimulation()">
+            <option value="death">Contingency: Sudden Demise of Primary Earner</option>
+            <option value="sabbatical">Career Sabbatical / Study: 2-Year Zero Income</option>
+            <option value="rich">Income Surge: 3x Earnings with Lifestyle Creep</option>
+            <option value="medical">Medical Shock: ₹12 Lakh Hospitalization</option>
           </select>
         </div>
-
-        <div id="scenarioParameters" class="dynamic-inputs-box"></div>
-
-        <button type="button" class="btn-secondary" onclick="runDeterministicSimulation()">Recalculate Projections</button>
       </section>
 
-      <!-- Right Column: Trajectory Chart & Key Metrics -->
-      <section class="card results-section">
-        <div class="results-header">
-          <div>
-            <h2>15-Year Trajectory Stress-Test</h2>
-            <p class="subtitle" id="scenarioSubTitle">Status Quo vs. Dilemma Outcome</p>
-          </div>
-          <span id="statusBadge" class="status-pill status-safe">Secure</span>
-        </div>
-
-        <!-- Metric KPI Cards -->
+      <!-- Chart & Results -->
+      <section class="card">
         <div class="stats-row">
           <div class="stat-card">
             <div class="stat-label">Solvency Runway</div>
             <div class="stat-value" id="runwayMetric">15+ Years</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">15-Yr Net Worth Delta</div>
+            <div class="stat-label">15-Yr Delta</div>
             <div class="stat-value" id="deltaMetric">₹0</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Vulnerability Index</div>
+            <div class="stat-label">Vulnerability</div>
             <div class="stat-value" id="vulnerabilityMetric">Low Risk</div>
           </div>
         </div>
 
-        <!-- Chart Container -->
         <div class="chart-container">
           <canvas id="trajectoryChart"></canvas>
         </div>
 
-        <!-- Diagnostic Stress-Test Insights -->
         <div class="insights-card">
-          <h3>Stress-Test Diagnostic Findings:</h3>
+          <h4 style="font-size: 13px;">Key Findings:</h4>
           <ul id="insightsList"></ul>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Embedded Robust Engine -->
+  <script>
+    let myChart = null;
+
+    const presets = {
+      death: "I am 30 years old earning ₹85,000/month with ₹6 Lakh in savings and a ₹10 Lakh home loan. What happens to my family if I die tomorrow with ₹30 Lakh insurance and a 3-year-old child?",
+      upsc: "I am 26 years old earning ₹60,000 per month with ₹3.5 Lakh savings. I want to quit my job for 2 years to prepare for exams. Can my savings survive without income?",
+      rich: "I am 25 years old earning ₹45,000/month. What happens if I get a 3x salary jump but spend 60% of the raise on luxury and upgrades?",
+      medical: "I am 32 years old with ₹5 Lakh savings and ₹75,000 monthly income. What if a sudden medical emergency requires ₹12 Lakhs and insurance only covers ₹4 Lakh?"
+    };
+
+    function handlePreset(key) {
+      document.getElementById("userDilemma").value = presets[key];
+      compileAndSimulate();
+    }
+
+    function compileAndSimulate() {
+      const text = (document.getElementById("userDilemma").value || "").toLowerCase();
+
+      // 1. Age extraction
+      const ageMatch = text.match(/(?:i am|age|aged|am)\s*(\d{2})/i) || text.match(/(\d{2})\s*(?:years|yr|y\/o)/i);
+      if (ageMatch && ageMatch[1]) document.getElementById("prof_age").value = parseInt(ageMatch[1]);
+
+      // 2. Income extraction
+      const incMatch = text.match(/(?:earning|salary|income|earn|make)\s*(?:of|is)?\s*(?:₹|rs\.?)?\s*([\d,.]+)\s*(k|lakh|lac|pm)?/i);
+      if (incMatch) {
+        let val = parseFloat(incMatch[1].replace(/,/g, ''));
+        let unit = (incMatch[2] || '').toLowerCase();
+        if (unit === 'k') val *= 1000;
+        if (unit === 'lakh' || unit === 'lac') val *= 100000;
+        if (!isNaN(val) && val > 0) {
+          document.getElementById("prof_income").value = val;
+          document.getElementById("prof_expenses").value = Math.round(val * 0.55);
+        }
+      }
+
+      // 3. Savings extraction
+      const savMatch = text.match(/([\d,.]+)\s*(k|lakh|lac)?\s*(?:in|as|of)?\s*(?:savings|liquid|saved|fund)/i);
+      if (savMatch) {
+        let val = parseFloat(savMatch[1].replace(/,/g, ''));
+        let unit = (savMatch[2] || '').toLowerCase();
+        if (unit === 'k') val *= 1000;
+        if (unit === 'lakh' || unit === 'lac') val *= 100000;
+        if (!isNaN(val) && val > 0) document.getElementById("prof_savings").value = val;
+      }
+
+      // 4. Inferred Archetype
+      const scenarioSelect = document.getElementById("scenarioType");
+      if (text.includes("die") || text.includes("death") || text.includes("pass away")) {
+        scenarioSelect.value = "death";
+      } else if (text.includes("quit") || text.includes("study") || text.includes("exam") || text.includes("upsc")) {
+        scenarioSelect.value = "sabbatical";
+      } else if (text.includes("3x") || text.includes("2x") || text.includes("rich") || text.includes("jump")) {
+        scenarioSelect.value = "rich";
+      } else if (text.includes("medical") || text.includes("emergency") || text.includes("illness")) {
+        scenarioSelect.value = "medical";
+      }
+
+      runSimulation();
+    }
+
+    function runSimulation() {
+      const age = parseInt(document.getElementById("prof_age").value) || 28;
+      const initialSavings = parseFloat(document.getElementById("prof_savings").value) || 0;
+      const monthlyIncome = parseFloat(document.getElementById("prof_income").value) || 0;
+      const annualIncome = monthlyIncome * 12;
+      const monthlyExpense = parseFloat(document.getElementById("prof_expenses").value) || 0;
+      let annualExpense = monthlyExpense * 12;
+      const insurance = parseFloat(document.getElementById("prof_insurance").value) || 0;
+      const debt = parseFloat(document.getElementById("prof_debt").value) || 0;
+      const scenario = document.getElementById("scenarioType").value;
+
+      const years = 15;
+      const inflation = 0.06;
+      const yieldRate = 0.08;
+
+      let baselineTraj = [];
+      let whatifTraj = [];
+      let depletedYear = null;
+
+      // 1. Baseline Projection
+      let bNW = initialSavings;
+      let bExp = annualExpense;
+      for (let yr = 1; yr <= years; yr++) {
+        bNW = (bNW + (annualIncome - bExp)) * (1 + yieldRate);
+        baselineTraj.push({ yr, age: age + yr, nw: Math.round(bNW) });
+        bExp *= (1 + inflation);
+      }
+
+      // 2. What-If Projection
+      let wNW = initialSavings;
+      let wExp = annualExpense;
+
+      if (scenario === "death") {
+        wNW = (initialSavings + insurance) - debt;
+        for (let yr = 1; yr <= years; yr++) {
+          if (wNW > 0) {
+            wNW = (wNW - wExp) * (1 + yieldRate);
+            if (wNW <= 0) { wNW = 0; if (!depletedYear) depletedYear = yr; }
+          } else {
+            wNW = 0;
+            if (!depletedYear) depletedYear = yr;
+          }
+          whatifTraj.push({ yr, age: age + yr, nw: Math.round(wNW) });
+          wExp *= (1 + inflation);
+        }
+      } else if (scenario === "sabbatical") {
+        for (let yr = 1; yr <= years; yr++) {
+          let income = yr <= 2 ? 0 : annualIncome * 1.5;
+          wNW = (wNW + (income - wExp)) * (1 + yieldRate);
+          if (wNW <= 0) { wNW = 0; if (!depletedYear) depletedYear = yr; }
+          whatifTraj.push({ yr, age: age + yr, nw: Math.round(wNW) });
+          wExp *= (1 + inflation);
+        }
+      } else if (scenario === "rich") {
+        const boosted = annualIncome * 3;
+        const extraSpend = (boosted - annualIncome) * 0.6; // 60% lifestyle creep
+        wExp += extraSpend;
+        for (let yr = 1; yr <= years; yr++) {
+          wNW = (wNW + (boosted - wExp)) * (1 + yieldRate);
+          whatifTraj.push({ yr, age: age + yr, nw: Math.round(wNW) });
+          wExp *= (1 + inflation);
+        }
+      } else if (scenario === "medical") {
+        const outOfPocket = Math.max(0, 1200000 - insurance);
+        wNW = Math.max(0, initialSavings - outOfPocket);
+        for (let yr = 1; yr <= years; yr++) {
+          wNW = (wNW + (annualIncome - wExp)) * (1 + yieldRate);
+          whatifTraj.push({ yr, age: age + yr, nw: Math.round(wNW) });
+          wExp *= (1 + inflation);
+        }
+      }
+
+      // 3. Update Diagnosis Cards
+      updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings);
+      updateMetrics(baselineTraj, whatifTraj, depletedYear);
+      renderChart(baselineTraj, whatifTraj);
+    }
+
+    function updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings) {
+      const pill = document.getElementById("verdictPill");
+      const summary = document.getElementById("verdictSummary");
+      const risk = document.getElementById("riskText");
+      const action = document.getElementById("actionText");
+      const list = document.getElementById("insightsList");
+      list.innerHTML = "";
+
+      if (scenario === "death") {
+        if (depletedYear) {
+          pill.className = "status-pill status-danger";
+          pill.textContent = "High Risk";
+          summary.textContent = `CRITICAL DEFICIT: Family savings and insurance will be completely exhausted in Year ${depletedYear}.`;
+          risk.textContent = `Funds deplete before dependents reach financial independence.`;
+          action.textContent = `Increase term insurance cover by at least ₹${Math.round(annualExpense * 10).toLocaleString('en-IN')}.`;
+          list.innerHTML = `<li>Immediate capital shortage during child dependency years.</li><li>Outstanding debt settlement draws heavily on initial insurance payout.</li>`;
+        } else {
+          pill.className = "status-pill status-safe";
+          pill.textContent = "Protected";
+          summary.textContent = `STABLE: Insurance payout and current assets sustain family expenses through the 15-year horizon.`;
+          risk.textContent = "Low risk of immediate family bankruptcy.";
+          action.textContent = "Maintain existing term policy and avoid high-interest unsecured loans.";
+          list.innerHTML = `<li>Sufficient liquid runway to preserve standard of living.</li>`;
+        }
+      } else if (scenario === "sabbatical") {
+        if (depletedYear) {
+          pill.className = "status-pill status-danger";
+          pill.textContent = "Deficit";
+          summary.textContent = `INSUFFICIENT BUFFER: Liquid reserves run out in Year ${depletedYear} before the career pivot pays off.`;
+          risk.textContent = "Forced abandonment of sabbatical due to zero cash flow.";
+          action.textContent = `Accumulate at least ₹${Math.round(annualExpense * 2).toLocaleString('en-IN')} before resigning.`;
+          list.innerHTML = `<li>Fixed household burn rate exceeds liquid safety net.</li>`;
+        } else {
+          pill.className = "status-pill status-safe";
+          pill.textContent = "Feasible";
+          summary.textContent = `VIABLE: Your savings safely absorb 2 years of zero income, recovering wealth strongly after the pivot.`;
+          risk.textContent = "Short-term savings stagnation.";
+          action.textContent = "Proceed with transition while capping non-essential expenses.";
+          list.innerHTML = `<li>Surpasses baseline net worth within 4 years.</li>`;
+        }
+      } else if (scenario === "rich") {
+        pill.className = "status-pill status-safe";
+        pill.textContent = "Expansion";
+        summary.textContent = `WEALTH SURGE: Higher income dramatically increases 15-year capital accumulation.`;
+        risk.textContent = "Lifestyle inflation creates higher permanent burn rate.";
+        action.textContent = "Automate investing 50%+ of all raises into diversified index equity.";
+        list.innerHTML = `<li>Lifestyle creep increases fixed monthly obligations.</li>`;
+      } else if (scenario === "medical") {
+        pill.className = "status-pill status-danger";
+        pill.textContent = "Shock Hit";
+        summary.textContent = `OUT-OF-POCKET SHOCK: Uncovered hospital bills deplete a large fraction of your liquid wealth.`;
+        risk.textContent = "Loss of compound growth on emergency-spent capital.";
+        action.textContent = "Purchase a ₹25 Lakh super top-up health insurance policy.";
+        list.innerHTML = `<li>Emergency costs force liquidation of investment assets.</li>`;
+      }
+    }
+
+    function updateMetrics(bTraj, wTraj, depletedYear) {
+      document.getElementById("runwayMetric").textContent = depletedYear ? `Year ${depletedYear}` : "15+ Years";
+      document.getElementById("vulnerabilityMetric").textContent = depletedYear ? "Severe" : "Resilient";
+      const delta = wTraj[wTraj.length - 1].nw - bTraj[bTraj.length - 1].nw;
+      const sign = delta >= 0 ? "+" : "";
+      document.getElementById("deltaMetric").textContent = `${sign}₹${Math.round(delta).toLocaleString('en-IN')}`;
+    }
+
+    function renderChart(bTraj, wTraj) {
+      const labels = bTraj.map(d => `Age ${d.age} (Yr ${d.yr})`);
+      const bData = bTraj.map(d => d.nw);
+      const wData = wTraj.map(d => d.nw);
+
+      if (myChart) myChart.destroy();
+
+      const ctx = document.getElementById("trajectoryChart").getContext("2d");
+      myChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Baseline (Status Quo)",
+              data: bData,
+              borderColor: "#94a3b8",
+              borderDash: [5, 5],
+              fill: false
+            },
+            {
+              label: "What-If Path",
+              data: wData,
+              borderColor: "#6366f1",
+              backgroundColor: "rgba(99, 102, 241, 0.15)",
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { grid: { color: "#27334a" }, ticks: { color: "#94a3b8" } },
+            y: { grid: { color: "#27334a" }, ticks: { color: "#94a3b8", callback: (v) => "₹" + (v/100000).toFixed(1) + "L" } }
+          },
+          plugins: { legend: { labels: { color: "#f8fafc" } } }
+        }
+      });
+    }
+
+    window.onload = () => {
+      runSimulation();
+    };
+  </script>
+</body>
+</html>
