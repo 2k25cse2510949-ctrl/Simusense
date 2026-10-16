@@ -48,8 +48,8 @@
     .status-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; }
     
     .conclusion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
-    .conclusion-box { background: var(--bg-card); padding: 14px 16px; border-radius: 8px; border: 1px solid var(--border-color); }
-    .conclusion-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px; font-weight: 700; }
+    .conclusion-box { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .conclusion-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px; }
 
     .dashboard-grid { display: grid; grid-template-columns: 440px 1fr; gap: 20px; }
     @media (max-width: 950px) { .dashboard-grid { grid-template-columns: 1fr; } .conclusion-grid { grid-template-columns: 1fr; } }
@@ -73,9 +73,9 @@
   <div class="app-container">
     
     <header class="header">
-      <span class="badge">SimuSense AI Core v3.5</span>
+      <span class="badge">SimuSense AI Core v4.0</span>
       <h1>Real-Life What-If Dilemma Simulator</h1>
-      <p class="subtitle">Enter any scenario in plain English. SimuSense compiles your profile and stress-tests your future.</p>
+      <p class="subtitle">Enter any scenario in plain English. SimuSense compiles your profile, projects 15-year outcomes, and provides detailed risk audits.</p>
     </header>
 
     <!-- Dilemma Input -->
@@ -104,12 +104,12 @@
       
       <div class="conclusion-grid">
         <div class="conclusion-box">
-          <span>Detailed Core Risk Breakdown</span>
-          <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.5;">-</div>
+          <span>Detailed Core Risk Breakdown (10-Point Audit)</span>
+          <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
         <div class="conclusion-box">
-          <span>Actionable Strategic Roadmap</span>
-          <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.5;">-</div>
+          <span>Actionable Strategic Roadmap (Multi-Phase Guide)</span>
+          <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
       </div>
     </section>
@@ -351,7 +351,7 @@
         }
       } else if (scenario === "rich") {
         const boosted = annualIncome * 3;
-        const extraSpend = (boosted - annualIncome) * 0.6; // 60% lifestyle creep
+        const extraSpend = (boosted - annualIncome) * 0.6;
         wExp += extraSpend;
         for (let yr = 1; yr <= years; yr++) {
           wNW = (wNW + (boosted - wExp)) * (1 + yieldRate);
@@ -368,7 +368,6 @@
         }
       }
 
-      // Detailed diagnosis with breakdown & recommendations
       updateDiagnosis(scenario, depletedYear, annualExpense, initialSavings, insurance, debt, monthlyIncome);
       updateMetrics(baselineTraj, whatifTraj, depletedYear);
       renderChart(baselineTraj, whatifTraj);
@@ -392,77 +391,128 @@
 
         if (depletedYear) {
           pill.className = "status-pill status-danger";
-          pill.textContent = "Critical Protection Deficit";
+          pill.textContent = "Severe Capital Deficit";
           
-          summary.innerHTML = `<strong>Capital Depletion in Year ${depletedYear}:</strong> Your family exhausts all liquid savings and insurance payouts within <strong>${depletedYear} years</strong>. Immediate debt liquidation of ₹${debt.toLocaleString('en-IN')} drains ${(debt / (initialSavings + insurance || 1) * 100).toFixed(1)}% of the initial capital pool on Day 1.`;
+          summary.innerHTML = `<strong>Critical Capital Cliff in Year ${depletedYear}:</strong> Your family will fully deplete all liquid savings, assets, and insurance benefits within <strong>${depletedYear} years</strong>. Day-one debt clearance of ₹${debt.toLocaleString('en-IN')} consumes ${(debt / (initialSavings + insurance || 1) * 100).toFixed(1)}% of your gross payout before household expenses can be served.`;
           
           risk.innerHTML = `
-            <strong>Premature Dependent Insolvency:</strong>
-            <p style="margin-top:4px; color:#cbd5e1;">At 6% annual inflation, your family's ₹${Math.round(annualExpense/12).toLocaleString('en-IN')}/mo living costs will reach ₹${Math.round((annualExpense * Math.pow(1.06, depletedYear))/12).toLocaleString('en-IN')}/mo by Year ${depletedYear}. Capital runs dry during dependent schooling years, exposing them to debt traps or forced asset sales.</p>
+            <strong>1. Immediate Debt Drain:</strong> Liquidating ₹${debt.toLocaleString('en-IN')} upfront creates a permanent capital gap, instantly removing money that should have compounded over the next decade.<br>
+            <strong>2. Compound Inflation Erosion:</strong> At a standard 6% inflation rate, current monthly living expenses of ₹${Math.round(annualExpense/12).toLocaleString('en-IN')} double to ₹${Math.round((annualExpense * Math.pow(1.06, 12))/12).toLocaleString('en-IN')} by Year 12, overwhelming fixed payouts.<br>
+            <strong>3. Dependent Dependency Mismatch:</strong> Funds dry up in Year ${depletedYear}, leaving minor children or dependent family members vulnerable years before they achieve financial self-reliance.<br>
+            <strong>4. Emergency Asset Firesales:</strong> When liquid funds hit zero, surviving family members are often forced into distress selling of illiquid assets or jewelry at steep discounts.<br>
+            <strong>5. Unsecured Debt Spiral:</strong> Meeting baseline health and education costs post-depletion forces recourse to high-interest personal loans or credit lines at 18–36% APR.<br>
+            <strong>6. Loss of Human Capital Compounding:</strong> Demise eliminates all future salary increments, annual bonuses, and equity upside that would have expanded the family nest egg.<br>
+            <strong>7. Healthcare Volatility:</strong> Without corporate group medical coverage provided by an employer, private individual healthcare costs fall entirely on shrinking reserves.<br>
+            <strong>8. Lack of Financial Management Literacy:</strong> Handing a lump-sum payout to financially inexperienced dependents exposes capital to fraudulent schemes or poor mutual fund choices.<br>
+            <strong>9. Academic Interruption Risk:</strong> Depletion midway through high school or college cycles forces dependents to compromise on higher education quality or drop out.<br>
+            <strong>10. Terminal Ruin Probability:</strong> Deterministic models indicate a near-certain probability of capital ruin without structural, external financial intervention.
           `;
           
           action.innerHTML = `
-            <strong>Target Term Cover Shortfall: ₹${(Math.round(shortfall / 100000) * 100000).toLocaleString('en-IN')}</strong>
-            <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
-              <li><strong>Buy Pure Term Insurance:</strong> Secure an unbundled term policy (15–20x annual income) immediately without endowment return features.</li>
-              <li><strong>Debt Ringfencing:</strong> Add loan-protection insurance on home/car loans so bank liabilities don't erode your family's death benefit.</li>
-              <li><strong>Systematic SWP Setup:</strong> Direct your family to place payouts into low-risk monthly systematic withdrawal plans (SWPs) rather than keeping it all in savings accounts.</li>
-            </ul>
+            <strong>Phase 1: Immediate Protection Shield (Month 1)</strong><br>
+            • Purchase pure Term Life Insurance with an added cover target of at least <strong>₹${(Math.round(shortfall / 100000) * 100000).toLocaleString('en-IN')}</strong> immediately.<br>
+            • Select an unbundled pure term policy without Return of Premium (TROP) or endowment riders to keep premiums low.<br>
+            • Opt for the Married Women's Property Act (MWPA) endorsement so insurance payouts bypass bank attachments and creditors directly to your family.<br><br>
+            <strong>Phase 2: Debt Ringfencing & Liability Structure (Month 2–3)</strong><br>
+            • Secure loan-protection insurance on high-ticket liabilities like home loans to prevent mortgage foreclosures.<br>
+            • Refinance high-interest credit lines into low-cost collateralized options to lower monthly interest drag.<br>
+            • Create an explicit legal registry of outstanding liabilities and clear debt repayment priority lists.<br><br>
+            <strong>Phase 3: Automated Payout Deployment Architecture (Month 4–6)</strong><br>
+            • Establish a Systematic Withdrawal Plan (SWP) in hybrid debt/equity mutual funds to pay out predictable monthly stipends.<br>
+            • Avoid holding large payouts as idle cash in savings accounts where purchasing power is eaten by inflation.<br>
+            • Maintain an escrow contingency reserve of 12 months' expenses in sweep-in fixed deposits for emergencies.<br><br>
+            <strong>Phase 4: Estate and Nominee Governance (Ongoing)</strong><br>
+            • Audit and register updated primary and secondary nominees across all bank accounts, demat folios, and PF assets.<br>
+            • Draft a clear, registered legal Will specifying asset distribution timelines and educational trust protections.<br>
+            • Appoint a trusted legal executor or financial guardian to guide minor dependents during payout disbursements.<br>
+            • Review insurance coverage every 3 years or upon life events (marriage, newborn child, major home loans).
           `;
 
           list.innerHTML = `
-            <li><strong>Debt Drag:</strong> ₹${debt.toLocaleString('en-IN')} in loans drastically cuts family survival time.</li>
-            <li><strong>Inflation Drag:</strong> Fixed insurance money loses ~42% of its purchasing value within 10 years at 6% inflation.</li>
+            <li><strong>Upfront Debt Drain:</strong> Outstanding liabilities of ₹${debt.toLocaleString('en-IN')} severely impair starting runway.</li>
+            <li><strong>Inflation Deficit:</strong> Fixed cash reserves lose over 42% real purchasing power by Year 10.</li>
+            <li><strong>Structural Insolvency:</strong> Family funds hit zero in Year ${depletedYear} without additional term cover.</li>
           `;
         } else {
           pill.className = "status-pill status-safe";
-          pill.textContent = "Family Fully Protected";
+          pill.textContent = "Family Protection Intact";
 
-          summary.innerHTML = `<strong>Adequate Capital Buffer:</strong> Your combined insurance (₹${insurance.toLocaleString('en-IN')}) and liquid assets provide cash flow past the 15-year projection window.`;
+          summary.innerHTML = `<strong>Solvency Maintained Over 15-Year Horizon:</strong> Existing liquid savings of ₹${initialSavings.toLocaleString('en-IN')} alongside ₹${insurance.toLocaleString('en-IN')} in insurance payouts safely clear ₹${debt.toLocaleString('en-IN')} in debt and fund household living costs.`;
           
           risk.innerHTML = `
-            <strong>Reinvestment & Yield Risk:</strong>
-            <p style="margin-top:4px; color:#cbd5e1;">Solvency is secure as long as funds yield at least 7–8% annually. If yields drop below inflation, runway depletes much quicker.</p>
+            <strong>1. Real Purchasing Power Degradation:</strong> Even with positive net worth, inflation reduces buying power by roughly 58% across the 15-year timeline.<br>
+            <strong>2. Yield Reinvestment Risk:</strong> Projections rely on an 8% portfolio return; if assets sit in low-yielding fixed deposits (5–6%), runway drops dramatically.<br>
+            <strong>3. Sudden Critical Healthcare Events:</strong> Uninsured critical illness episodes among survivors could extract unexpected lump sums of ₹10–25 Lakhs.<br>
+            <strong>4. Taxation on Capital Drawdowns:</strong> Capital gains tax on equity or fixed-income withdrawals can increase effective expenses by 10–15%.<br>
+            <strong>5. Macroeconomic Volatility:</strong> Multi-year equity bear markets coinciding with initial drawdown years create sequence-of-returns risk.<br>
+            <strong>6. Sudden Large One-Off Outlays:</strong> Family emergencies or real estate maintenance could disrupt steady-state drawdown schedules.<br>
+            <strong>7. Nominee Dispute Friction:</strong> Incomplete nominations or intestate succession rules can lock funds in court probate proceedings for years.<br>
+            <strong>8. Behavioral Drawdown Creep:</strong> Heirs may overestimate long-term safety and increase discretionary burn rate early on.<br>
+            <strong>9. Dependent Higher Education Inflation:</strong> College fees frequently rise at 10–12% per year, outpacing standard CPI inflation.<br>
+            <strong>10. Long-Term Capital Stagnation:</strong> Capital acts as a pure survival reservoir rather than generating multigenerational growth.
           `;
 
           action.innerHTML = `
-            <strong>Formalize Estate Details:</strong>
-            <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
-              <li><strong>Verify Nominees:</strong> Ensure bank accounts, term plans, and demat folios have clear registered nominees.</li>
-              <li><strong>Avoid High-Interest Liabilities:</strong> Do not take on large personal loans that would weaken your family's financial safety net.</li>
-            </ul>
+            <strong>1. Formalize Legal Nominations:</strong> Ensure 100% of insurance, provident funds, and mutual fund folios have unambiguous, recorded nominees.<br>
+            <strong>2. Deploy Asset Allocation Strategy:</strong> Split the net insurance payout into a 60/40 conservative hybrid portfolio to outpace 6% inflation.<br>
+            <strong>3. Structure Guaranteed Cashflows:</strong> Setup systematic withdrawal plans (SWP) directly to survivor accounts on the 1st of every month.<br>
+            <strong>4. Secure Independent Health Policies:</strong> Shift family members onto dedicated family-floater health insurance plans rather than relying on employer policies.<br>
+            <strong>5. Ringfence Education Milestones:</strong> Pre-fund separate target-date mutual funds specifically earmarked for higher education.<br>
+            <strong>6. Create an Emergency Liquidity Bucket:</strong> Keep 18–24 months of mandatory living expenses in high-liquidity sweep fixed deposits.<br>
+            <strong>7. Review Estate Planning:</strong> Draft an unambiguous legal Will to eliminate potential civil disputes or intestate distribution hurdles.<br>
+            <strong>8. Cap Unsecured Borrowing:</strong> Avoid cosigning or taking high-interest consumer credit that could burden the capital pool.<br>
+            <strong>9. Schedule Annual Financial Audits:</strong> Re-evaluate portfolio burn rate every 12 months to calibrate for inflation adjustments.<br>
+            <strong>10. Family Financial Literacy Onboarding:</strong> Train dependents on basic money budgeting, scam avoidance, and digital banking discipline.
           `;
 
           list.innerHTML = `
-            <li>Survives all 15 projected years with positive reserves.</li>
-            <li>Inflation is counterbalanced by the 8% annual portfolio yield assumption.</li>
+            <li>Positive capital reserve sustained through Year 15.</li>
+            <li>Portfolio compounding balances out annual household living expenses.</li>
           `;
         }
       }
 
-      // 2. Career Sabbatical / UPSC / Startup
+      // 2. Career Sabbatical / Study / UPSC / Startup
       else if (scenario === "sabbatical") {
         const twoYearBurn = Math.round(annualExpense * 2 * 1.06);
         const runwayMonths = Math.floor(initialSavings / (annualExpense / 12));
 
         if (depletedYear) {
           pill.className = "status-pill status-danger";
-          pill.textContent = "Runway Deficit";
+          pill.textContent = "Runway Deficit / Distress Risk";
 
-          summary.innerHTML = `<strong>Liquid Capital Exhaustion in Year ${depletedYear}:</strong> Your current reserves of ₹${initialSavings.toLocaleString('en-IN')} provide only <strong>${runwayMonths} months</strong> of runway. You will run out of cash midway through your 2-year transition period.`;
+          summary.innerHTML = `<strong>Capital Exhaustion in Year ${depletedYear}:</strong> Current liquid savings of ₹${initialSavings.toLocaleString('en-IN')} provide only <strong>${runwayMonths} months</strong> of runway. Liquid reserves hit zero well before the 2-year transition pays off.`;
 
           risk.innerHTML = `
-            <strong>Forced Goal Abandonment:</strong>
-            <p style="margin-top:4px; color:#cbd5e1;">When liquid cash hits ₹0 in Year ${depletedYear}, you face a forced return to the job market under distress, high credit card borrowing interest (36–42% APR), or abandonment of your venture before compounding returns can begin.</p>
+            <strong>1. Complete Liquidity Evaporation:</strong> Liquid cash hits ₹0 in Year ${depletedYear}, triggering an immediate financial and psychological emergency.<br>
+            <strong>2. Forced Panic Hiring:</strong> Zero cash forces you to accept any low-paying, mismatched job just to meet rent and food obligations.<br>
+            <strong>3. Sunk Preparation Cost:</strong> Exam preparation, venture building, or certifications must be abandoned just before compounding results occur.<br>
+            <strong>4. Debt Servicing Default:</strong> Any existing debt or loan obligations enter delinquent status, damaging your credit bureau score permanently.<br>
+            <strong>5. Severe Borrowing Drag:</strong> Resorting to emergency personal loans (14–22% APR) or credit cards (36–42% APR) creates high compounding debt traps.<br>
+            <strong>6. Lost Compounding Returns:</strong> Draining 100% of savings means starting retirement and long-term investment building back from scratch.<br>
+            <strong>7. Social and Mental Strain:</strong> Financial vulnerability creates acute chronic stress, impairing mental clarity during exams or interviews.<br>
+            <strong>8. Inability to Absorb Medical Surprises:</strong> A single minor health mishap during this period guarantees a descent into debt.<br>
+            <strong>9. Resume Gap Penalty:</strong> Unsuccessful transition timelines without completed deliverables or degrees weaken post-pivot compensation leverage.<br>
+            <strong>10. Extended Financial Recovery Time:</strong> Recovering from an aborted sabbatical can take 3 to 5 years of aggressive post-return saving.
           `;
 
           action.innerHTML = `
-            <strong>Mandatory Minimum Runway: ₹${twoYearBurn.toLocaleString('en-IN')}</strong>
-            <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
-              <li><strong>Delay Resignation:</strong> Postpone quitting by 6–12 months until your emergency runway covers at least 24 full months of mandatory living costs (₹${twoYearBurn.toLocaleString('en-IN')}).</li>
-              <li><strong>Compress Fixed Costs:</strong> Temporarily lower discretionary expenses by 25–30% before quitting to stretch runway months.</li>
-              <li><strong>Part-Time Micro-Income:</strong> Seek freelance or consulting work bringing in even 20–30% of living expenses to avoid a pure zero-cash trajectory.</li>
-            </ul>
+            <strong>Phase 1: Capital Runway Accumulation (Next 6–12 Months)</strong><br>
+            • Postpone your resignation until liquid savings hit at least <strong>₹${twoYearBurn.toLocaleString('en-IN')}</strong> (24 months of essential burn).<br>
+            • Strip personal lifestyle spending by 25–30% immediately to speed up your pre-pivot cash accumulation.<br>
+            • Liquidate non-essential physical assets, dormant subscriptions, or excess gadgets to inject emergency cash.<br><br>
+            <strong>Phase 2: Transition Cashflow Engineering (During Sabbatical)</strong><br>
+            • Lock down freelance, tutoring, or micro-consulting projects delivering 25–40% of monthly burn to stretch your runway.<br>
+            • Relocate temporarily to lower-cost geographies or shared living spaces to halve fixed rent overheads.<br>
+            • Move your 24-month survival budget into safe ultra-short duration debt funds or sweep-in accounts.<br><br>
+            <strong>Phase 3: Hard Stop Milestone Discipline</strong><br>
+            • Set a strict 15-month progress evaluation gate: If primary milestones aren't achieved, trigger active job searches.<br>
+            • Never allow liquid reserves to breach a protected 6-month baseline survival floor under any circumstance.<br>
+            • Maintain an active professional network on LinkedIn and industry forums to ensure quick re-entry if needed.<br><br>
+            <strong>Phase 4: Risk Mitigation & Contingencies</strong><br>
+            • Secure an independent baseline health insurance cover before leaving corporate employer insurance.<br>
+            • Prepare structured portfolio project proofs to showcase full accountability for the resume sabbatical gap.<br>
+            • Keep zero active unsecured revolving debt before stepping out of full-time employment.
           `;
 
           list.innerHTML = `
@@ -473,55 +523,80 @@
           pill.className = "status-pill status-safe";
           pill.textContent = "Feasible / Sustainable Runway";
 
-          summary.innerHTML = `<strong>Safe Transition Runway:</strong> Your ₹${initialSavings.toLocaleString('en-IN')} reserves safely absorb the 2-year zero-income period, outperforming your baseline path after career recovery.`;
+          summary.innerHTML = `<strong>Safe Transition Runway:</strong> Your ₹${initialSavings.toLocaleString('en-IN')} reserves comfortably absorb 2 years of zero income, outperforming baseline lifetime wealth after transition.`;
 
           risk.innerHTML = `
-            <strong>Opportunity Cost & Time-to-Payoff:</strong>
-            <p style="margin-top:4px; color:#cbd5e1;">You sacrifice 2 years of compounding wealth and salary appraisals. If the post-pivot target salary is delayed past 24 months, reserve depletion accelerates.</p>
+            <strong>1. Two-Year Compounding Opportunity Cost:</strong> You forfeit 24 months of continuous retirement contributions and salary compounding.<br>
+            <strong>2. Extended Pivot Horizon Risk:</strong> If target job hiring cycles or venture revenues take 30 months instead of 24, cash buffers become thin.<br>
+            <strong>3. Inflation Acceleration:</strong> Living costs compound at 6% annually, increasing your monthly burn rate in Year 2.<br>
+            <strong>4. Re-Entry Salary Volatility:</strong> The job market may not immediately deliver expected salary multiples due to macroeconomic cycles.<br>
+            <strong>5. Health Insurance Gap:</strong> Relying on private health insurance without corporate coverage leaves you exposed to out-of-pocket costs.<br>
+            <strong>6. Mental Burnout & Isolation:</strong> Solitary study or startup building can decrease productivity if not properly balanced.<br>
+            <strong>7. Emergency Fund Co-Mingling:</strong> Using emergency funds to pay business or exam fees compromises personal safety buffers.<br>
+            <strong>8. Post-Pivot Lifestyle Inflation:</strong> Once income returns at higher levels, overspending can quickly erase accumulated gains.<br>
+            <strong>9. Market Sequence Risk:</strong> If liquid assets are tied to equity during an economic downturn, forced withdrawals lock in losses.<br>
+            <strong>10. Tax Inefficiencies on Asset Liquidation:</strong> Selling investments to fund living expenses could trigger unexpected short-term capital gains tax.
           `;
 
           action.innerHTML = `
-            <strong>Establish Hard Checkpoints:</strong>
-            <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
-              <li><strong>Milestone Deadlines:</strong> Set a strict 18-month evaluation checkpoint. If target milestones aren't met, begin market re-entry before touching the final 6-month survival buffer.</li>
-              <li><strong>Segregate Liquid Funds:</strong> Park the 24-month survival budget into liquid mutual funds or sweep-in fixed deposits rather than volatile equity.</li>
-            </ul>
+            <strong>1. Ringfence Survival Reserves:</strong> Move the entire 24-month living budget into liquid mutual funds and fixed deposits today.<br>
+            <strong>2. Enforce Hard Checkpoints:</strong> Establish an 18-month evaluation gate to assess progress before dipping into your final survival reserve.<br>
+            <strong>3. Maintain Independent Health Cover:</strong> Purchase an individual 5–10 Lakh health policy before ending corporate employment.<br>
+            <strong>4. Establish Strict Zero-EMI Discipline:</strong> Completely eliminate credit card balances and short-term consumer loans before starting.<br>
+            <strong>5. Cap Discretionary Outlays:</strong> Freeze major luxury purchases, expensive vacations, and car upgrades until your new income stabilizes.<br>
+            <strong>6. Build Portfolio Proofs:</strong> Document your projects, mock results, or prototypes continuously to streamline post-pivot hiring.<br>
+            <strong>7. Maintain Industry Connections:</strong> Check in quarterly with former colleagues and mentors to keep your professional pipeline active.<br>
+            <strong>8. Protect Emergency Buffers:</strong> Never divert personal survival funds into exploratory business expenses or speculative investments.<br>
+            <strong>9. Plan Post-Pivot Tax Strategy:</strong> Plan how higher post-pivot compensation will be sheltered through tax-advantaged instruments.<br>
+            <strong>10. Automate Wealth Reinvestment:</strong> Pre-commit to channeling 50% of your new, higher salary directly into index funds once re-employed.
           `;
 
           list.innerHTML = `
-            <li>Reserves absorb the 24-month zero-income phase without debt.</li>
-            <li>Crosses baseline lifetime net worth by Year 4.</li>
+            <li>Liquid runway comfortably sustains the 24-month zero-income phase.</li>
+            <li>Outpaces baseline net worth within 4 years of career re-entry.</li>
           `;
         }
       }
 
-      // 3. Wealth Surge / 3x Income
+      // 3. Wealth Surge / 3x Income Jump
       else if (scenario === "rich") {
         const extraIncomeMonthly = Math.round(monthlyIncome * 2);
         const lifestyleBurnMonthly = Math.round(extraIncomeMonthly * 0.6);
 
         pill.className = "status-pill status-safe";
-        pill.textContent = "Wealth Expansion";
+        pill.textContent = "Wealth Expansion / Caution";
 
-        summary.innerHTML = `<strong>Significant Capital Accumulation:</strong> Tripling your income creates massive compounding tailwinds, increasing long-term capital assets dramatically over 15 years.`;
+        summary.innerHTML = `<strong>Accelerated Wealth Accumulation:</strong> Tripling your income provides substantial compounding tailwinds, expanding 15-year net worth significantly while raising lifestyle burn.`;
 
         risk.innerHTML = `
-          <strong>The "Golden Handcuffs" & Lifestyle Creep Vulnerability:</strong>
-          <p style="margin-top:4px; color:#cbd5e1;">Spending 60% of your raise on lifestyle increases your permanent living cost by ₹${lifestyleBurnMonthly.toLocaleString('en-IN')}/mo. If an unexpected layoff or health shock occurs later, your monthly survival cost is 2.5x higher than before, requiring a significantly larger emergency fund.</p>
+          <strong>1. Golden Handcuffs & Lifestyle Creep:</strong> Spending 60% of your raise adds an extra ₹${lifestyleBurnMonthly.toLocaleString('en-IN')}/mo in permanent recurring expenses.<br>
+          <strong>2. High Burn Rate Fragility:</strong> An elevated monthly lifestyle makes unexpected layoffs or market downturns much more dangerous.<br>
+          <strong>3. Upgraded Long-Term Debt Traps:</strong> Higher salaries often tempt people into 20-year luxury home mortgages or expensive luxury car EMIs.<br>
+          <strong>4. Significant Tax Bracket Drag:</strong> A 3x income leap places you in higher income tax slabs (30%+ bracket), reducing effective cash gains.<br>
+          <strong>5. Underfunded Emergency Runway:</strong> An emergency fund that was adequate for ₹${Math.round(annualExpense/12).toLocaleString('en-IN')}/mo covers only 2 months of an inflated lifestyle.<br>
+          <strong>6. Peer Comparison & Status Spending:</strong> Social circles often shift toward higher-spending peers, accelerating non-essential lifestyle inflation.<br>
+          <strong>7. Speculative Asset Temptations:</strong> High surplus cash often tempts investors into risky options trading, crypto, or unvetted private deals.<br>
+          <strong>8. Neglecting Disability/Insurance Upgrades:</strong> Higher incomes require higher term cover; keeping old coverage leaves a wide protection gap.<br>
+          <strong>9. Asset Illiquidity Trap:</strong> Sinking excess cash into real estate can make your net worth illiquid and difficult to access in a crisis.<br>
+          <strong>10. Psychological Burnout Trap:</strong> High-paying roles often demand long hours; lifestyle spending becomes an emotional coping mechanism.
         `;
 
         action.innerHTML = `
-          <strong>Implement Automated Wealth Capture:</strong>
-          <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
-            <li><strong>Reverse Budgeting:</strong> Automatically deduct 50% of each new paycheck on Day 1 into diversified index equity before discretionary spending starts.</li>
-            <li><strong>Avoid High Long-Term Fixed EMIs:</strong> Limit upgrades to variable expenses (travel, dining) rather than 10-to-20-year car or luxury home debt obligations.</li>
-            <li><strong>Expand Emergency Fund:</strong> Increase liquid emergency buffer to match the new, higher monthly burn rate (6 months of new expenses).</li>
-          </ul>
+          <strong>1. Implement Reverse Budgeting:</strong> Automatically deduct 50% of every new paycheck on Day 1 into index funds before discretionary spending begins.<br>
+          <strong>2. Enforce the 72-Hour Rule on Big Purchases:</strong> Wait 72 hours before completing any major luxury purchase to eliminate impulse spending.<br>
+          <strong>3. Upgrade Emergency Buffers:</strong> Expand liquid emergency savings to cover 6 to 9 months of your new, higher monthly burn rate.<br>
+          <strong>4. Scale Term Insurance Proportionately:</strong> Increase term life cover to 15–20x your new higher annual income to protect the expanded lifestyle.<br>
+          <strong>5. Resist Multi-Year Fixed Debt Commitments:</strong> Rent luxury or upgrade vacations rather than taking on 15–20 year high-EMI liabilities.<br>
+          <strong>6. Optimize Tax Deductions:</strong> Utilize statutory tax-saving instruments (NPS, health checkups, equity savings) to reduce tax bracket drag.<br>
+          <strong>7. Build a Low-Cost Index Core:</strong> Channel 70% of long-term investments into low-cost Nifty 50 / S&P 500 index funds.<br>
+          <strong>8. Keep Base Living Expenses Controlled:</strong> Let discretionary spending rise, but keep fixed obligations (rent, basic utilities) close to baseline.<br>
+          <strong>9. Consult a Fee-Only Financial Planner:</strong> Partner with a SEBI-registered, fee-only advisor to build an objective portfolio allocation.<br>
+          <strong>10. Track Real Savings Rate Monthly:</strong> Ensure your actual savings rate stays above 40–50% of net in-hand income every quarter.
         `;
 
         list.innerHTML = `
-          <li>Accelerates net worth expansion past baseline within 12 months.</li>
-          <li>Increased fixed cost baseline creates higher fragility during income dips.</li>
+          <li>Net worth expands significantly over the 15-year simulation.</li>
+          <li>Lifestyle creep increases monthly burn fragility if an income shock strikes.</li>
         `;
       }
 
@@ -532,25 +607,37 @@
         pill.className = "status-pill status-danger";
         pill.textContent = "Health Shock / Liquidity Drain";
 
-        summary.innerHTML = `<strong>Uncovered Hospitalization Shock:</strong> An emergency medical bill of ₹12,00,000 forces an immediate out-of-pocket blow of <strong>₹${outOfPocket.toLocaleString('en-IN')}</strong>, consuming ${(outOfPocket / (initialSavings || 1) * 100).toFixed(1)}% of your liquid net worth.`;
+        summary.innerHTML = `<strong>Out-of-Pocket Hospitalization Shock:</strong> An emergency medical bill of ₹12,00,000 forces an immediate out-of-pocket blow of <strong>₹${outOfPocket.toLocaleString('en-IN')}</strong>, consuming ${(outOfPocket / (initialSavings || 1) * 100).toFixed(1)}% of your liquid net worth.`;
 
         risk.innerHTML = `
-          <strong>Compounding Interruption & Distress Liquidations:</strong>
-          <p style="margin-top:4px; color:#cbd5e1;">Liquidating investment assets at market lows to pay hospital bills permanently destroys the compounding snowball effect. If liquid savings are insufficient, emergency personal loans carry interest rates between 14% and 24%.</p>
+          <strong>1. Severe Capital Pool Depletion:</strong> An immediate out-of-pocket expense of ₹${outOfPocket.toLocaleString('en-IN')} drains emergency reserves in a single week.<br>
+          <strong>2. Destructive Compounding Interruption:</strong> Selling investments to pay hospital bills permanently eliminates future compound growth on that capital.<br>
+          <strong>3. Distress Equity Liquidation:</strong> If medical emergencies coincide with market downturns, you are forced to lock in steep investment losses.<br>
+          <strong>4. High-Interest Emergency Borrowing:</strong> If savings fall short, families often resort to emergency personal loans carrying 14–24% interest rates.<br>
+          <strong>5. Temporary Income Interruption:</strong> Major medical events usually involve 3 to 6 months of recovery, leading to lost bonuses or income pauses.<br>
+          <strong>6. Ongoing Post-Care Medication Drain:</strong> Surgeries require ongoing medications, diagnostics, and therapy that standard base policies exclude.<br>
+          <strong>7. Employer Policy Vulnerability:</strong> Depending solely on corporate health cover leaves you unprotected if illness forces you to leave your job.<br>
+          <strong>8. Room-Rent Capping Penalties:</strong> Base health plans with room-rent limits (e.g., 1% of sum insured) trigger proportionate deductions across the entire bill.<br>
+          <strong>9. Critical Illness Income Replacement Void:</strong> Medical insurance pays hospitals, but does not replace monthly living expenses during long recovery periods.<br>
+          <strong>10. Long-Term Financial Stagnation:</strong> Recovering from an uncovered ₹10–15 Lakh health shock can set lifetime wealth accumulation back by 4–6 years.
         `;
 
         action.innerHTML = `
-          <strong>Upgrade to a High-Deductible Super Top-Up Plan:</strong>
-          <ul style="margin-top:6px; padding-left:16px; color:#cbd5e1;">
-            <li><strong>Super Top-Up Insurance:</strong> Add a ₹25 Lakh to ₹50 Lakh Super Top-Up health policy with a ₹5 Lakh deductible. This costs very little annually (₹3,000–₹5,000/year) but caps out-of-pocket hospital costs.</li>
-            <li><strong>Separate Dedicated Medical Buffer:</strong> Maintain at least ₹3 Lakhs in a dedicated liquid account completely distinct from daily operational funds.</li>
-            <li><strong>Check Critical Illness Rider:</strong> Add a critical illness rider that gives a lump-sum payout upon diagnosis to offset lost income during recovery.</li>
-          </ul>
+          <strong>1. Add High-Deductible Super Top-Up Insurance:</strong> Purchase a ₹25–50 Lakh Super Top-Up policy with a ₹5 Lakh deductible (costs only ₹3,000–₹5,000/year).<br>
+          <strong>2. Secure Standalone Personal Health Cover:</strong> Do not rely solely on employer policies; maintain an independent family policy across job transitions.<br>
+          <strong>3. Verify Zero Room-Rent Sub-Limits:</strong> Ensure your base policy has no room-category caps to avoid proportionate claim deductions.<br>
+          <strong>4. Secure Critical Illness Rider:</strong> Add a critical illness policy providing a lump-sum payout on diagnosis to replace lost recovery-period income.<br>
+          <strong>5. Maintain Dedicated Medical Emergency Reserves:</strong> Keep at least ₹3 Lakhs in an instant-access sweep fixed deposit dedicated purely to medical emergencies.<br>
+          <strong>6. Audit Cashless Hospital Network:</strong> Ensure top-tier multi-specialty hospitals near your residence are part of your insurer's cashless list.<br>
+          <strong>7. Check Restoration Benefits:</strong> Choose policies that automatically restore 100% of the sum insured if the limit is exhausted in a single claim.<br>
+          <strong>8. Monitor Pre-Existing Disease (PED) Waiting Times:</strong> Maintain continuity in policies to clear the 2-to-3-year waiting window for pre-existing conditions.<br>
+          <strong>9. Avoid High-Cost Medical Credit:</strong> Never finance hospital treatment with revolving credit cards or unsecured fintech personal loans.<br>
+          <strong>10. Schedule Annual Preventive Health Screenings:</strong> Utilize free annual health checkups included with insurance to detect issues before they escalate.
         `;
 
         list.innerHTML = `
-          <li>Emergency hospitalization drains liquid reserves immediately.</li>
-          <li>Long-term net worth curve falls below baseline due to lost compound growth.</li>
+          <li>Emergency hospitalization drains savings immediately.</li>
+          <li>Long-term net worth curve drops below baseline due to lost compound growth.</li>
         `;
       }
     }
