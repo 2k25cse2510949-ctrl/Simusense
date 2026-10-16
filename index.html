@@ -1,377 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SimuSense — Sanctuary of Clarity &amp; Decision</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Inter & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      /* Soothing Aurora Palette */
-      --bg-gradient: radial-gradient(circle at 15% 15%, #0f172a 0%, #090d16 50%, #05070c 100%);
-      --surface-glass: rgba(18, 25, 43, 0.65);
-      --surface-card: rgba(23, 32, 54, 0.75);
-      --border-subtle: rgba(148, 163, 184, 0.12);
-      --border-glow: rgba(99, 102, 241, 0.3);
-      
-      --text-main: #f1f5f9;
-      --text-secondary: #cbd5e1;
-      --text-muted: #94a3b8;
-      
-      --teal-serene: #14b8a6;
-      --emerald-heal: #10b981;
-      --lavender-calm: #818cf8;
-      --indigo-peace: #6366f1;
-      --rose-warm: #fb7185;
-      --amber-gentle: #fbbf24;
-      --coral-soft: #f87171;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Playfair Display', Georgia, serif;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; }
-    
     body {
-      background: var(--bg-gradient);
-      color: var(--text-main);
-      padding: 32px 18px;
-      line-height: 1.65;
+      font-family: var(--font-sans);
+      background-color: #060911;
+      color: #f1f5f9;
+      overflow-x: hidden;
       min-height: 100vh;
-      background-attachment: fixed;
     }
-
-    .app-container {
-      max-width: 1220px;
-      margin: 0 auto;
+    .font-serif {
+      font-family: var(--font-serif);
     }
-    
-    /* Top Header & Serenity Branding */
-    .top-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .badge-sanctuary {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(20, 184, 166, 0.2) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      color: #a5b4fc;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 5px 12px;
-      border-radius: 30px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-top: 6px;
-    }
-
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-top: 4px;
-      max-width: 680px;
-    }
-
-    /* Translate Box Pill */
-    .translate-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(18, 25, 43, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border-subtle);
-      padding: 6px 14px;
-      border-radius: 40px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    }
-    .translate-box span { font-size: 12px; color: var(--text-muted); }
-    #google_translate_element select {
-      background: rgba(30, 41, 69, 0.9);
-      color: #e2e8f0;
-      border: 1px solid rgba(99, 102, 241, 0.4);
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      outline: none;
-      cursor: pointer;
-    }
-
-    /* Smooth Glass Cards */
-    .glass-card {
-      background: var(--surface-glass);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .glass-card:hover {
-      border-color: rgba(99, 102, 241, 0.25);
-      box-shadow: 0 14px 40px -10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Input Sanctuary */
-    .dilemma-card {
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      background: linear-gradient(180deg, rgba(23, 32, 54, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-    }
-    
-    textarea {
-      width: 100%;
-      padding: 16px;
-      background: rgba(10, 15, 26, 0.65);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      border-radius: 12px;
-      color: #fff;
-      font-size: 15px;
-      resize: vertical;
-      outline: none;
-      margin: 12px 0 14px 0;
-      min-height: 90px;
-      line-height: 1.6;
-      transition: border-color 0.3s, box-shadow 0.3s;
-    }
-    textarea:focus {
-      border-color: var(--lavender-calm);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-    }
-
-    /* Preset Chips */
-    .preset-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .chip-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-    .chip {
-      background: rgba(30, 41, 69, 0.6);
-      color: #cbd5e1;
-      border: 1px solid rgba(148, 163, 184, 0.15);
-      padding: 7px 15px;
-      border-radius: 30px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .chip:hover {
-      border-color: var(--lavender-calm);
-      color: #fff;
-      background: rgba(99, 102, 241, 0.25);
-      transform: translateY(-1px);
-    }
-
-    .btn-tranquil {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #4f46e5 0%, #0d9488 100%);
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 20px -4px rgba(79, 70, 229, 0.4);
-      letter-spacing: 0.2px;
-    }
-    .btn-tranquil:hover {
-      background: linear-gradient(135deg, #4338ca 0%, #0f766e 100%);
-      box-shadow: 0 8px 24px -2px rgba(79, 70, 229, 0.55);
-      transform: translateY(-1px);
-    }
-
-    /* Verdict Card */
-    .conclusion-card {
-      border-left: 4px solid var(--teal-serene);
-      background: linear-gradient(180deg, rgba(17, 24, 39, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
-    }
-    .conclusion-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .status-pill {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 5px 14px;
-      border-radius: 30px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .status-safe { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .status-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-    .status-warn { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-
-    /* Pros & Cons Balanced Cards */
-    .tradeoff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
-    .tradeoff-box {
-      padding: 18px;
-      border-radius: 12px;
-      border: 1px solid var(--border-subtle);
-    }
-    .tradeoff-pros {
-      background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%);
-      border-color: rgba(16, 185, 129, 0.25);
-    }
-    .tradeoff-cons {
-      background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.02) 100%);
-      border-color: rgba(239, 68, 68, 0.25);
-    }
-    .tradeoff-box h4 {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* 15-Step Blueprint */
-    .detailed-solution-card {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 22px;
-      margin-top: 20px;
-    }
-    .detailed-solution-card h3 {
-      font-size: 15px;
-      color: #a5b4fc;
-      margin-bottom: 14px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .detailed-solution-card ol {
-      padding-left: 20px;
-      font-size: 13.5px;
-      line-height: 1.9;
-      color: #cbd5e1;
-    }
-    .detailed-solution-card li { margin-bottom: 4px; }
-
-    /* Storyboard Picture-to-Picture */
-    .p2p-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
-    @media (max-width: 768px) { .p2p-container { grid-template-columns: 1fr; } }
-    .p2p-card {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 18px;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    .p2p-card:hover { border-color: rgba(99, 102, 241, 0.3); transform: translateY(-2px); }
-    .p2p-icon { font-size: 34px; margin-bottom: 8px; }
-    .p2p-title { font-size: 13px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
-    .p2p-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-
-    /* Harmonic Simulation Canvases */
-    .ai-video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-    .ai-video-card {
-      background: rgba(15, 23, 42, 0.6);
-      padding: 18px;
-      border-radius: 14px;
-      border: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-    }
-    .canvas-wrapper {
-      position: relative;
-      width: 100%;
-      height: 190px;
-      background: radial-gradient(circle at center, #0a0f1d 0%, #03060c 100%);
-      border-radius: 10px;
+    /* Breathing Ambient Aurora Orbs */
+    .aurora-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
       overflow: hidden;
-      border: 1px solid rgba(148, 163, 184, 0.1);
     }
-    .canvas-wrapper canvas { width: 100%; height: 100%; display: block; }
-    .canvas-overlay-text {
+    .orb-1 {
       position: absolute;
-      bottom: 8px;
-      left: 10px;
-      right: 10px;
-      font-size: 11px;
-      color: #f8fafc;
-      background: rgba(5, 7, 12, 0.75);
-      backdrop-filter: blur(8px);
-      padding: 5px 10px;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      top: -15%;
+      left: 10%;
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.14) 0%, rgba(20, 184, 166, 0.04) 50%, transparent 70%);
+      filter: blur(80px);
+      animation: floatOrb 22s ease-in-out infinite alternate;
     }
-
-    /* Workspace Dashboard Grid */
-    .dashboard-grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
-    @media (max-width: 950px) {
-      .dashboard-grid { grid-template-columns: 1fr; }
-      .tradeoff-grid { grid-template-columns: 1fr; }
-      .ai-video-grid { grid-template-columns: 1fr; }
+    .orb-2 {
+      position: absolute;
+      bottom: -10%;
+      right: 5%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(20, 184, 166, 0.12) 0%, rgba(14, 165, 233, 0.04) 50%, transparent 70%);
+      filter: blur(90px);
+      animation: floatOrb2 26s ease-in-out infinite alternate;
     }
-
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
-    input {
-      width: 100%;
-      padding: 10px;
-      background: rgba(10, 15, 26, 0.65);
-      border: 1px solid rgba(148, 163, 184, 0.15);
-      border-radius: 8px;
-      color: #fff;
-      font-size: 13px;
+    .orb-3 {
+      position: absolute;
+      top: 40%;
+      left: 60%;
+      width: 35vw;
+      height: 35vw;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.07) 0%, transparent 65%);
+      filter: blur(95px);
+      animation: floatOrb 30s ease-in-out infinite alternate;
+    }
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, 40px) scale(1.12); }
+    }
+    @keyframes floatOrb2 {
+      0% { transform: translate(0, 0) scale(1.1); }
+      100% { transform: translate(-50px, -30px) scale(0.95); }
+    }
+    /* Ultra Glassmorphism Card */
+    .glass-sanctuary {
+      background: rgba(15, 23, 42, 0.58);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+    }
+    .glass-sanctuary-hover {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-sanctuary-hover:hover {
+      border-color: rgba(99, 102, 241, 0.28);
+      box-shadow: 0 20px 48px -12px rgba(15, 23, 42, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+    /* Custom Inputs & Sliders */
+    input[type=range] {
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 9999px;
+      background: #1e293b;
       outline: none;
-      transition: border-color 0.2s;
     }
-    input:focus { border-color: var(--teal-serene); }
-
-    /* Health Rings & KPI Pill Stats */
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
-    @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr 1fr; } }
-    .stat-card {
-      background: rgba(15, 23, 42, 0.55);
-      border: 1px solid var(--border-subtle);
-      padding: 14px 10px;
-      border-radius: 10px;
-      text-align: center;
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+      transition: transform 0.15s ease;
     }
-    .stat-label { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-value { font-size: 16px; font-weight: 700; margin-top: 5px; }
-
-    .chart-container { height: 320px; position: relative; margin-top: 8px; }
-
-    /* Google Translate hidden clutter fix */
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+    /* Print Dossier Optimization */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .aurora-bg, .top-nav-controls, .dilemma-input-section, .video-studio-section, #toastNotification {
+        display: none !important;
+      }
+      .glass-sanctuary {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
+        page-break-inside: avoid;
+      }
+      .text-slate-100, .text-slate-200, .text-slate-300, .text-white {
+        color: #0f172a !important;
+      }
+      .text-slate-400, .text-slate-500 {
+        color: #475569 !important;
+      }
+      canvas {
+        max-width: 100% !important;
+      }
+    }
+    /* Google Translate widget cleaning */
     .goog-te-gadget { font-size: 0px !important; }
     .goog-te-gadget span { display: none !important; }
     .goog-te-banner-frame { display: none !important; }
     body { top: 0px !important; }
   </style>
 
+  <!-- Google Translate Setup -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       try {
@@ -387,149 +165,439 @@
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
 </head>
-<body>
-  <div class="app-container">
+
+<body class="relative min-h-screen selection:bg-indigo-500/30 selection:text-indigo-200">
+
+  <!-- Ambient Light Orbs -->
+  <div class="aurora-bg">
+    <div class="orb-1"></div>
+    <div class="orb-2"></div>
+    <div class="orb-3"></div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-slate-900/95 border border-indigo-500/40 text-slate-100 px-5 py-3.5 rounded-xl shadow-2xl backdrop-blur-xl text-sm">
+    <span class="text-teal-400 text-lg">✨</span>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8">
     
-    <header class="top-nav">
+    <!-- Top Sanctuary Header -->
+    <header class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-slate-800/60">
       <div>
-        <div class="badge-sanctuary">
-          <span>✨</span>
-          <span>SimuSense Universal Core</span>
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-400/20 text-indigo-300 text-xs font-semibold tracking-wide uppercase mb-3">
+          <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
+          SimuSense Universal Consciousness Core
         </div>
-        <h1>Sanctuary of Clarity &amp; Decision</h1>
-        <p class="subtitle">A serene space to decompress life dilemmas across physical well-being, emotional peace, relationships, animal companions, or finances.</p>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-serif text-white tracking-tight">
+          Sanctuary of Clarity &amp; Decision
+        </h1>
+        <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-2xl font-light leading-relaxed">
+          A tranquil computational haven that decomposes any human or living dilemma into dynamic equilibrium curves, 15-step tactical blueprints, and generative motion simulations.
+        </p>
       </div>
 
-      <div class="translate-box">
-        <span>🌐 Language:</span>
-        <div id="google_translate_element"></div>
+      <!-- Header Tools & Audio -->
+      <div class="top-nav-controls flex flex-wrap items-center gap-3">
+        <!-- Calming Soundscape Toggle -->
+        <button id="soundscapeBtn" onclick="toggleSoundscape()" class="glass-sanctuary px-4 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white flex items-center gap-2.5 transition border-slate-700/50 hover:border-teal-500/40">
+          <span id="soundscapeIcon">🔊</span>
+          <span id="soundscapeStatus">Ambient Sound: Off</span>
+        </button>
+
+        <!-- Google Translate -->
+        <div class="glass-sanctuary px-3 py-1.5 rounded-xl flex items-center gap-2 border-slate-700/50">
+          <span class="text-slate-400 text-xs">🌐</span>
+          <div id="google_translate_element"></div>
+        </div>
+
+        <!-- Quick Export Buttons -->
+        <button onclick="window.print()" class="glass-sanctuary p-2.5 rounded-xl text-slate-300 hover:text-white transition border-slate-700/50 hover:border-indigo-500/40" title="Print or Save PDF Dossier">
+          📄 Print Dossier
+        </button>
+        <button onclick="shareDilemma()" class="glass-sanctuary p-2.5 rounded-xl text-slate-300 hover:text-white transition border-slate-700/50 hover:border-indigo-500/40" title="Copy Blueprint Summary">
+          🔗 Share
+        </button>
       </div>
     </header>
 
-    <!-- 1. Dilemma Sanctuary Input -->
-    <section class="glass-card dilemma-card">
-      <h2 style="font-size: 16px; font-weight: 600;">1. What is weighing on your mind or body today?</h2>
-      <textarea id="userDilemma" rows="3" placeholder="Pour out anything freely: 'wrist pain', 'dog is suffering from terminal cancer', 'toxic boss is draining me', 'working 80 hours with 4 hours sleep', 'have 1200 rupees where to invest', 'feeling lost and alone'"></textarea>
-
-      <div class="preset-chips">
-        <span class="chip-label">Gentle Starters:</span>
-        <button type="button" class="chip" onclick="handlePreset('wrist')">🦴 Wrist &amp; Joint Pain</button>
-        <button type="button" class="chip" onclick="handlePreset('pet')">🐶 Companion in Pain</button>
-        <button type="button" class="chip" onclick="handlePreset('toxic')">💔 Toxic Environment</button>
-        <button type="button" class="chip" onclick="handlePreset('burnout')">⚡ Overwork &amp; Sleep Debt</button>
-        <button type="button" class="chip" onclick="handlePreset('money')">💰 Rs 1200 Allocation</button>
+    <!-- SECTION 1: Dilemma Input Sanctuary -->
+    <section class="glass-sanctuary dilemma-input-section p-6 sm:p-8 border-indigo-500/25 relative overflow-hidden">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-medium text-white flex items-center gap-2">
+          <span>1. Pour Out Any Dilemma</span>
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">Any topic • 2 words to full story</span>
+        </h2>
+        <span class="text-xs text-slate-500 hidden sm:inline">Zero bias • Multi-Pillar Scored</span>
       </div>
 
-      <button type="button" class="btn-tranquil" onclick="compileAndSimulate()">Analyze Dilemma &amp; Synthesize Healing Roadmap</button>
+      <textarea id="userDilemma" rows="3" placeholder="Type naturally: 'wrist pain and tendon strain', 'my dog is 14 years old with bone cancer in severe pain', 'boss insults me daily and office is toxic', 'working 80 hours with 4 hours sleep', 'have 1200 rupees where to invest', 'feeling hopeless and hollow'..." class="w-full bg-slate-950/60 border border-slate-700/60 rounded-xl p-4 text-slate-100 placeholder-slate-500 text-sm md:text-base focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition resize-y"></textarea>
+
+      <!-- Preset Chips -->
+      <div class="flex flex-wrap items-center gap-2 mt-3 mb-6">
+        <span class="text-xs text-slate-400 font-medium">Archetypes:</span>
+        <button type="button" onclick="handlePreset('wrist')" class="text-xs px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-indigo-600/20 text-slate-300 hover:text-indigo-200 border border-slate-700/70 hover:border-indigo-500/40 transition">🦴 Wrist &amp; Joint Strain</button>
+        <button type="button" onclick="handlePreset('pet')" class="text-xs px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-indigo-600/20 text-slate-300 hover:text-indigo-200 border border-slate-700/70 hover:border-indigo-500/40 transition">🐶 Companion Pain &amp; Euthanasia</button>
+        <button type="button" onclick="handlePreset('toxic')" class="text-xs px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-indigo-600/20 text-slate-300 hover:text-indigo-200 border border-slate-700/70 hover:border-indigo-500/40 transition">💔 Hostile Workplace Exit</button>
+        <button type="button" onclick="handlePreset('burnout')" class="text-xs px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-indigo-600/20 text-slate-300 hover:text-indigo-200 border border-slate-700/70 hover:border-indigo-500/40 transition">⚡ 80hr Grind &amp; Sleep Debt</button>
+        <button type="button" onclick="handlePreset('money')" class="text-xs px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-indigo-600/20 text-slate-300 hover:text-indigo-200 border border-slate-700/70 hover:border-indigo-500/40 transition">💰 ₹1,200 Micro Allocation</button>
+      </div>
+
+      <!-- Simulate Button -->
+      <button type="button" onclick="compileAndSimulate()" class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-teal-500 hover:from-indigo-500 hover:to-teal-400 text-white font-medium text-base shadow-lg shadow-indigo-600/25 transition-all duration-300 flex items-center justify-center gap-2 transform active:scale-[0.99]">
+        <span>✨ Synthesize Holistic Healing Blueprint &amp; Simulate</span>
+      </button>
     </section>
 
-    <!-- 2. Verdict & Equilibrium Banner -->
-    <section class="glass-card conclusion-card" id="conclusionCard">
-      <div class="conclusion-header">
+    <!-- SECTION 2: Dynamic Verdict & Pros vs Cons -->
+    <section class="glass-sanctuary p-6 sm:p-8 border-l-4 border-l-teal-400 relative">
+      <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800/70">
+        <div class="flex items-center gap-3">
+          <span id="verdictPill" class="text-xs font-semibold px-3.5 py-1 rounded-full uppercase tracking-wider bg-teal-500/15 text-teal-300 border border-teal-500/30">
+            Equilibrium Harmonized
+          </span>
+          <span id="detectedArchetype" class="text-xs sm:text-sm font-medium text-indigo-300"></span>
+        </div>
+        <span class="text-xs text-slate-400 font-mono" id="resolutionTimestamp"></span>
+      </div>
+
+      <div id="verdictSummary" class="text-slate-200 text-sm sm:text-base leading-relaxed mt-4 font-light"></div>
+
+      <!-- Pros vs Cons / Trade-off Matrix -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+        <div class="p-5 rounded-xl bg-emerald-500/[0.04] border border-emerald-500/20">
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-2 mb-3">
+            <span>✅ The Reclaimed Upside (Taking Active Intervention)</span>
+          </h4>
+          <ul id="prosList" class="space-y-2 text-xs sm:text-sm text-slate-300"></ul>
+        </div>
+        <div class="p-5 rounded-xl bg-rose-500/[0.04] border border-rose-500/20">
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-rose-400 flex items-center gap-2 mb-3">
+            <span>⚠️ The Compounding Friction (If Kept in Inaction)</span>
+          </h4>
+          <ul id="consList" class="space-y-2 text-xs sm:text-sm text-slate-300"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: 15-Point Tactical Blueprint with Interactive Checkboxes & Live Tracker -->
+    <section class="glass-sanctuary p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span class="status-pill status-safe" id="verdictPill">Harmonized Path</span>
-          <span id="detectedArchetype" style="font-size: 13px; color: #a5b4fc; margin-left: 10px; font-weight: 600;"></span>
+          <h3 class="text-lg font-medium text-white flex items-center gap-2 font-serif">
+            <span>📋 Comprehensive 15-Point Tactical Roadmap</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">Check off items as you execute them to track your progressive recovery.</p>
+        </div>
+
+        <!-- Live Progress Ring/Bar -->
+        <div class="flex items-center gap-3 bg-slate-900/60 border border-slate-700/60 px-4 py-2.5 rounded-xl min-w-[200px]">
+          <div class="flex-1">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-400">Recovery Progress</span>
+              <span id="trackerPercent" class="text-teal-400 font-semibold font-mono">0%</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div id="trackerProgressBar" class="bg-gradient-to-r from-indigo-500 to-teal-400 h-full w-0 transition-all duration-300 rounded-full"></div>
+            </div>
+          </div>
+          <span id="trackerCount" class="text-xs text-slate-400 font-mono">0/15</span>
         </div>
       </div>
-      <div id="verdictSummary" style="font-size: 14.5px; color: #cbd5e1; margin-top: 6px; line-height: 1.7;"></div>
+
+      <!-- Checklist Items -->
+      <div id="detailedPlanContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2"></div>
+    </section>
+
+    <!-- SECTION 4: 3-Stage Picture-to-Picture Transformation Storyboard -->
+    <section class="glass-sanctuary p-6 sm:p-8 space-y-4">
+      <div>
+        <h3 class="text-lg font-medium text-white font-serif">🖼️ Visual Metamorphosis Storyboard</h3>
+        <p class="text-xs text-slate-400">The 3 distinct psychological &amp; physical states across your journey.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="p2pContainer"></div>
+    </section>
+
+    <!-- SECTION 5: Generative AI Visual Canvas Studios -->
+    <section class="glass-sanctuary video-studio-section p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-medium text-white font-serif">🌊 Ocean of Equilibrium (Procedural Generative Visualizers)</h3>
+          <p class="text-xs text-slate-400">Procedural motion graphics simulating biological and mental turbulence vs. harmonic recovery.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleVisualAnimations()" class="text-xs px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-600 transition flex items-center gap-1.5">
+            <span id="animControlIcon">⏸️</span>
+            <span id="animControlText">Pause Motions</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Friction Wave Studio -->
+        <div class="glass-sanctuary p-4 rounded-xl border-slate-800 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2.5">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-rose-400 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+              🔴 Problem Turbulence &amp; Cortisol Drift
+            </h4>
+            <span class="text-[10px] text-slate-500 font-mono">Simulating Chaos</span>
+          </div>
+          <div class="relative w-full h-44 rounded-lg overflow-hidden bg-slate-950 border border-slate-800/80">
+            <canvas id="problemCanvas" width="540" height="200" class="w-full h-full block"></canvas>
+            <div id="problemCanvasOverlay" class="absolute bottom-2 left-2 right-2 text-[11px] text-slate-300 bg-slate-950/80 backdrop-blur-md px-2.5 py-1 rounded border border-white/5 truncate"></div>
+          </div>
+          <p id="problemCanvasDesc" class="text-xs text-slate-400 mt-2.5 font-light leading-relaxed"></p>
+        </div>
+
+        <!-- Restorative Wave Studio -->
+        <div class="glass-sanctuary p-4 rounded-xl border-slate-800 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2.5">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-teal-400 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+              🟢 Restorative Current &amp; Harmonic Uplift
+            </h4>
+            <span class="text-[10px] text-slate-500 font-mono">Simulating Restoration</span>
+          </div>
+          <div class="relative w-full h-44 rounded-lg overflow-hidden bg-slate-950 border border-slate-800/80">
+            <canvas id="solutionCanvas" width="540" height="200" class="w-full h-full block"></canvas>
+            <div id="solutionCanvasOverlay" class="absolute bottom-2 left-2 right-2 text-[11px] text-slate-300 bg-slate-950/80 backdrop-blur-md px-2.5 py-1 rounded border border-white/5 truncate"></div>
+          </div>
+          <p id="solutionCanvasDesc" class="text-xs text-slate-400 mt-2.5 font-light leading-relaxed"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: Interactive Sensitivity Controls + Dual Comparative Graph -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
       
-      <!-- Pros and Cons Trade-off Matrix -->
-      <div class="tradeoff-grid">
-        <div class="tradeoff-box tradeoff-pros">
-          <h4 style="color: #34d399;">✅ The Reclaimed Upside (Taking Action)</h4>
-          <ul id="prosList" style="font-size: 13px; padding-left: 18px; color: #cbd5e1; line-height: 1.7;"></ul>
+      <!-- Left Column: What-If Simulation Sliders -->
+      <section class="lg:col-span-5 glass-sanctuary p-6 sm:p-7 space-y-6">
+        <div>
+          <h3 class="text-base font-semibold text-white font-serif">2. Interactive Sensitivity Controls</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Drag any parameter to dynamically recalculate the recovery trajectory.</p>
         </div>
-        <div class="tradeoff-box tradeoff-cons">
-          <h4 style="color: #f87171;">⚠️ The Friction of Inaction (If Ignored)</h4>
-          <ul id="consList" style="font-size: 13px; padding-left: 18px; color: #cbd5e1; line-height: 1.7;"></ul>
-        </div>
-      </div>
 
-      <!-- Comprehensive 15-Point Blueprint -->
-      <div class="detailed-solution-card">
-        <h3>📋 Step-by-Step Tactical Blueprint (15 Actionable Steps)</h3>
-        <ol id="detailedPlanList"></ol>
-      </div>
-    </section>
+        <div class="space-y-4">
+          <!-- Slider 1 -->
+          <div class="bg-slate-900/40 p-3.5 rounded-xl border border-slate-800/70">
+            <div class="flex justify-between items-center text-xs mb-1.5">
+              <span class="text-slate-300 font-medium">Intervention Commitment</span>
+              <span id="val_commitment" class="text-teal-400 font-mono font-semibold">85%</span>
+            </div>
+            <input type="range" id="slider_commitment" min="10" max="100" value="85" class="w-full" oninput="updateWhatIfParameters()" />
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+              <span>Reluctant (10%)</span>
+              <span>Fully Devoted (100%)</span>
+            </div>
+          </div>
 
-    <!-- 3. Picture-to-Picture Storyboard -->
-    <section class="glass-card">
-      <h2 style="font-size: 16px; margin-bottom: 4px; font-weight: 600;">🖼️ Visual Transformation Journey</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Visualizing your dilemma's current strain, the deliberate turning point, and restored peace.</p>
-      <div class="p2p-container" id="p2pContainer"></div>
-    </section>
+          <!-- Slider 2 -->
+          <div class="bg-slate-900/40 p-3.5 rounded-xl border border-slate-800/70">
+            <div class="flex justify-between items-center text-xs mb-1.5">
+              <span class="text-slate-300 font-medium">Daily Rest &amp; Deloading</span>
+              <span id="val_sleep" class="text-indigo-400 font-mono font-semibold">7.5 hrs</span>
+            </div>
+            <input type="range" id="slider_sleep" min="4" max="10" step="0.5" value="7.5" class="w-full" oninput="updateWhatIfParameters()" />
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+              <span>Severe Deficit (4h)</span>
+              <span>Deep Cell Repair (10h)</span>
+            </div>
+          </div>
 
-    <!-- 4. Fluid Procedural Motion Studios -->
-    <section class="glass-card">
-      <h2 style="font-size: 16px; margin-bottom: 4px; font-weight: 600;">🌊 Ocean of Equilibrium (Generative Visual Simulators)</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Fluid harmonic waves representing real-time internal friction loops versus restorative healing flows.</p>
-      <div class="ai-video-grid">
-        <div class="ai-video-card">
-          <h4 style="color: #f87171; font-size: 13px; margin-bottom: 8px;">🔴 The Friction Wave (Inaction &amp; Stress Loop)</h4>
-          <div class="canvas-wrapper">
-            <canvas id="problemCanvas" width="480" height="190"></canvas>
-            <div class="canvas-overlay-text" id="problemSubtitle">Harmonizing stress currents...</div>
+          <!-- Slider 3 -->
+          <div class="bg-slate-900/40 p-3.5 rounded-xl border border-slate-800/70">
+            <div class="flex justify-between items-center text-xs mb-1.5">
+              <span class="text-slate-300 font-medium">Support System Resilience</span>
+              <span id="val_support" class="text-emerald-400 font-mono font-semibold">65%</span>
+            </div>
+            <input type="range" id="slider_support" min="10" max="100" value="65" class="w-full" oninput="updateWhatIfParameters()" />
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+              <span>Isolated (10%)</span>
+              <span>Fortified Network (100%)</span>
+            </div>
           </div>
         </div>
-        <div class="ai-video-card">
-          <h4 style="color: #34d399; font-size: 13px; margin-bottom: 8px;">🟢 The Restorative Current (Active Recovery)</h4>
-          <div class="canvas-wrapper">
-            <canvas id="solutionCanvas" width="480" height="190"></canvas>
-            <div class="canvas-overlay-text" id="solutionSubtitle">Synthesizing healing trajectory...</div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- 5. Workspace Dashboard -->
-    <main class="dashboard-grid">
-      <!-- Sliders / Vector State Inputs -->
-      <section class="glass-card">
-        <h2 style="font-size: 15px; margin-bottom: 12px; font-weight: 600;">2. Situation Energy Vectors</h2>
-        <div class="form-row">
-          <div><label>Physical Vitality (0–100)</label><input type="number" id="v_vitality" value="80" oninput="runSimulation()"></div>
-          <div><label>Mental Calm (0–100)</label><input type="number" id="v_mental" value="70" oninput="runSimulation()"></div>
-        </div>
-        <div class="form-row">
-          <div><label>Emotional Balance (0–100)</label><input type="number" id="v_emotional" value="65" oninput="runSimulation()"></div>
-          <div><label>Stress Pulse (0–100)</label><input type="number" id="v_distress" value="30" oninput="runSimulation()"></div>
-        </div>
-        <div class="form-row">
-          <div><label>Capital Involved (Rs)</label><input type="number" id="v_capital" value="0" oninput="runSimulation()"></div>
-          <div><label>Monthly Capacity (Rs)</label><input type="number" id="v_income" value="20000" oninput="runSimulation()"></div>
+        <!-- Pillar Stat Inputs -->
+        <div class="pt-2 border-t border-slate-800/80">
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Extracted State Metrics</h4>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="text-slate-400 block mb-1">Vitality Score (0-100)</label>
+              <input type="number" id="v_vitality" value="80" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono" oninput="runSimulation()" />
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Mental Calm (0-100)</label>
+              <input type="number" id="v_mental" value="70" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono" oninput="runSimulation()" />
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Emotional Heart (0-100)</label>
+              <input type="number" id="v_emotional" value="65" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono" oninput="runSimulation()" />
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Distress Level (0-100)</label>
+              <input type="number" id="v_distress" value="30" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono" oninput="runSimulation()" />
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- Comparative Trajectory Graph -->
-      <section class="glass-card">
-        <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Physical Vitality</div><div class="stat-value" id="kpi_vitality" style="color: var(--teal-serene);">80 / 100</div></div>
-          <div class="stat-card"><div class="stat-label">Mental Peace</div><div class="stat-value" id="kpi_mental" style="color: var(--mental);">70 / 100</div></div>
-          <div class="stat-card"><div class="stat-label">Emotional Heart</div><div class="stat-value" id="kpi_emotional" style="color: var(--emotional);">65 / 100</div></div>
-          <div class="stat-card"><div class="stat-label">Life Equilibrium</div><div class="stat-value" id="kpi_equilibrium" style="color: #cbd5e1;">72%</div></div>
+      <!-- Right Column: Comparative Chart & Key KPI Cards -->
+      <section class="lg:col-span-7 glass-sanctuary p-6 sm:p-7 space-y-6">
+        <!-- Top Stats Row -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-900/50 border border-slate-800 p-3.5 rounded-xl text-center">
+            <span class="text-[10.5px] uppercase tracking-wider text-slate-400 block">Vitality</span>
+            <span id="kpi_vitality" class="text-lg font-bold text-teal-400 font-mono mt-1 block">80%</span>
+          </div>
+          <div class="bg-slate-900/50 border border-slate-800 p-3.5 rounded-xl text-center">
+            <span class="text-[10.5px] uppercase tracking-wider text-slate-400 block">Mental Peace</span>
+            <span id="kpi_mental" class="text-lg font-bold text-sky-400 font-mono mt-1 block">70%</span>
+          </div>
+          <div class="bg-slate-900/50 border border-slate-800 p-3.5 rounded-xl text-center">
+            <span class="text-[10.5px] uppercase tracking-wider text-slate-400 block">Heart Harmony</span>
+            <span id="kpi_emotional" class="text-lg font-bold text-pink-400 font-mono mt-1 block">65%</span>
+          </div>
+          <div class="bg-slate-900/50 border border-slate-800 p-3.5 rounded-xl text-center">
+            <span class="text-[10.5px] uppercase tracking-wider text-slate-400 block">Life Balance</span>
+            <span id="kpi_equilibrium" class="text-lg font-bold text-indigo-300 font-mono mt-1 block">72%</span>
+          </div>
         </div>
 
-        <h3 style="font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #cbd5e1;">📈 Equilibrium Trajectory: Current Inaction vs. Active Healing</h3>
-        <div class="chart-container">
-          <canvas id="trajectoryChart"></canvas>
+        <!-- Comparative Chart -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+              <span>📈 Comparative Trajectory: Inaction Path vs. Active Restoration</span>
+            </h3>
+            <span class="text-[11px] text-teal-400 font-mono">Live Updated</span>
+          </div>
+          <div class="chart-container relative h-[320px] w-full">
+            <canvas id="trajectoryChart"></canvas>
+          </div>
         </div>
       </section>
+
     </main>
+
+    <!-- Footer Sanctuary -->
+    <footer class="pt-8 pb-12 border-t border-slate-800/60 text-center text-xs text-slate-500 font-light space-y-1">
+      <p>SimuSense — Crafted as an ultra-premium universal life compass. Pure client-side zero-leak architecture.</p>
+      <p class="text-slate-600">Your inputs never touch external servers or third-party tracking APIs.</p>
+    </footer>
+
   </div>
 
+  <!-- CORE LOGIC & PROCEDURAL SCRIPTS -->
   <script>
+    /* Global Application State */
     let myChart = null;
     let problemAnimId = null;
     let solutionAnimId = null;
+    let isAnimationsRunning = true;
     let currentDilemmaType = "general";
     let activeTopic = "Life Situation";
+    let checkedPlanSteps = new Set();
+    let currentPlanLength = 15;
 
+    /* Web Audio API Procedural Ambient Sound Generator (Brown/Pink Noise) */
+    let audioCtx = null;
+    let noiseNode = null;
+    let filterNode = null;
+    let gainNode = null;
+    let isSoundPlaying = false;
+
+    function toggleSoundscape() {
+      const btn = document.getElementById("soundscapeBtn");
+      const status = document.getElementById("soundscapeStatus");
+      const icon = document.getElementById("soundscapeIcon");
+
+      if (!isSoundPlaying) {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContext();
+          
+          const bufferSize = audioCtx.sampleRate * 2;
+          const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          
+          // Generate warm pink/brown noise
+          let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+          for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            b0 = 0.99886 * b0 + white * 0.0555179;
+            b1 = 0.99332 * b1 + white * 0.0750759;
+            b2 = 0.96900 * b2 + white * 0.1538520;
+            b3 = 0.86650 * b3 + white * 0.3104856;
+            b4 = 0.55000 * b4 + white * 0.5329522;
+            b5 = -0.7616 * b5 - white * 0.0168980;
+            output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.06;
+            b6 = white * 0.115926;
+          }
+
+          noiseNode = audioCtx.createBufferSource();
+          noiseNode.buffer = noiseBuffer;
+          noiseNode.loop = true;
+
+          // Low-pass gentle oceanic filter
+          filterNode = audioCtx.createBiquadFilter();
+          filterNode.type = 'lowpass';
+          filterNode.frequency.setValueAtTime(320, audioCtx.currentTime);
+
+          gainNode = audioCtx.createGain();
+          gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.3, audioCtx.currentTime + 3);
+
+          noiseNode.connect(filterNode);
+          filterNode.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+
+          noiseNode.start();
+          isSoundPlaying = true;
+          status.textContent = "Ambient Sound: On (Oceanic Calm)";
+          icon.textContent = "🌊";
+          btn.classList.add("border-teal-500/50", "text-teal-300");
+          showToast("Calming procedural soundscape activated");
+        } catch (e) {
+          console.warn("Audio unavailable:", e);
+        }
+      } else {
+        if (gainNode && audioCtx) {
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+          setTimeout(() => {
+            if (noiseNode) noiseNode.stop();
+            if (audioCtx) audioCtx.close();
+            isSoundPlaying = false;
+            status.textContent = "Ambient Sound: Off";
+            icon.textContent = "🔇";
+            btn.classList.remove("border-teal-500/50", "text-teal-300");
+            showToast("Soundscape paused");
+          }, 1000);
+        }
+      }
+    }
+
+    /* Toast Notification Helper */
+    function showToast(msg) {
+      const el = document.getElementById("toastNotification");
+      const text = document.getElementById("toastMsg");
+      text.textContent = msg;
+      el.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
+      setTimeout(() => {
+        el.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+      }, 3500);
+    }
+
+    /* Preset Scenarios Handler */
     const presets = {
-      wrist: "wrist pain",
-      pet: "my dog is suffering from bone cancer and severe pain",
-      toxic: "my boss is toxic and insults me everyday",
-      burnout: "working 80 hours a week sleeping 4 hours feeling depressed",
-      money: "I have 1200 rupees where should I invest it"
+      wrist: "wrist pain and severe tendon strain from typing",
+      pet: "my dog is 14 years old suffering from terminal bone cancer in severe pain",
+      toxic: "my boss insults me every day and the office is toxic",
+      burnout: "working 80 hours a week sleeping 4 hours feeling depressed and burnt out",
+      money: "I have 1200 rupees where should I invest it to get best return"
     };
 
     function handlePreset(key) {
@@ -540,39 +608,80 @@
       }
     }
 
+    /* UNIVERSAL MULTI-PILLAR SEMANTIC VECTOR SCORER */
     function parseUniversalDilemma(rawText) {
       const text = (rawText || "").trim();
       const clean = text.toLowerCase();
       
-      const scores = { physical: 0, animal: 0, toxic: 0, burnout: 0, existential: 0, financial: 0 };
+      const scores = {
+        physical: 0,
+        animal: 0,
+        toxic: 0,
+        burnout: 0,
+        existential: 0,
+        financial: 0
+      };
 
-      const physicalDict = ["wrist", "hand", "finger", "arm", "elbow", "spine", "back", "knee", "leg", "neck", "shoulder", "pain", "ache", "sore", "hurt", "strain", "sprain", "carpal", "tendon", "rsi", "injury", "headache", "migraine"];
+      // 1. Physical / Somatic Health & Symptoms
+      const physicalDict = [
+        "wrist", "hand", "finger", "arm", "elbow", "spine", "back", "knee", "leg", "neck", "shoulder", 
+        "pain", "ache", "sore", "hurt", "strain", "sprain", "carpal", "tendon", "rsi", "disc", "injury", 
+        "fracture", "swollen", "illness", "surgery", "doctor", "physio", "hospital", "body", "muscle", 
+        "joint", "headache", "migraine", "fever", "infection", "stomach", "gut", "chest", "cramp", "menstrual", "period", "chronic"
+      ];
       physicalDict.forEach(term => { if (clean.includes(term)) scores.physical += 3; });
 
-      const animalDict = ["dog", "cat", "pet", "animal", "puppy", "kitten", "vet", "euthanasia", "put down", "put him down"];
+      // 2. Animal & Pet Moral Compassion
+      const animalDict = [
+        "dog", "cat", "pet", "animal", "puppy", "kitten", "vet", "veterinarian", "euthanasia", 
+        "put down", "put him down", "put her down", "canine", "feline", "bird", "rabbit", "stray"
+      ];
       animalDict.forEach(term => { if (clean.includes(term)) scores.animal += 4; });
 
-      const toxicDict = ["toxic", "boss", "manager", "gaslight", "abuse", "insult", "partner", "relationship", "breakup", "divorce", "quit", "resign"];
+      // 3. Toxic Relationships & Office Hostility
+      const toxicDict = [
+        "toxic", "boss", "manager", "gaslight", "manipulat", "abuse", "abusive", "insult", "shout", 
+        "partner", "husband", "wife", "boyfriend", "girlfriend", "relationship", "breakup", "divorce", 
+        "harass", "bully", "hate job", "hate work", "quit", "resign", "unsupportive"
+      ];
       toxicDict.forEach(term => { if (clean.includes(term)) scores.toxic += 3.5; });
 
-      const burnoutDict = ["burnout", "sleep", "insomnia", "exhaust", "tired", "80 hour", "70 hour", "overwork", "grind", "drained"];
+      // 4. Burnout & Sleep Exhaustion
+      const burnoutDict = [
+        "burnout", "burnt out", "sleep", "insomnia", "exhaust", "exhausted", "tired", "fatigue", 
+        "80 hour", "70 hour", "60 hour", "overwork", "grind", "drained", "no energy", "working late", "cant sleep"
+      ];
       burnoutDict.forEach(term => { if (clean.includes(term)) scores.burnout += 3.5; });
 
-      const existentialDict = ["void", "empty", "depress", "crying", "meaning", "lost", "lonely", "robot", "hollow", "purpose", "why live"];
+      // 5. Existential Crisis, Numbness & Despair
+      const existentialDict = [
+        "void", "empty", "depress", "depression", "crying", "cry", "meaning", "lost", "lonely", 
+        "loneliness", "robot", "hollow", "purpose", "why live", "hopeless", "sad", "unhappy", "numb"
+      ];
       existentialDict.forEach(term => { if (clean.includes(term)) scores.existential += 3.5; });
 
-      const financialDict = ["invest", "shares", "stock", "mutual fund", "crypto", "sip", "deposit", "gold", "where to put money", "rupee", "rupees", "rs", "₹", "savings"];
+      // 6. Financial & Capital Allocation
+      const financialDict = [
+        "invest", "investment", "shares", "stock", "mutual fund", "crypto", "sip", "deposit", 
+        "gold", "where to put money", "grow money", "earn money", "wealth", "rupee", "rupees", "rs", "₹", "savings"
+      ];
       financialDict.forEach(term => { if (clean.includes(term)) scores.financial += 3.5; });
 
+      // Unbiased winner selection
       let highestCategory = "general";
       let maxScore = 0;
-      for (const [cat, score] of Object.entries(scores)) {
-        if (score > maxScore) { maxScore = score; highestCategory = cat; }
+      for (const [category, score] of Object.entries(scores)) {
+        if (score > maxScore) {
+          maxScore = score;
+          highestCategory = category;
+        }
       }
 
+      // Money context extraction
       let extractedCapital = 0;
       const numMatch = clean.match(/(?:₹|rs\.?|inr)?\s*([\d,.]+)\s*(k|lakh|lac|cr|rupees|rs)?/i);
-      if ((scores.financial > 0 || clean.includes("rupee") || clean.includes("rs") || clean.includes("₹")) && numMatch && numMatch[1]) {
+      const isMoneyContext = scores.financial > 0 || clean.includes("rupee") || clean.includes("rs") || clean.includes("₹");
+      if (isMoneyContext && numMatch && numMatch[1]) {
         let val = parseFloat(numMatch[1].replace(/,/g, ''));
         let unit = (numMatch[2] || '').toLowerCase();
         if (unit === 'k') val *= 1000;
@@ -581,7 +690,7 @@
         if (!isNaN(val) && val > 0) extractedCapital = val;
       }
 
-      activeTopic = text.length > 35 ? text.substring(0, 35) + "..." : (text || "Life Situation");
+      activeTopic = text.length > 40 ? text.substring(0, 40) + "..." : (text || "Life Situation");
 
       const res = {
         capital: extractedCapital,
@@ -594,103 +703,155 @@
         topicText: activeTopic
       };
 
-      if (highestCategory === "physical") { res.vitality = 25; res.distress = 70; res.mental = 50; }
-      else if (highestCategory === "animal") { res.emotional = 20; res.distress = 90; res.mental = 35; }
-      else if (highestCategory === "toxic") { res.emotional = 25; res.mental = 35; res.distress = 80; }
-      else if (highestCategory === "burnout") { res.vitality = 35; res.mental = 30; res.distress = 75; }
-      else if (highestCategory === "existential") { res.mental = 25; res.emotional = 30; res.distress = 80; }
-      else if (highestCategory === "financial") { res.mental = 75; res.distress = 20; if (res.capital === 0) res.capital = 1200; }
+      if (highestCategory === "physical") {
+        res.vitality = 25;
+        res.distress = 70;
+        res.mental = 50;
+      } else if (highestCategory === "animal") {
+        res.emotional = 20;
+        res.distress = 90;
+        res.mental = 35;
+      } else if (highestCategory === "toxic") {
+        res.emotional = 25;
+        res.mental = 35;
+        res.distress = 80;
+      } else if (highestCategory === "burnout") {
+        res.vitality = 35;
+        res.mental = 30;
+        res.distress = 75;
+      } else if (highestCategory === "existential") {
+        res.mental = 25;
+        res.emotional = 30;
+        res.distress = 80;
+      } else if (highestCategory === "financial") {
+        res.mental = 75;
+        res.distress = 20;
+        if (res.capital === 0) res.capital = 1200;
+      }
 
       return res;
     }
 
+    /* What-If Sensitivity Sliders Handler */
+    function updateWhatIfParameters() {
+      const commit = document.getElementById("slider_commitment").value;
+      const sleep = document.getElementById("slider_sleep").value;
+      const support = document.getElementById("slider_support").value;
+
+      document.getElementById("val_commitment").textContent = commit + "%";
+      document.getElementById("val_sleep").textContent = sleep + " hrs";
+      document.getElementById("val_support").textContent = support + "%";
+
+      runSimulation();
+    }
+
+    /* Main Compilation & Simulation Trigger */
     function compileAndSimulate() {
       const area = document.getElementById("userDilemma");
       const text = area ? area.value.trim() : "";
       const p = parseUniversalDilemma(text);
 
-      document.getElementById("v_capital").value = p.capital;
+      checkedPlanSteps.clear();
+
       document.getElementById("v_mental").value = p.mental;
       document.getElementById("v_emotional").value = p.emotional;
       document.getElementById("v_vitality").value = p.vitality;
       document.getElementById("v_distress").value = p.distress;
 
-      startHarmonicVisualizers(p.type, p.topicText);
+      const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      document.getElementById("resolutionTimestamp").textContent = "Synthesized: " + dateStr;
+
+      startFluidAnimationStudios(p.type, p.topicText);
       runSimulation(p.type, p.capital, p.topicText);
+      showToast("Sanctuary roadmap synthesized for: " + p.topicText);
     }
 
+    /* Simulation & Multi-Curve Mathematical Engine */
     function runSimulation(typeOverride, capOverride, topicOverride) {
-      let capital = parseFloat(document.getElementById("v_capital").value) || capOverride || 0;
-      let mental = parseFloat(document.getElementById("v_mental").value) || 70;
-      let emotional = parseFloat(document.getElementById("v_emotional").value) || 65;
-      let vitality = parseFloat(document.getElementById("v_vitality").value) || 80;
-      let type = typeOverride || currentDilemmaType || "general";
-      let topic = topicOverride || activeTopic || "Life Situation";
+      const vitality = parseFloat(document.getElementById("v_vitality").value) || 80;
+      const mental = parseFloat(document.getElementById("v_mental").value) || 70;
+      const emotional = parseFloat(document.getElementById("v_emotional").value) || 65;
+      const type = typeOverride || currentDilemmaType || "general";
+      const topic = topicOverride || activeTopic || "Life Situation";
+
+      const commit = parseFloat(document.getElementById("slider_commitment").value) / 100;
+      const sleepFactor = parseFloat(document.getElementById("slider_sleep").value) / 8.0;
+      const support = parseFloat(document.getElementById("slider_support").value) / 100;
+
+      // Base equilibrium
+      const baseEq = Math.round((vitality + mental + emotional) / 3);
 
       const years = 5;
       let inactionTimeline = [];
       let recoveryTimeline = [];
 
-      let curInaction = Math.round((vitality + mental + emotional) / 3);
-      let curRecovery = curInaction;
+      let curInaction = baseEq;
+      let curRecovery = baseEq;
 
       for (let yr = 1; yr <= years; yr++) {
-        curInaction = Math.max(15, Math.round(curInaction * 0.88 - 3));
-        curRecovery = Math.min(96, Math.round(curRecovery + (100 - curRecovery) * 0.42));
+        // Inaction Decay formula
+        curInaction = Math.max(12, Math.round(curInaction * 0.86 - 4));
+        
+        // Dynamic recovery formula influenced by what-if sliders
+        const recoveryBoost = (100 - curRecovery) * (0.38 * commit + 0.15 * sleepFactor + 0.12 * support);
+        curRecovery = Math.min(98, Math.round(curRecovery + recoveryBoost));
+
         inactionTimeline.push(curInaction);
         recoveryTimeline.push(curRecovery);
       }
 
-      renderDiagnosisDetails(type, capital, topic);
+      renderDiagnosisDetails(type, topic);
       updateKPIs(vitality, mental, emotional);
       renderComparativeChart(inactionTimeline, recoveryTimeline);
       renderP2PStoryboard(type);
+      updateLiveProgressTracker();
     }
 
-    function renderDiagnosisDetails(type, capital, topic) {
+    /* 15-Point Blueprint & Pros/Cons Dynamic Database */
+    function renderDiagnosisDetails(type, topic) {
       const pill = document.getElementById("verdictPill");
       const arch = document.getElementById("detectedArchetype");
       const summary = document.getElementById("verdictSummary");
       const prosList = document.getElementById("prosList");
       const consList = document.getElementById("consList");
-      const planList = document.getElementById("detailedPlanList");
+      const planContainer = document.getElementById("detailedPlanContainer");
 
       const blueprints = {
         physical: {
           arch: `Physical Health & Somatic Restoration (${topic})`,
-          summary: `<strong>Gentle Mechanical Alert for '${topic}':</strong> Physical ache or tendon strain is your body asking for restful deloading. Forcing repetitive motion through sharp inflammation turns temporary fatigue into chronic nerve entrapment. Listening early protects lifelong mobility.`,
+          summary: `<strong>Gentle Somatic Deloading Alert for '${topic}':</strong> Physical inflammation, wrist strain, or joint ache is an acute bio-signal that tissues are reaching mechanical exhaustion. Pushing through acute tendon or nerve inflammation accelerates chronic entrapment, nerve scarring, and secondary muscle compensations. Early mechanical rest unlocks rapid biological healing.`,
           pros: [
-            "Prevents irreversible median nerve compression or surgical procedures.",
-            "Restores 90%+ smooth functional typing and lifting within 4 to 6 weeks.",
-            "Releases compensatory shoulder stiffness and deep muscular bracing.",
-            "Restores deep slow-wave sleep by releasing nocturnal throbbing aches."
+            "Shields against irreversible median nerve entrapment and costly surgical procedures.",
+            "Restores 90%+ smooth, pain-free functional typing and lifting within 4 to 6 weeks.",
+            "Releases subconscious shoulder guarding, neck tension, and tension headaches.",
+            "Restores deep uninterrupted slow-wave sleep by halting nocturnal joint throbbing."
           ],
           cons: [
-            "Requires temporarily softening your daily keyboard and manual work volume.",
-            "Initial awkwardness transitioning to split ergonomics or voice dictation.",
-            "Pushing through pain risks chronic tendon breakdown and medical downtime."
+            "Requires an immediate, temporary reduction in manual typing output.",
+            "Short-term friction adapting to vertical mice, braces, or voice dictation tools.",
+            "Continuing to push through sharp pain risks permanent chronic tendon breakdown."
           ],
           plan: [
-            "Gently pause repetitive motions on the affected limb for the next 48 hours.",
-            "Apply wrapped cool compresses for 15 minutes, 3 times daily to soothe inflammation.",
-            "Sleep with a relaxed, neutral wrist/joint brace to prevent nighttime nerve bends.",
-            "Switch to voice-to-text dictation (Windows + H or mobile dictation) for writing blocks.",
-            "Introduce an ergonomic vertical mouse with a relaxed 57-degree natural grip.",
-            "Position forearms parallel to desk height with shoulders gently dropped and relaxed.",
-            "Take 2-minute restorative micro-breaks every 30 minutes to release tension.",
-            "Perform gentle median nerve glides: soft palm open, head tilted gently away.",
-            "Gently massage forearm muscles with light, circular thumb strokes.",
-            "Consider physician-approved topical arnica or anti-inflammatory balm during flares.",
-            "Avoid heavy strain or gripping heavy bags directly across finger joints.",
-            "Gradually reintroduce tasks at 50% pace in week 2, honoring your body's boundary.",
-            "If numbness or tingling lingers past 10 days, schedule an objective EMG nerve audit.",
-            "Consider a split ergonomic keyboard to allow your chest and wrists to breathe open.",
-            "Spend 10 minutes every evening doing gentle thoracic spinal openings on a yoga mat."
+            "Immediately stop repetitive movements on the affected limb for the next 48 hours.",
+            "Apply wrapped cool gel compresses for 15 minutes, 3 times daily to cool inflammatory cytokines.",
+            "Sleep with a relaxed, neutral rigid wrist/joint brace to prevent nocturnal nerve compression.",
+            "Switch to voice-to-text dictation (Windows Key + H or mobile dictation) for all writing blocks.",
+            "Introduce an ergonomic vertical mouse with a relaxed 57-degree handshake grip.",
+            "Position elbows at a 90-degree angle with wrists floating parallel, never bent backwards.",
+            "Set a gentle 30-minute timer to break continuous typing and gently shake out forearms.",
+            "Perform gentle median nerve gliding exercises: open palm, extend wrist, tilt head away.",
+            "Gently massage forearm flexor and extensor muscles with light circular strokes.",
+            "Consider physician-approved topical arnica or anti-inflammatory balm during peak flares.",
+            "Avoid heavy deadlifts, wrist pushups, or carrying weighted groceries across fingers.",
+            "Gradually reintroduce tasks at 50% pace in week 2, respecting somatic thresholds.",
+            "If numbness or tingling lingers past 10 days, book an objective EMG nerve conduction test.",
+            "Invest in a split ergonomic keyboard to allow your chest and wrists to breathe open naturally.",
+            "Spend 10 minutes every evening doing gentle thoracic spinal extensions on a yoga mat."
           ]
         },
         animal: {
-          arch: `Companion Care & Loving Compassion (${topic})`,
-          summary: `<strong>Ending Physical Agony is True Compassion:</strong> Prolonging a companion's existence when they endure incurable pain prolongs their suffering solely to delay our tears. Releasing them gently is the ultimate, selfless gift of protection.`,
+          arch: `Loving Companion Care & Compassionate Ethics (${topic})`,
+          summary: `<strong>Ending Physical Agony is True Compassion:</strong> Prolonging a companion's life when they are in constant, incurable pain delays human grief by forcing them to endure biological agony. Letting them go peacefully is the ultimate act of love and protection.`,
           pros: [
             "Gently lifts an innocent companion out of endless, unexplainable physical agony.",
             "Preserves dignity, ensuring their final moments are peaceful in your warm arms.",
@@ -786,7 +947,7 @@
         },
         financial: {
           arch: `Mindful Capital Allocation & Growth (${topic})`,
-          summary: `<strong>Nourish Your Earning Potential Before Chasing Markets:</strong> On micro-capital (Rs ${capital.toLocaleString('en-IN')}), stock markets yield modest annual gains (~Rs 140). The true, life-altering 100x return comes from investing in skills that expand your earning power.`,
+          summary: `<strong>Nourish Your Earning Potential Before Chasing Markets:</strong> On micro-capital, stock markets yield modest annual gains (~₹140). The true, life-altering 100x return comes from investing in skills that expand your earning power.`,
           pros: [
             "100x return potential by converting small capital into monthly earning skills.",
             "Builds serene financial discipline through automated, stress-free micro-SIPs.",
@@ -799,19 +960,19 @@
             "Saying a gentle 'no' to mindless impulsive spending on fleeting dopamine buys."
           ],
           plan: [
-            "Acknowledge with peace that Rs 1,200 in the stock market yields ~Rs 144/year; release rush.",
+            "Acknowledge with peace that ₹1,200 in the stock market yields ~₹144/year; release rush.",
             "Completely avoid speculative derivative trading, meme coins, or shady Telegram tips.",
-            "Direct Rs 500 toward a masterwork book (e.g., The Psychology of Money, Atomic Habits).",
-            "Or allocate Rs 500 toward a career certification tool (design, cloud, copy, software).",
+            "Direct ₹500 toward a masterwork book (e.g., The Psychology of Money, Atomic Habits).",
+            "Or allocate ₹500 toward a career certification tool (design, cloud, copy, software).",
             "Open a peaceful zero-brokerage mutual fund account (Groww, Zerodha Coin, Kuvera).",
-            "Set up an automated monthly Rs 500 SIP in a low-cost Nifty 50 Index Fund.",
+            "Set up an automated monthly ₹500 SIP in a low-cost Nifty 50 Index Fund.",
             "Schedule auto-debit for the 5th of each month so you pay your future self first.",
             "Park the remaining balance in an auto-sweep account for sudden unexpected moments.",
-            "Practice the calming 24-hour rule: wait a full day before any purchase over Rs 500.",
+            "Practice the calming 24-hour rule: wait a full day before any purchase over ₹500.",
             "Track your monthly cash flows with a clean, peaceful notebook or simple spreadsheet.",
             "Whenever income rises by 10%, gently increase your monthly SIP by 10% in tandem.",
             "Avoid paying high maintenance fees on unneeded trading or demat accounts.",
-            "Build a peaceful starter buffer of Rs 25,000 before touching individual equities.",
+            "Build a peaceful starter buffer of ₹25,000 before touching individual equities.",
             "Remain completely calm during market dips; rupee-cost averaging turns dips into opportunities.",
             "Focus 90% of your energy on expanding your monthly income, not watching stock charts."
           ]
@@ -851,15 +1012,51 @@
       };
 
       const d = blueprints[type] || blueprints.general;
+      currentDilemmaType = type;
+      currentPlanLength = d.plan.length;
+
       arch.textContent = d.arch;
-      pill.textContent = "Blueprint Harmonized";
       summary.innerHTML = d.summary;
 
-      prosList.innerHTML = d.pros.map(item => `<li>${item}</li>`).join('');
-      consList.innerHTML = d.cons.map(item => `<li>${item}</li>`).join('');
-      planList.innerHTML = d.plan.map(step => `<li>${step}</li>`).join('');
+      prosList.innerHTML = d.pros.map(item => `<li class="flex items-start gap-2"><span class="text-teal-400 mt-0.5">•</span><span>${item}</span></li>`).join('');
+      consList.innerHTML = d.cons.map(item => `<li class="flex items-start gap-2"><span class="text-rose-400 mt-0.5">•</span><span>${item}</span></li>`).join('');
+
+      // Interactive Checklist Generator
+      planContainer.innerHTML = d.plan.map((step, idx) => `
+        <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-900/40 hover:bg-slate-800/50 border border-slate-800/80 cursor-pointer transition select-none group">
+          <input type="checkbox" onchange="toggleStepCheck(${idx})" class="mt-1 h-4 w-4 rounded bg-slate-950 border-slate-700 text-teal-500 focus:ring-teal-400 focus:ring-offset-slate-900 cursor-pointer" />
+          <span id="step_text_${idx}" class="text-xs sm:text-sm text-slate-300 group-hover:text-white leading-relaxed transition">${idx + 1}. ${step}</span>
+        </label>
+      `).join('');
     }
 
+    /* Checklist Step Tracker */
+    function toggleStepCheck(index) {
+      const span = document.getElementById(`step_text_${index}`);
+      if (checkedPlanSteps.has(index)) {
+        checkedPlanSteps.delete(index);
+        if (span) span.classList.remove("line-through", "text-slate-500");
+      } else {
+        checkedPlanSteps.add(index);
+        if (span) span.classList.add("line-through", "text-slate-500");
+      }
+      updateLiveProgressTracker();
+    }
+
+    function updateLiveProgressTracker() {
+      const count = checkedPlanSteps.size;
+      const pct = Math.round((count / currentPlanLength) * 100);
+
+      document.getElementById("trackerCount").textContent = `${count}/${currentPlanLength}`;
+      document.getElementById("trackerPercent").textContent = `${pct}%`;
+      document.getElementById("trackerProgressBar").style.width = `${pct}%`;
+
+      if (pct === 100) {
+        showToast("🌟 Magnificent! You have completed all 15 recovery milestones!");
+      }
+    }
+
+    /* 3-Stage Storyboard Generator */
     function renderP2PStoryboard(type) {
       const p2p = document.getElementById("p2pContainer");
       if (!p2p) return;
@@ -886,7 +1083,7 @@
           { icon: "✨", title: "Frame 3: Radiant Vitality", desc: "7.5 hours of cellular sleep restores clarity, calm patience, and steady inner power." }
         ],
         financial: [
-          { icon: "🌱", title: "Frame 1: The Modest Seed", desc: "Honoring Rs 1,200 as a valuable foundation rather than chasing reckless speculative hype." },
+          { icon: "🌱", title: "Frame 1: The Modest Seed", desc: "Honoring ₹1,200 as a valuable foundation rather than chasing reckless speculative hype." },
           { icon: "📖", title: "Frame 2: Planting in Yourself", desc: "Investing in high-ROI craft skills and books that permanently raise monthly earning power." },
           { icon: "🌳", title: "Frame 3: The Compounding Grove", desc: "Automated index fund SIPs building a tranquil, unshakeable lifelong security forest." }
         ],
@@ -898,29 +1095,30 @@
       };
 
       const frames = storyboards[type] || storyboards.general;
-      p2p.innerHTML = frames.map(f => `
-        <div class="p2p-card">
-          <div class="p2p-icon">${f.icon}</div>
-          <div class="p2p-title">${f.title}</div>
-          <div class="p2p-desc">${f.desc}</div>
+      p2p.innerHTML = frames.map((f, i) => `
+        <div class="glass-sanctuary p-5 text-center flex flex-col items-center justify-center space-y-2.5">
+          <span class="text-3xl">${f.icon}</span>
+          <span class="text-xs uppercase font-semibold tracking-wider text-indigo-400">Phase 0${i + 1}</span>
+          <h4 class="text-sm font-semibold text-white font-serif">${f.title}</h4>
+          <p class="text-xs text-slate-400 leading-relaxed font-light">${f.desc}</p>
         </div>
       `).join('');
     }
 
+    /* Trajectory Chart Renderer */
     function renderComparativeChart(inaction, recovery) {
       const chartCanvas = document.getElementById("trajectoryChart");
       if (!chartCanvas || typeof Chart === "undefined") return;
 
-      const labels = ["Baseline", "Year 1", "Year 2", "Year 3", "Year 4", "Year 5"];
-      const inData = [inaction[0] + 10, ...inaction];
-      const recData = [inaction[0] + 10, ...recovery];
+      const labels = ["Today", "Week 1", "Month 3", "Year 1", "Year 2", "Year 5"];
+      const inData = [inaction[0] + 8, ...inaction];
+      const recData = [inaction[0] + 8, ...recovery];
 
       if (myChart) myChart.destroy();
 
       const ctx = chartCanvas.getContext("2d");
       
-      // Serene Emerald Gradient for Recovery
-      const recGradient = ctx.createLinearGradient(0, 0, 0, 300);
+      const recGradient = ctx.createLinearGradient(0, 0, 0, 320);
       recGradient.addColorStop(0, "rgba(20, 184, 166, 0.35)");
       recGradient.addColorStop(1, "rgba(20, 184, 166, 0.0)");
 
@@ -930,7 +1128,7 @@
           labels: labels,
           datasets: [
             {
-              label: "Future: Active Healing & Restoration (%)",
+              label: "Active Restoration Path (Healing %)",
               data: recData,
               borderColor: "#14b8a6",
               backgroundColor: recGradient,
@@ -938,10 +1136,13 @@
               fill: true,
               tension: 0.35,
               pointBackgroundColor: "#14b8a6",
-              pointRadius: 4
+              pointBorderColor: "#ffffff",
+              pointBorderWidth: 1.5,
+              pointRadius: 4.5,
+              pointHoverRadius: 7
             },
             {
-              label: "Current: Inaction & Slow Decay (%)",
+              label: "Inaction Path (Decay %)",
               data: inData,
               borderColor: "#f87171",
               borderDash: [5, 5],
@@ -949,7 +1150,7 @@
               fill: false,
               tension: 0.35,
               pointBackgroundColor: "#f87171",
-              pointRadius: 3
+              pointRadius: 3.5
             }
           ]
         },
@@ -958,22 +1159,34 @@
           maintainAspectRatio: false,
           scales: {
             x: {
-              grid: { color: "rgba(148, 163, 184, 0.08)" },
-              ticks: { color: "#94a3b8", font: { size: 11 } }
+              grid: { color: "rgba(148, 163, 184, 0.06)" },
+              ticks: { color: "#94a3b8", font: { size: 11, family: "Inter" } }
             },
             y: {
               min: 0,
               max: 100,
-              grid: { color: "rgba(148, 163, 184, 0.08)" },
-              ticks: { color: "#94a3b8", callback: (v) => v + "%" }
+              grid: { color: "rgba(148, 163, 184, 0.06)" },
+              ticks: { color: "#94a3b8", callback: (v) => v + "%", font: { size: 11, family: "Inter" } }
             }
           },
           plugins: {
             legend: {
+              position: 'top',
               labels: {
                 color: "#e2e8f0",
-                font: { size: 12, family: "Inter, sans-serif" }
+                boxWidth: 12,
+                usePointStyle: true,
+                font: { size: 11, family: "Inter" }
               }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleColor: '#f8fafc',
+              bodyColor: '#cbd5e1',
+              borderColor: 'rgba(148, 163, 184, 0.2)',
+              borderWidth: 1,
+              padding: 10,
+              displayColors: true
             }
           }
         }
@@ -981,15 +1194,38 @@
     }
 
     function updateKPIs(v, m, e) {
-      document.getElementById("kpi_vitality").textContent = v + " / 100";
-      document.getElementById("kpi_mental").textContent = m + " / 100";
-      document.getElementById("kpi_emotional").textContent = e + " / 100";
+      document.getElementById("kpi_vitality").textContent = v + "%";
+      document.getElementById("kpi_mental").textContent = m + "%";
+      document.getElementById("kpi_emotional").textContent = e + "%";
       document.getElementById("kpi_equilibrium").textContent = Math.round((v + m + e) / 3) + "%";
     }
 
-    /* Calming Fluid Waves for Procedural Canvases */
-    function startHarmonicVisualizers(type, topic) {
-      currentDilemmaType = type;
+    /* Procedural Organic Fluid Visualizers with Particles */
+    let pParticles = [];
+    let sParticles = [];
+
+    function initParticles() {
+      pParticles = [];
+      sParticles = [];
+      for (let i = 0; i < 24; i++) {
+        pParticles.push({
+          x: Math.random() * 540,
+          y: Math.random() * 200,
+          speed: 0.4 + Math.random() * 0.8,
+          size: 1 + Math.random() * 2.5,
+          alpha: 0.2 + Math.random() * 0.5
+        });
+        sParticles.push({
+          x: Math.random() * 540,
+          y: Math.random() * 200,
+          speed: 0.3 + Math.random() * 0.6,
+          size: 1.2 + Math.random() * 3,
+          alpha: 0.3 + Math.random() * 0.6
+        });
+      }
+    }
+
+    function startFluidAnimationStudios(type, topic) {
       if (problemAnimId) cancelAnimationFrame(problemAnimId);
       if (solutionAnimId) cancelAnimationFrame(solutionAnimId);
 
@@ -1000,26 +1236,48 @@
       const pCtx = pCanvas.getContext("2d");
       const sCtx = sCanvas.getContext("2d");
 
-      let pFrame = 0, sFrame = 0;
+      document.getElementById("problemCanvasOverlay").textContent = `Turbulence Wave: ${topic}`;
+      document.getElementById("solutionCanvasOverlay").textContent = `Restorative Current: ${topic}`;
+
+      document.getElementById("problemCanvasDesc").textContent = 
+        `Simulating real-time biological and emotional friction loops unfolding under unaddressed stress for '${topic}'.`;
+      document.getElementById("solutionCanvasDesc").textContent = 
+        `Simulating harmonic recovery trajectories, tissue/nervous down-regulation, and restored equilibrium for '${topic}'.`;
+
+      initParticles();
+
+      let pTime = 0;
+      let sTime = 0;
 
       function renderProblem() {
-        pFrame += 0.03;
+        if (!isAnimationsRunning) return;
+        pTime += 0.035;
         pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
 
-        // Gentle Ambient Glow
-        const rad = pCtx.createRadialGradient(240, 95, 10, 240, 95, 160);
-        rad.addColorStop(0, "rgba(239, 68, 68, 0.15)");
-        rad.addColorStop(1, "rgba(5, 7, 12, 0)");
+        // Ambient radial glow
+        const rad = pCtx.createRadialGradient(270, 100, 10, 270, 100, 180);
+        rad.addColorStop(0, "rgba(244, 63, 94, 0.12)");
+        rad.addColorStop(1, "rgba(6, 9, 17, 0)");
         pCtx.fillStyle = rad;
         pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
 
-        // Fluid Tension Wave
-        pCtx.strokeStyle = "rgba(248, 113, 113, 0.75)";
-        pCtx.lineWidth = 2.5;
+        // Chaotic particles
+        pCtx.fillStyle = "rgba(248, 113, 113, 0.4)";
+        pParticles.forEach(p => {
+          p.x += (Math.sin(pTime + p.y) * 0.6) - p.speed;
+          if (p.x < 0) p.x = pCanvas.width;
+          pCtx.beginPath();
+          pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          pCtx.fill();
+        });
+
+        // Turbulent Wave
+        pCtx.strokeStyle = "rgba(244, 63, 94, 0.85)";
+        pCtx.lineWidth = 2.2;
         pCtx.beginPath();
-        for (let x = 0; x < pCanvas.width; x += 3) {
-          let decay = (x / pCanvas.width) * 35;
-          let y = 95 + decay + Math.sin(x * 0.02 + pFrame) * 16 + Math.cos(x * 0.04 - pFrame * 0.5) * 8;
+        for (let x = 0; x < pCanvas.width; x += 4) {
+          const decay = (x / pCanvas.width) * 35;
+          const y = 95 + decay + Math.sin(x * 0.025 + pTime) * 18 + Math.cos(x * 0.04 - pTime * 0.6) * 9;
           if (x === 0) pCtx.moveTo(x, y); else pCtx.lineTo(x, y);
         }
         pCtx.stroke();
@@ -1028,23 +1286,35 @@
       }
 
       function renderSolution() {
-        sFrame += 0.025;
+        if (!isAnimationsRunning) return;
+        sTime += 0.028;
         sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
 
-        // Restorative Aurora Glow
-        const rad = sCtx.createRadialGradient(240, 95, 10, 240, 95, 160);
-        rad.addColorStop(0, "rgba(20, 184, 166, 0.2)");
-        rad.addColorStop(1, "rgba(5, 7, 12, 0)");
+        // Restorative Teal/Emerald Glow
+        const rad = sCtx.createRadialGradient(270, 100, 10, 270, 100, 180);
+        rad.addColorStop(0, "rgba(20, 184, 166, 0.15)");
+        rad.addColorStop(1, "rgba(6, 9, 17, 0)");
         sCtx.fillStyle = rad;
         sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
 
-        // Smooth Oceanic Wave
-        sCtx.strokeStyle = "rgba(52, 211, 153, 0.85)";
+        // Soothing Floating Light Motes
+        sCtx.fillStyle = "rgba(52, 211, 153, 0.6)";
+        sParticles.forEach(p => {
+          p.y -= p.speed * 0.5;
+          p.x += Math.sin(sTime + p.y * 0.02) * 0.4;
+          if (p.y < 0) p.y = pCanvas.height;
+          pCtx.beginPath();
+          sCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          sCtx.fill();
+        });
+
+        // Smooth Harmonic Wave
+        sCtx.strokeStyle = "rgba(20, 184, 166, 0.9)";
         sCtx.lineWidth = 2.8;
         sCtx.beginPath();
-        for (let x = 0; x < sCanvas.width; x += 3) {
-          let rise = Math.pow(x / sCanvas.width, 1.6) * 65;
-          let y = 140 - rise + Math.sin(x * 0.015 - sFrame) * 10;
+        for (let x = 0; x < sCanvas.width; x += 4) {
+          const rise = Math.pow(x / sCanvas.width, 1.6) * 60;
+          const y = 145 - rise + Math.sin(x * 0.018 - sTime) * 11;
           if (x === 0) sCtx.moveTo(x, y); else sCtx.lineTo(x, y);
         }
         sCtx.stroke();
@@ -1056,6 +1326,40 @@
       renderSolution();
     }
 
+    function toggleVisualAnimations() {
+      isAnimationsRunning = !isAnimationsRunning;
+      const icon = document.getElementById("animControlIcon");
+      const txt = document.getElementById("animControlText");
+      if (isAnimationsRunning) {
+        icon.textContent = "⏸️";
+        txt.textContent = "Pause Motions";
+        startFluidAnimationStudios(currentDilemmaType, activeTopic);
+      } else {
+        icon.textContent = "▶️";
+        txt.textContent = "Resume Motions";
+      }
+    }
+
+    /* Clipboard Share Functionality */
+    function shareDilemma() {
+      const topic = activeTopic || "My Life Dilemma";
+      const count = checkedPlanSteps.size;
+      const shareText = `🕊️ SimuSense Sanctuary Blueprint:\nTopic: ${topic}\nProgress: ${count}/15 Steps Executed.\nSimulation URL: ${window.location.href}`;
+      
+      const textArea = document.createElement("textarea");
+      textArea.value = shareText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast("Blueprint summary copied to clipboard!");
+      } catch (err) {
+        showToast("Link ready to share!");
+      }
+      document.body.removeChild(textArea);
+    }
+
+    /* Window Load Initializer */
     window.addEventListener("load", () => {
       compileAndSimulate();
     });
