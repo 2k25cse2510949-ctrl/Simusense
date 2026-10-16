@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SimuSense — Life Decision & Contingency Simulator</title>
+  <title>SimuSense — Universal Life Decision Simulator</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Chart.js CDN for interactive visualization -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -13,55 +12,66 @@
     
     <!-- Top Header -->
     <header class="header">
-      <div class="badge">SimuSense v1.0</div>
-      <h1>Real-Life What-If Simulator</h1>
-      <p>Simulate financial survival, career pivots, and lifestyle multipliers before taking real-world risks.</p>
+      <div class="header-top">
+        <span class="badge">SimuSense Decision Lab</span>
+        <span class="version-tag">Multi-Scenario v2.0</span>
+      </div>
+      <h1>Universal Real-Life "What-If" Simulator</h1>
+      <p>Simulate financial shocks, career gambles, lifestyle decisions, and health trade-offs before taking real-world risks.</p>
     </header>
 
-    <!-- Main Grid -->
+    <!-- Main Workspace Grid -->
     <main class="dashboard-grid">
       
-      <!-- Left Column: Inputs -->
+      <!-- Left Column: Inputs & Scenario Selection -->
       <section class="card input-section">
-        <h2>1. Current Life Baseline</h2>
-        <p class="section-desc">Enter your current financial & routine reality.</p>
-
-        <div class="form-group">
-          <label for="age">Current Age: <span id="ageVal">25</span></label>
-          <input type="range" id="age" min="18" max="65" value="25" />
-        </div>
-
-        <div class="form-group">
-          <label for="net_worth">Liquid Savings & Investments (₹)</label>
-          <input type="number" id="net_worth" value="300000" step="50000" />
-        </div>
-
-        <div class="form-group">
-          <label for="monthly_income">Monthly In-Hand Income (₹)</label>
-          <input type="number" id="monthly_income" value="60000" step="5000" />
-        </div>
-
-        <div class="form-group">
-          <label for="monthly_expense">Monthly Mandatory Expenses (₹)</label>
-          <input type="number" id="monthly_expense" value="35000" step="5000" />
+        
+        <div class="scenario-picker-box">
+          <label class="scenario-label" for="scenarioSelect">Choose Real-Life Dilemma</label>
+          <select id="scenarioSelect">
+            <option value="death">1. Family Security: What if I pass away tomorrow?</option>
+            <option value="rich">2. Wealth Multiplier: What if my income jumps 2x or 5x?</option>
+            <option value="career_pivot">3. Career Risk: What if I quit to pursue a startup / exam?</option>
+            <option value="rent_vs_buy">4. Big Purchase: What if I buy a home on a 20-yr EMI vs rent?</option>
+            <option value="medical_shock">5. Health Shock: What if a critical illness strikes?</option>
+            <option value="burnout_grind">6. Routine & Health: What if I sacrifice sleep to work extra?</option>
+          </select>
         </div>
 
         <div class="divider"></div>
 
-        <h2>2. Choose Your "What-If" Scenario</h2>
-        <div class="form-group">
-          <label for="scenarioSelect">Select Life Shock / Decision:</label>
-          <select id="scenarioSelect">
-            <option value="death">What if I pass away tomorrow? (Family Survival)</option>
-            <option value="rich">What if my income jumps 3x? (Wealth & Lifestyle)</option>
-            <option value="startup">What if I quit to pursue a startup / study? (Runway)</option>
-          </select>
+        <h2>Baseline Profile (Where You Are Today)</h2>
+        <p class="section-desc">Adjust your baseline parameters to match your current life status.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="age">Current Age: <strong id="ageVal">26</strong></label>
+            <input type="range" id="age" min="18" max="65" value="26" />
+          </div>
+          <div class="form-group">
+            <label for="net_worth">Liquid Assets / Savings (₹)</label>
+            <input type="number" id="net_worth" value="400000" step="50000" />
+          </div>
         </div>
 
-        <!-- Dynamic Contextual Inputs -->
-        <div id="dynamicInputs" class="dynamic-inputs-box">
-          <!-- Populated by JavaScript based on scenario selection -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="monthly_income">Monthly In-Hand Income (₹)</label>
+            <input type="number" id="monthly_income" value="65000" step="5000" />
+          </div>
+          <div class="form-group">
+            <label for="monthly_expense">Monthly Mandatory Expenses (₹)</label>
+            <input type="number" id="monthly_expense" value="38000" step="2000" />
+          </div>
         </div>
+
+        <div class="divider"></div>
+
+        <h2>Scenario Variables</h2>
+        <p class="section-desc" id="scenarioDescText">Adjust specific conditions for the chosen dilemma.</p>
+
+        <!-- Dynamic Inputs Injected Here -->
+        <div id="dynamicInputs" class="dynamic-inputs-box"></div>
 
         <button id="runBtn" class="btn-primary">Run What-If Simulation</button>
       </section>
@@ -69,14 +79,17 @@
       <!-- Right Column: Results & Interactive Visualization -->
       <section class="card results-section">
         <div class="results-header">
-          <h2>Simulation Trajectory (15 Years)</h2>
-          <span id="statusBadge" class="status-pill status-safe">Stable</span>
+          <div>
+            <h2>15-Year Trajectory Analysis</h2>
+            <p class="subtitle" id="scenarioSubTitle">Status Quo vs. What-If Path</p>
+          </div>
+          <span id="statusBadge" class="status-pill status-safe">Secure</span>
         </div>
 
-        <!-- Key Stats Highlight Cards -->
+        <!-- Metric KPI Cards -->
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">Family Runway / Depletion</div>
+            <div class="stat-label">Solvency Runway</div>
             <div class="stat-value" id="runwayMetric">15+ Years</div>
           </div>
           <div class="stat-card">
@@ -84,19 +97,19 @@
             <div class="stat-value" id="deltaMetric">₹0</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Financial Solvency</div>
-            <div class="stat-value" id="solvencyMetric">100%</div>
+            <div class="stat-label">Vitality / Health Index</div>
+            <div class="stat-value" id="vitalityMetric">85 / 100</div>
           </div>
         </div>
 
-        <!-- The Interactive Chart -->
+        <!-- Chart Container -->
         <div class="chart-container">
           <canvas id="trajectoryChart"></canvas>
         </div>
 
-        <!-- Automated Diagnostic Insights -->
+        <!-- Diagnostic Stress-Test Insights -->
         <div class="insights-card">
-          <h3>Deterministic Stress-Test Insights:</h3>
+          <h3>Deterministic Stress-Test Insights</h3>
           <ul id="insightsList"></ul>
         </div>
       </section>
@@ -104,6 +117,9 @@
     </main>
   </div>
 
+  <script src="app.js"></script>
+</body>
+</html>
   <script src="app.js"></script>
 </body>
 </html>
