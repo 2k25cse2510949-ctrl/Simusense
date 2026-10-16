@@ -3,100 +3,369 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimuSense — Universal Life &amp; Decision Simulator</title>
+  <title>SimuSense — Sanctuary of Clarity &amp; Decision</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --bg-primary: #070a12;
-      --bg-surface: #0f1626;
-      --bg-card: #162035;
-      --border-color: #243352;
-      --text-main: #f8fafc;
+      /* Soothing Aurora Palette */
+      --bg-gradient: radial-gradient(circle at 15% 15%, #0f172a 0%, #090d16 50%, #05070c 100%);
+      --surface-glass: rgba(18, 25, 43, 0.65);
+      --surface-card: rgba(23, 32, 54, 0.75);
+      --border-subtle: rgba(148, 163, 184, 0.12);
+      --border-glow: rgba(99, 102, 241, 0.3);
+      
+      --text-main: #f1f5f9;
+      --text-secondary: #cbd5e1;
       --text-muted: #94a3b8;
-      --accent: #6366f1;
-      --accent-hover: #4f46e5;
-      --danger: #ef4444;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --mental: #38bdf8;
-      --emotional: #ec4899;
-      --vitality: #22c55e;
+      
+      --teal-serene: #14b8a6;
+      --emerald-heal: #10b981;
+      --lavender-calm: #818cf8;
+      --indigo-peace: #6366f1;
+      --rose-warm: #fb7185;
+      --amber-gentle: #fbbf24;
+      --coral-soft: #f87171;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg-primary); color: var(--text-main); padding: 24px 16px; line-height: 1.6; }
-    .app-container { max-width: 1250px; margin: 0 auto; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; }
     
-    .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-    .badge { background: rgba(99, 102, 241, 0.2); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; }
-    h1 { font-size: 26px; font-weight: 700; margin-top: 6px; }
-    .subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      padding: 32px 18px;
+      line-height: 1.65;
+      min-height: 100vh;
+      background-attachment: fixed;
+    }
 
-    .translate-box { display: flex; align-items: center; gap: 8px; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 30px; }
+    .app-container {
+      max-width: 1220px;
+      margin: 0 auto;
+    }
+    
+    /* Top Header & Serenity Branding */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-sanctuary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(20, 184, 166, 0.2) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 30px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-top: 6px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 680px;
+    }
+
+    /* Translate Box Pill */
+    .translate-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(18, 25, 43, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      padding: 6px 14px;
+      border-radius: 40px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
     .translate-box span { font-size: 12px; color: var(--text-muted); }
-    #google_translate_element select { background: var(--bg-card); color: #fff; border: 1px solid var(--accent); padding: 4px 8px; border-radius: 6px; font-size: 12px; outline: none; }
+    #google_translate_element select {
+      background: rgba(30, 41, 69, 0.9);
+      color: #e2e8f0;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
 
-    .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-    .dilemma-card { border: 1px solid var(--accent); background: #111a30; }
-    textarea { width: 100%; padding: 14px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 14px; resize: vertical; outline: none; margin: 10px 0; min-height: 85px; }
-    textarea:focus { border-color: var(--accent); }
+    /* Smooth Glass Cards */
+    .glass-card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.25);
+      box-shadow: 0 14px 40px -10px rgba(0, 0, 0, 0.5);
+    }
 
-    .preset-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+    /* Input Sanctuary */
+    .dilemma-card {
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      background: linear-gradient(180deg, rgba(23, 32, 54, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 16px;
+      background: rgba(10, 15, 26, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      resize: vertical;
+      outline: none;
+      margin: 12px 0 14px 0;
+      min-height: 90px;
+      line-height: 1.6;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    textarea:focus {
+      border-color: var(--lavender-calm);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    /* Preset Chips */
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
     .chip-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-    .chip { background: var(--bg-card); color: #cbd5e1; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
-    .chip:hover { border-color: var(--accent); color: #fff; background: rgba(99, 102, 241, 0.2); }
+    .chip {
+      background: rgba(30, 41, 69, 0.6);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      padding: 7px 15px;
+      border-radius: 30px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .chip:hover {
+      border-color: var(--lavender-calm);
+      color: #fff;
+      background: rgba(99, 102, 241, 0.25);
+      transform: translateY(-1px);
+    }
 
-    .btn-primary { width: 100%; padding: 14px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-tranquil {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #4f46e5 0%, #0d9488 100%);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px -4px rgba(79, 70, 229, 0.4);
+      letter-spacing: 0.2px;
+    }
+    .btn-tranquil:hover {
+      background: linear-gradient(135deg, #4338ca 0%, #0f766e 100%);
+      box-shadow: 0 8px 24px -2px rgba(79, 70, 229, 0.55);
+      transform: translateY(-1px);
+    }
 
-    .conclusion-card { border-left: 4px solid var(--accent); background: #131d33; }
-    .conclusion-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
-    .status-pill { font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; }
-    .status-safe { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .status-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-    .status-warn { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    /* Verdict Card */
+    .conclusion-card {
+      border-left: 4px solid var(--teal-serene);
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+    }
+    .conclusion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 30px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-safe { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .status-warn { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
 
-    /* Pros & Cons Section */
-    .tradeoff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
-    .tradeoff-box { padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
-    .tradeoff-pros { background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.3); }
-    .tradeoff-cons { background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.3); }
-    .tradeoff-box h4 { font-size: 13px; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    /* Pros & Cons Balanced Cards */
+    .tradeoff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+    .tradeoff-box {
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+    .tradeoff-pros {
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .tradeoff-cons {
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.02) 100%);
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+    .tradeoff-box h4 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-    /* Detailed Solution Block (10-15 lines) */
-    .detailed-solution-card { background: #162035; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-top: 16px; }
-    .detailed-solution-card h3 { font-size: 15px; color: #818cf8; margin-bottom: 12px; }
-    .detailed-solution-card ol { padding-left: 20px; font-size: 13px; line-height: 1.8; color: #cbd5e1; }
+    /* 15-Step Blueprint */
+    .detailed-solution-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 22px;
+      margin-top: 20px;
+    }
+    .detailed-solution-card h3 {
+      font-size: 15px;
+      color: #a5b4fc;
+      margin-bottom: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detailed-solution-card ol {
+      padding-left: 20px;
+      font-size: 13.5px;
+      line-height: 1.9;
+      color: #cbd5e1;
+    }
+    .detailed-solution-card li { margin-bottom: 4px; }
 
-    /* Storyboard Picture-to-Picture Studio */
-    .p2p-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    /* Storyboard Picture-to-Picture */
+    .p2p-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
     @media (max-width: 768px) { .p2p-container { grid-template-columns: 1fr; } }
-    .p2p-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; text-align: center; }
-    .p2p-icon { font-size: 32px; margin-bottom: 6px; }
+    .p2p-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .p2p-card:hover { border-color: rgba(99, 102, 241, 0.3); transform: translateY(-2px); }
+    .p2p-icon { font-size: 34px; margin-bottom: 8px; }
     .p2p-title { font-size: 13px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
-    .p2p-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+    .p2p-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
-    .ai-video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
-    .ai-video-card { background: var(--bg-card); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
-    .canvas-wrapper { position: relative; width: 100%; height: 180px; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid #202b42; }
+    /* Harmonic Simulation Canvases */
+    .ai-video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .ai-video-card {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 18px;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+    }
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      background: radial-gradient(circle at center, #0a0f1d 0%, #03060c 100%);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
     .canvas-wrapper canvas { width: 100%; height: 100%; display: block; }
-    .canvas-overlay-text { position: absolute; bottom: 8px; left: 10px; right: 10px; font-size: 11px; color: #f8fafc; background: rgba(0,0,0,0.7); padding: 4px 8px; border-radius: 4px; }
+    .canvas-overlay-text {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      right: 10px;
+      font-size: 11px;
+      color: #f8fafc;
+      background: rgba(5, 7, 12, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
 
-    .dashboard-grid { display: grid; grid-template-columns: 400px 1fr; gap: 20px; }
-    @media (max-width: 950px) { .dashboard-grid { grid-template-columns: 1fr; } .tradeoff-grid { grid-template-columns: 1fr; } .ai-video-grid { grid-template-columns: 1fr; } }
+    /* Workspace Dashboard Grid */
+    .dashboard-grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+    @media (max-width: 950px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .tradeoff-grid { grid-template-columns: 1fr; }
+      .ai-video-grid { grid-template-columns: 1fr; }
+    }
 
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-    label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
-    input { width: 100%; padding: 9px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 13px; outline: none; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
+    input {
+      width: 100%;
+      padding: 10px;
+      background: rgba(10, 15, 26, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--teal-serene); }
 
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    /* Health Rings & KPI Pill Stats */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
     @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr 1fr; } }
-    .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; text-align: center; }
-    .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
-    .stat-value { font-size: 16px; font-weight: 700; margin-top: 4px; }
+    .stat-card {
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid var(--border-subtle);
+      padding: 14px 10px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .stat-label { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 16px; font-weight: 700; margin-top: 5px; }
 
-    .chart-container { height: 320px; position: relative; margin-bottom: 16px; }
+    .chart-container { height: 320px; position: relative; margin-top: 8px; }
+
+    /* Google Translate hidden clutter fix */
     .goog-te-gadget { font-size: 0px !important; }
     .goog-te-gadget span { display: none !important; }
     .goog-te-banner-frame { display: none !important; }
@@ -121,104 +390,109 @@
 <body>
   <div class="app-container">
     
-    <div class="top-nav">
+    <header class="top-nav">
       <div>
-        <span class="badge">SimuSense Universal v11.0</span>
-        <h1>Universal Life &amp; Decision Simulator</h1>
-        <p class="subtitle">Complete holistic modeling: Pros vs Cons, 10–15 line execution blueprints, current vs future trajectory graphs, and picture-to-picture storyboards.</p>
+        <div class="badge-sanctuary">
+          <span>✨</span>
+          <span>SimuSense Universal Core</span>
+        </div>
+        <h1>Sanctuary of Clarity &amp; Decision</h1>
+        <p class="subtitle">A serene space to decompress life dilemmas across physical well-being, emotional peace, relationships, animal companions, or finances.</p>
       </div>
 
       <div class="translate-box">
-        <span>🌐 Choose Language:</span>
+        <span>🌐 Language:</span>
         <div id="google_translate_element"></div>
       </div>
-    </div>
+    </header>
 
-    <!-- Dilemma Input -->
-    <section class="card dilemma-card">
-      <h2 style="font-size: 16px;">1. Describe Any Real-Life Dilemma</h2>
-      <textarea id="userDilemma" rows="3" placeholder="Type anything: 'wrist pain', 'dog in pain', 'leave toxic boss', 'burnout from 80hr work', 'invest 1200 rupees'"></textarea>
+    <!-- 1. Dilemma Sanctuary Input -->
+    <section class="glass-card dilemma-card">
+      <h2 style="font-size: 16px; font-weight: 600;">1. What is weighing on your mind or body today?</h2>
+      <textarea id="userDilemma" rows="3" placeholder="Pour out anything freely: 'wrist pain', 'dog is suffering from terminal cancer', 'toxic boss is draining me', 'working 80 hours with 4 hours sleep', 'have 1200 rupees where to invest', 'feeling lost and alone'"></textarea>
 
       <div class="preset-chips">
-        <span class="chip-label">Quick Scenarios:</span>
-        <button type="button" class="chip" onclick="handlePreset('wrist')">🦴 'wrist pain'</button>
-        <button type="button" class="chip" onclick="handlePreset('pet')">🐶 'dog in severe pain'</button>
-        <button type="button" class="chip" onclick="handlePreset('toxic')">💔 'toxic abusive boss'</button>
-        <button type="button" class="chip" onclick="handlePreset('burnout')">⚡ '80hr work no sleep'</button>
-        <button type="button" class="chip" onclick="handlePreset('money')">💰 'invest 1200 rupees'</button>
+        <span class="chip-label">Gentle Starters:</span>
+        <button type="button" class="chip" onclick="handlePreset('wrist')">🦴 Wrist &amp; Joint Pain</button>
+        <button type="button" class="chip" onclick="handlePreset('pet')">🐶 Companion in Pain</button>
+        <button type="button" class="chip" onclick="handlePreset('toxic')">💔 Toxic Environment</button>
+        <button type="button" class="chip" onclick="handlePreset('burnout')">⚡ Overwork &amp; Sleep Debt</button>
+        <button type="button" class="chip" onclick="handlePreset('money')">💰 Rs 1200 Allocation</button>
       </div>
 
-      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma &amp; Generate Full Blueprint</button>
+      <button type="button" class="btn-tranquil" onclick="compileAndSimulate()">Analyze Dilemma &amp; Synthesize Healing Roadmap</button>
     </section>
 
-    <!-- Verdict Banner -->
-    <section class="card conclusion-card" id="conclusionCard">
+    <!-- 2. Verdict & Equilibrium Banner -->
+    <section class="glass-card conclusion-card" id="conclusionCard">
       <div class="conclusion-header">
         <div>
-          <span class="status-pill status-safe" id="verdictPill">Balanced</span>
-          <span id="detectedArchetype" style="font-size: 13px; color: #818cf8; margin-left: 10px; font-weight: 600;"></span>
+          <span class="status-pill status-safe" id="verdictPill">Harmonized Path</span>
+          <span id="detectedArchetype" style="font-size: 13px; color: #a5b4fc; margin-left: 10px; font-weight: 600;"></span>
         </div>
       </div>
-      <div id="verdictSummary" style="font-size: 15px; color: #cbd5e1; margin-top: 6px; line-height: 1.6;"></div>
+      <div id="verdictSummary" style="font-size: 14.5px; color: #cbd5e1; margin-top: 6px; line-height: 1.7;"></div>
       
       <!-- Pros and Cons Trade-off Matrix -->
       <div class="tradeoff-grid">
         <div class="tradeoff-box tradeoff-pros">
-          <h4 style="color: #34d399;">✅ Pros &amp; Upside (If Action Taken)</h4>
-          <ul id="prosList" style="font-size: 13px; padding-left: 18px; color: #cbd5e1;"></ul>
+          <h4 style="color: #34d399;">✅ The Reclaimed Upside (Taking Action)</h4>
+          <ul id="prosList" style="font-size: 13px; padding-left: 18px; color: #cbd5e1; line-height: 1.7;"></ul>
         </div>
         <div class="tradeoff-box tradeoff-cons">
-          <h4 style="color: #f87171;">⚠️ Cons &amp; Hidden Risks (If Ignored / Inaction)</h4>
-          <ul id="consList" style="font-size: 13px; padding-left: 18px; color: #cbd5e1;"></ul>
+          <h4 style="color: #f87171;">⚠️ The Friction of Inaction (If Ignored)</h4>
+          <ul id="consList" style="font-size: 13px; padding-left: 18px; color: #cbd5e1; line-height: 1.7;"></ul>
         </div>
       </div>
 
-      <!-- Comprehensive 10-15 Lines Tactical Roadmap -->
+      <!-- Comprehensive 15-Point Blueprint -->
       <div class="detailed-solution-card">
-        <h3>📋 Comprehensive Tactical Resolution Blueprint (Step-by-Step Action Plan)</h3>
+        <h3>📋 Step-by-Step Tactical Blueprint (15 Actionable Steps)</h3>
         <ol id="detailedPlanList"></ol>
       </div>
     </section>
 
-    <!-- Picture-to-Picture Visual Storyboard -->
-    <section class="card">
-      <h2 style="font-size: 16px; margin-bottom: 4px;">🖼️ Picture-to-Picture Visual Storyboard (Before $\rightarrow$ Transition $\rightarrow$ Recovery)</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Visual progression showing your dilemma's current friction, turning point, and restored future state.</p>
+    <!-- 3. Picture-to-Picture Storyboard -->
+    <section class="glass-card">
+      <h2 style="font-size: 16px; margin-bottom: 4px; font-weight: 600;">🖼️ Visual Transformation Journey</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Visualizing your dilemma's current strain, the deliberate turning point, and restored peace.</p>
       <div class="p2p-container" id="p2pContainer"></div>
     </section>
 
-    <!-- Procedural Video Animation Engine -->
-    <section class="card">
-      <h2 style="font-size: 16px; margin-bottom: 4px;">🎬 Procedural AI Simulation Studios</h2>
+    <!-- 4. Fluid Procedural Motion Studios -->
+    <section class="glass-card">
+      <h2 style="font-size: 16px; margin-bottom: 4px; font-weight: 600;">🌊 Ocean of Equilibrium (Generative Visual Simulators)</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Fluid harmonic waves representing real-time internal friction loops versus restorative healing flows.</p>
       <div class="ai-video-grid">
         <div class="ai-video-card">
-          <h4 style="color: #f87171; font-size: 13px; margin-bottom: 8px;">🔴 Problem Dynamics &amp; Inaction Decay</h4>
+          <h4 style="color: #f87171; font-size: 13px; margin-bottom: 8px;">🔴 The Friction Wave (Inaction &amp; Stress Loop)</h4>
           <div class="canvas-wrapper">
-            <canvas id="problemCanvas" width="480" height="180"></canvas>
-            <div class="canvas-overlay-text" id="problemSubtitle">Synthesizing problem stress dynamics...</div>
+            <canvas id="problemCanvas" width="480" height="190"></canvas>
+            <div class="canvas-overlay-text" id="problemSubtitle">Harmonizing stress currents...</div>
           </div>
         </div>
         <div class="ai-video-card">
-          <h4 style="color: #34d399; font-size: 13px; margin-bottom: 8px;">🟢 Solution Recovery &amp; Stabilization</h4>
+          <h4 style="color: #34d399; font-size: 13px; margin-bottom: 8px;">🟢 The Restorative Current (Active Recovery)</h4>
           <div class="canvas-wrapper">
-            <canvas id="solutionCanvas" width="480" height="180"></canvas>
-            <div class="canvas-overlay-text" id="solutionSubtitle">Synthesizing recovery curve...</div>
+            <canvas id="solutionCanvas" width="480" height="190"></canvas>
+            <div class="canvas-overlay-text" id="solutionSubtitle">Synthesizing healing trajectory...</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Main Workspace -->
+    <!-- 5. Workspace Dashboard -->
     <main class="dashboard-grid">
-      <section class="card">
-        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Situation Parameters</h2>
+      <!-- Sliders / Vector State Inputs -->
+      <section class="glass-card">
+        <h2 style="font-size: 15px; margin-bottom: 12px; font-weight: 600;">2. Situation Energy Vectors</h2>
         <div class="form-row">
-          <div><label>Physical Energy (0–100)</label><input type="number" id="v_vitality" value="80" oninput="runSimulation()"></div>
-          <div><label>Mental Peace (0–100)</label><input type="number" id="v_mental" value="70" oninput="runSimulation()"></div>
+          <div><label>Physical Vitality (0–100)</label><input type="number" id="v_vitality" value="80" oninput="runSimulation()"></div>
+          <div><label>Mental Calm (0–100)</label><input type="number" id="v_mental" value="70" oninput="runSimulation()"></div>
         </div>
         <div class="form-row">
           <div><label>Emotional Balance (0–100)</label><input type="number" id="v_emotional" value="65" oninput="runSimulation()"></div>
-          <div><label>Distress Level (0–100)</label><input type="number" id="v_distress" value="30" oninput="runSimulation()"></div>
+          <div><label>Stress Pulse (0–100)</label><input type="number" id="v_distress" value="30" oninput="runSimulation()"></div>
         </div>
         <div class="form-row">
           <div><label>Capital Involved (Rs)</label><input type="number" id="v_capital" value="0" oninput="runSimulation()"></div>
@@ -227,15 +501,15 @@
       </section>
 
       <!-- Comparative Trajectory Graph -->
-      <section class="card">
+      <section class="glass-card">
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Physical Vitality</div><div class="stat-value" id="kpi_vitality" style="color: var(--vitality);">80 / 100</div></div>
+          <div class="stat-card"><div class="stat-label">Physical Vitality</div><div class="stat-value" id="kpi_vitality" style="color: var(--teal-serene);">80 / 100</div></div>
           <div class="stat-card"><div class="stat-label">Mental Peace</div><div class="stat-value" id="kpi_mental" style="color: var(--mental);">70 / 100</div></div>
           <div class="stat-card"><div class="stat-label">Emotional Heart</div><div class="stat-value" id="kpi_emotional" style="color: var(--emotional);">65 / 100</div></div>
           <div class="stat-card"><div class="stat-label">Life Equilibrium</div><div class="stat-value" id="kpi_equilibrium" style="color: #cbd5e1;">72%</div></div>
         </div>
 
-        <h3 style="font-size: 14px; margin-bottom: 8px;">📈 Trajectory: Inaction (Current Path) vs. Active Recovery (Future Path)</h3>
+        <h3 style="font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #cbd5e1;">📈 Equilibrium Trajectory: Current Inaction vs. Active Healing</h3>
         <div class="chart-container">
           <canvas id="trajectoryChart"></canvas>
         </div>
@@ -341,7 +615,7 @@
       document.getElementById("v_vitality").value = p.vitality;
       document.getElementById("v_distress").value = p.distress;
 
-      startAIVideoEngines(p.type, p.topicText);
+      startHarmonicVisualizers(p.type, p.topicText);
       runSimulation(p.type, p.capital, p.topicText);
     }
 
@@ -361,11 +635,8 @@
       let curRecovery = curInaction;
 
       for (let yr = 1; yr <= years; yr++) {
-        // Inaction Decay
         curInaction = Math.max(15, Math.round(curInaction * 0.88 - 3));
-        // Active Recovery
         curRecovery = Math.min(96, Math.round(curRecovery + (100 - curRecovery) * 0.42));
-
         inactionTimeline.push(curInaction);
         recoveryTimeline.push(curRecovery);
       }
@@ -384,211 +655,204 @@
       const consList = document.getElementById("consList");
       const planList = document.getElementById("detailedPlanList");
 
-      // Dynamic blueprints (10 to 15 actionable items)
       const blueprints = {
         physical: {
-          arch: `Physical Health & Somatic Strain (${topic})`,
-          summary: `<strong>Mechanical Strain Alert for '${topic}':</strong> Physical pain, nerve irritation, or tendon inflammation requires active deloading. Forcing repetitive motion through acute mechanical pain turns temporary inflammation into chronic nerve entrapment or permanent tendon degradation.`,
+          arch: `Physical Health & Somatic Restoration (${topic})`,
+          summary: `<strong>Gentle Mechanical Alert for '${topic}':</strong> Physical ache or tendon strain is your body asking for restful deloading. Forcing repetitive motion through sharp inflammation turns temporary fatigue into chronic nerve entrapment. Listening early protects lifelong mobility.`,
           pros: [
-            "Prevents irreversible median nerve compression or surgical interventions.",
-            "Restores 90%+ functional typing and lifting capacity within 4 to 6 weeks.",
-            "Eliminates compensatory muscle knots and secondary neck/shoulder tension.",
-            "Restores deep uninterrupted sleep by stopping nocturnal throbbing pain."
+            "Prevents irreversible median nerve compression or surgical procedures.",
+            "Restores 90%+ smooth functional typing and lifting within 4 to 6 weeks.",
+            "Releases compensatory shoulder stiffness and deep muscular bracing.",
+            "Restores deep slow-wave sleep by releasing nocturnal throbbing aches."
           ],
           cons: [
-            "Requires immediate reduction in active keyboard/manual work output.",
-            "Initial awkwardness adapting to ergonomic mice, splints, or dictation tools.",
-            "Continuing to push through pain risks permanent chronic tendonitis.",
-            "Emergency orthopedic/surgical costs if nerve entrapment is ignored."
+            "Requires temporarily softening your daily keyboard and manual work volume.",
+            "Initial awkwardness transitioning to split ergonomics or voice dictation.",
+            "Pushing through pain risks chronic tendon breakdown and medical downtime."
           ],
           plan: [
-            "Immediately stop repetitive movements on the inflamed limb for the next 48 hours.",
-            "Apply cold ice packs wrapped in cloth for 15 minutes, 3 times daily to reduce swelling.",
-            "Wear a neutral, rigid wrist/joint splint at night to prevent sleep-induced nerve bending.",
-            "Switch to voice-to-text dictation (Windows Key + H or mobile dictation) for all writing tasks.",
-            "Replace standard flat mouse with a 57-degree vertical ergonomic mouse immediately.",
-            "Position elbows at a 90-degree angle with wrists floating parallel, never bent backwards.",
-            "Set a 30-minute reminder timer to break continuous typing and shake out hands.",
-            "Perform gentle median nerve gliding exercises: open palm, extend wrist, tilt head away.",
-            "Gently massage forearm flexor and extensor muscles with light thumb pressure.",
-            "Take doctor-approved oral or topical anti-inflammatory gel during peak flare-up days.",
-            "Avoid heavy deadlifts, wrist pushups, or carrying weighted groceries on fingers.",
-            "Gradually reintroduce typing load at 50% volume in week 2, tracking pain threshold.",
-            "If numbness, tingling, or finger weakness persists beyond 10 days, book an EMG nerve conduction test.",
-            "Invest in an split ergonomic keyboard with mechanical low-actuation switches.",
-            "Incorporate daily 15-minute upper back thoracic extensions to improve blood supply down arms."
+            "Gently pause repetitive motions on the affected limb for the next 48 hours.",
+            "Apply wrapped cool compresses for 15 minutes, 3 times daily to soothe inflammation.",
+            "Sleep with a relaxed, neutral wrist/joint brace to prevent nighttime nerve bends.",
+            "Switch to voice-to-text dictation (Windows + H or mobile dictation) for writing blocks.",
+            "Introduce an ergonomic vertical mouse with a relaxed 57-degree natural grip.",
+            "Position forearms parallel to desk height with shoulders gently dropped and relaxed.",
+            "Take 2-minute restorative micro-breaks every 30 minutes to release tension.",
+            "Perform gentle median nerve glides: soft palm open, head tilted gently away.",
+            "Gently massage forearm muscles with light, circular thumb strokes.",
+            "Consider physician-approved topical arnica or anti-inflammatory balm during flares.",
+            "Avoid heavy strain or gripping heavy bags directly across finger joints.",
+            "Gradually reintroduce tasks at 50% pace in week 2, honoring your body's boundary.",
+            "If numbness or tingling lingers past 10 days, schedule an objective EMG nerve audit.",
+            "Consider a split ergonomic keyboard to allow your chest and wrists to breathe open.",
+            "Spend 10 minutes every evening doing gentle thoracic spinal openings on a yoga mat."
           ]
         },
         animal: {
-          arch: `Loving Your Companion & Compassionate Ethics (${topic})`,
-          summary: `<strong>Ending Suffering is True Compassion:</strong> Prolonging a companion's life when they are in constant, incurable pain delays human grief by forcing them to endure biological agony. Letting them go peacefully is the final act of love and protection.`,
+          arch: `Companion Care & Loving Compassion (${topic})`,
+          summary: `<strong>Ending Physical Agony is True Compassion:</strong> Prolonging a companion's existence when they endure incurable pain prolongs their suffering solely to delay our tears. Releasing them gently is the ultimate, selfless gift of protection.`,
           pros: [
-            "Relieves an innocent companion from continuous, unmanageable physical agony.",
-            "Preserves dignity and ensures their final moments are peaceful in your arms.",
-            "Prevents traumatic emergency room hospital crashes in the middle of the night.",
-            "Honors the lifelong promise you made to protect them from unnecessary pain."
+            "Gently lifts an innocent companion out of endless, unexplainable physical agony.",
+            "Preserves dignity, ensuring their final moments are peaceful in your warm arms.",
+            "Prevents traumatic emergency room hospital crashes in the dark of night.",
+            "Honors the unspoken sacred vow you made to protect them from unnecessary pain."
           ],
           cons: [
-            "Immense immediate grief, emotional void, and acute crying periods.",
-            "Irrational feelings of guilt or questioning if you made the choice too early.",
-            "Empty routines in the home (silent feeding bowls, absence at the front door).",
-            "Postponing the choice risks traumatic, agonizing natural organ failure."
+            "Brings profound, immediate grief, quiet rooms, and natural tears.",
+            "Temporary irrational questioning of whether the decision was made too soon.",
+            "The quiet ache of empty feeding bowls and routine silence in the home."
           ],
           plan: [
-            "Perform the objective HHHHHMM veterinary quality-of-life audit (Hurt, Hunger, Hydration, Hygiene, Happiness, Mobility).",
-            "Count bad days versus good days on a calendar; if bad days exceed good days, suffering has taken over.",
-            "Acknowledge that animals do not fear death or conceptualize tomorrow; they only feel the pain of right now.",
-            "Consult your veterinarian for a frank, compassionate assessment of their remaining comfort reserves.",
-            "Arrange for an in-home veterinary transition service so they remain in their favorite bed.",
-            "Feed them their absolute favorite forbidden treats (chocolate, bacon, ice cream) in their final hours.",
-            "Surround them with their favorite blanket, beloved toys, and familiar family voices.",
-            "Hold them and maintain gentle eye contact as the sedative is administered so they feel entirely safe.",
-            "Take a lock of fur or an ink paw-print impression as a lasting physical remembrance.",
-            "Allow yourself to weep without restraint or shame; grief is love with nowhere to go.",
-            "Avoid rushing to clean away all their belongings immediately; pack them away only when ready.",
-            "Dedicate a quiet memorial space in the garden or living room with a framed photograph.",
-            "Talk to a dedicated pet-loss bereavement counselor or join pet-loss support communities.",
-            "Do not adopt another pet immediately as an emotional replacement; allow the heart to grieve.",
-            "Remember that taking on the unbearable pain of loss yourself spared them from enduring more physical pain."
+            "Complete the gentle HHHHHMM comfort scale (Hurt, Hunger, Hydration, Hygiene, Happiness, Mobility).",
+            "Gently count comfort days versus pain days on a calendar with total honesty.",
+            "Remember that animal companions live purely in the 'now'; tomorrow holds no meaning if today hurts.",
+            "Speak honestly with your veterinarian regarding remaining comfort reserves.",
+            "Arrange an in-home veterinary transition so they remain resting in their beloved bed.",
+            "Offer them their favorite forbidden delights (sweet treats, gentle broths) in their final hours.",
+            "Surround them with their softest blanket, familiar family scents, and calm whispers.",
+            "Cradle them softly as the calming sedative takes effect, letting them know they are safe.",
+            "Take a gentle clay paw-print or fur keepsake to honor their physical presence.",
+            "Allow yourself to grieve openly and without judgment; grief is the sacred receipt of deep love.",
+            "Leave their resting space untouched until your heart feels naturally ready to organize it.",
+            "Light a small, quiet memorial candle beside their favorite sunny window spot.",
+            "Connect with compassionate pet-bereavement communities or an understanding friend.",
+            "Do not rush to adopt a replacement companion; give your heart spacious room to mourn.",
+            "Find comfort knowing you carried the crushing weight of grief so they no longer had to carry pain."
           ]
         },
         toxic: {
-          arch: `Interpersonal Sovereignty & Safe Exit (${topic})`,
-          summary: `<strong>Protect Your Mind, But Ringfence Your Survival:</strong> Chronic hostility or emotional abuse destroys your nervous system. However, walking out impulsively with zero savings trades workplace toxicity for acute financial panic. You need an orderly, strategic exit.`,
+          arch: `Personal Sanctuary & Dignified Transition (${topic})`,
+          summary: `<strong>Guard Your Peace, Protect Your Runway:</strong> Hostility and emotional turbulence slowly wear down your autonomic nervous system. Yet walking out with zero savings trades workplace toxicity for survival terror. An orderly, quiet exit is your greatest power.`,
           pros: [
-            "Restores your self-worth, emotional dignity, and prefrontal cognitive peace.",
-            "Stops the chronic high-cortisol state destroying your sleep and immune health.",
-            "Opens calendar space for a healthy, dignified, high-paying career or relationship.",
-            "Reclaims complete personal sovereignty over your daily schedule."
+            "Restores your inner self-worth, calm clarity, and emotional dignity.",
+            "Stops the chronic cortisol flood that fragments your sleep and vitality.",
+            "Opens spacious calendar room for an environment where your talents are celebrated.",
+            "Reclaims complete personal sovereignty over your mental headspace."
           ],
           cons: [
-            "Temporary discomfort of operating under 'quiet detachment' while hunting for offers.",
-            "Short-term financial frugality while building your 3-month survival fund.",
-            "Exiting requires confronting difficult boundary conversations or formal resignations.",
-            "Staying indefinitely guarantees clinical depression and professional burnout."
+            "Requires holding graceful composure ('quiet detachment') while applying elsewhere.",
+            "Temporary financial mindfulness while reinforcing your 3-month survival shield.",
+            "The initial discomfort of setting firm boundaries with reactive personalities."
           ],
           plan: [
-            "Immediately execute emotional detachment ('Gray Rock'): become completely unreactive to insults.",
-            "Perform your core job responsibilities strictly within hours, refusing all voluntary extras.",
-            "Keep an offline digital paper trail of all abusive emails, messages, and hostile exchanges.",
-            "Ringfence a non-negotiable 3-to-6 month barebones survival fund for rent, utilities, and food.",
-            "Update your resume, LinkedIn profile, and GitHub/portfolio with outcome-driven metrics quietly.",
-            "Turn on 'Open to Work' for recruiters only on LinkedIn to prevent employer visibility.",
-            "Commit to submitting 5 tailored job applications every weekday evening without fail.",
-            "Schedule interviews during lunch breaks, remote work blocks, or by using casual sick leave.",
-            "Secure an individual health insurance policy so departure does not leave you medically vulnerable.",
-            "Never badmouth the toxic employer in interviews; frame the transition as seeking higher scale.",
-            "Once an official offer letter and background check clear, submit a formal, polite 2-week notice.",
-            "Decline all counteroffers; toxic managers use counteroffers to buy time until they can replace you.",
-            "Pack personal belongings discreetly before handing in your formal resignation.",
-            "Take a structured 7-day complete mental detox between jobs before starting the new role.",
-            "Engage a counselor or therapist to unpack and release the residual trauma of emotional hostility."
+            "Practice the calming 'Gray Rock' technique: become as emotionally unreactive as polished river stone.",
+            "Deliver your core tasks with clean professionalism, quietly declining emotional drama.",
+            "Maintain an offline record of inappropriate demands or boundary violations.",
+            "Ringfence a non-negotiable 3-to-6 month barebones reserve for living peace.",
+            "Update your CV and portfolio quietly, focusing on clear, outcome-driven accomplishments.",
+            "Set LinkedIn to 'Open to Work' for external recruiters only to protect discretion.",
+            "Dedicate 1 tranquil hour every evening to sending thoughtful applications.",
+            "Schedule interviews during calm lunch hours or by taking planned personal leave.",
+            "Ensure an independent health insurance shield is active before your final notice.",
+            "In interviews, speak warmly of your ambitions rather than complaining about past friction.",
+            "Once a signed offer letter is in your hands, submit a calm, polite two-week notice.",
+            "Quietly decline counteroffers; unsupportive environments rarely change their core culture.",
+            "Pack your personal effects discreetly prior to delivering your resignation.",
+            "Take a 5-day peaceful nature pause between roles to reset your nervous system.",
+            "Honor yourself for choosing self-respect over familiar discomfort."
           ]
         },
         burnout: {
-          arch: `Overwork, Exhaustion & Biological Deficit (${topic})`,
-          summary: `<strong>You Cannot Run a High-Performance Engine on Zero Fuel:</strong> Working 80 hours while sleeping 4.5 hours causes compounding cognitive failure. No salary appraisal compensates for an endocrine or cardiovascular breakdown in your 20s or 30s.`,
+          arch: `Biological Recovery & Nervous Reset (${topic})`,
+          summary: `<strong>A Weary Mind Deserves Deep Cellular Rest:</strong> Working 80 hours while sleeping 4.5 hours is an unsustainable deficit. No title or bonus can replace healthy cardiovascular rhythm and creative joy. Rest is your performance edge.`,
           pros: [
-            "Restores prefrontal cortex decision-making, executive focus, and sharp memory.",
-            "Eliminates chronic brain fog, panic spikes, and erratic mood swings.",
-            "Lowers resting heart rate and reduces long-term cardiovascular risks.",
-            "Protects long-term earning longevity by preventing an involuntary career collapse."
+            "Restores crisp executive thinking, deep focus, and sharp intuitive clarity.",
+            "Lifts the suffocating veil of brain fog, irritability, and morning dread.",
+            "Normalizes resting cardiovascular rhythm and restores biological resilience.",
+            "Protects long-term career longevity by preventing an involuntary crash."
           ],
           cons: [
-            "Must accept saying 'No' to extra overtime and discretionary side-hustles.",
-            "Potential friction with managers accustomed to exploiting your unlimited availability.",
-            "Minor drop in short-term extra income by giving up excessive night shifts.",
-            "Pushing through without rest guarantees involuntary hospitalization within 18 months."
+            "Requires gracefully saying 'No' to non-essential demands and extra hours.",
+            "Temporary friction with external parties used to your constant availability.",
+            "Letting go of the illusion that your worth equals your exhaustion."
           ],
           plan: [
-            "Enforce a non-negotiable 7.5-hour sleep window; treat sleep as an immovable biological asset.",
-            "Set an automatic work shutdown alarm at 6:30 PM; power down work laptops and notifications.",
-            "Remove work email and Slack/Teams apps from your personal mobile phone immediately.",
-            "Cap total professional weekly working hours strictly between 45 and 50 hours maximum.",
-            "Take an immediate 4-day long weekend of zero screens, zero alarms, and deep restorative sleep.",
-            "Step into direct outdoor morning sunlight for 15 minutes upon waking to reset circadian cortisol.",
-            "Cut off all caffeine intake after 1:00 PM to protect deep slow-wave sleep cycles.",
-            "Incorporate a 30-minute daily zone-2 aerobic walk in nature without listening to podcasts.",
-            "Automate or delegate the bottom 25% of your lowest-leverage, high-friction daily tasks.",
-            "Learn the art of graceful boundary setting: 'I can deliver X on time if we deprioritize Y.'",
-            "Take 400mg of elemental Magnesium Glycinate 45 minutes before bed to soothe nervous tension.",
-            "Re-engage one non-monetized hobby (music, sketching, sports) purely for intrinsic joy.",
-            "Have an honest conversation with leadership regarding project overload and realistic deadlines.",
-            "Build an emergency financial cushion so you never operate under fear-based overwork.",
-            "Schedule regular quarterly restorative breaks into your yearly calendar in advance."
+            "Establish a non-negotiable 7.5-hour sleep sanctuary; treat sleep as a holy biological asset.",
+            "Institute a soothing 6:30 PM digital sunset: laptops closed, work alerts silenced.",
+            "Remove work email and messaging channels completely from your personal phone.",
+            "Cap your total working volume between 45 and 50 hours each week without apology.",
+            "Take an immediate long weekend of zero alarms, natural light, and quiet naps.",
+            "Greet morning daylight for 15 minutes upon waking to naturally balance circadian cortisol.",
+            "Gently transition away from caffeine after 1:00 PM to protect deep restorative delta waves.",
+            "Take a peaceful 30-minute daily walk in a leafy park without headphones or calls.",
+            "Gently automate or decline the bottom 25% of your lowest-value, high-stress tasks.",
+            "Communicate boundaries with calm clarity: 'To keep quality high on X, Y will wait.'",
+            "Nourish your nervous system with warm magnesium-rich herbal tea before resting.",
+            "Reconnect with one joyful, unmonetized activity (sketching, baking, garden tending).",
+            "Have an honest conversation with leadership regarding project balance and realistic goals.",
+            "Build your emergency reserve so you never operate out of fear-driven exhaustion.",
+            "Mark restorative quarterly breathing weekends on your calendar well in advance."
           ]
         },
         financial: {
-          arch: `Capital Allocation & Micro-Compounding (${topic})`,
-          summary: `<strong>Human Capital Beats Stock Picking for Small Sums:</strong> On micro-capital (Rs ${capital.toLocaleString('en-IN')}), market compounding yields only ~Rs 140/year. The true 100x return comes from deploying funds into high-ROI skills or building an automated micro-SIP habit.`,
+          arch: `Mindful Capital Allocation & Growth (${topic})`,
+          summary: `<strong>Nourish Your Earning Potential Before Chasing Markets:</strong> On micro-capital (Rs ${capital.toLocaleString('en-IN')}), stock markets yield modest annual gains (~Rs 140). The true, life-altering 100x return comes from investing in skills that expand your earning power.`,
           pros: [
-            "100x potential return by converting money into higher monthly earning capacity.",
-            "Builds lifelong investing discipline through automated index fund contributions.",
-            "Completely protects you from high-risk options trading, crypto, and scam tips.",
-            "Creates a peaceful emergency buffer that prevents reliance on high-interest credit cards."
+            "100x return potential by converting small capital into monthly earning skills.",
+            "Builds serene financial discipline through automated, stress-free micro-SIPs.",
+            "Completely shields you from reckless options trading, crypto hype, and scam traps.",
+            "Constructs a peaceful cash cushion that keeps you free from debt panic."
           ],
           cons: [
-            "Requires patience: index fund compounding is gradual, not an overnight jackpot.",
-            "Requires effort: buying a learning tool requires dedication to study and implement.",
-            "Must say no to impulsive dopamine spending on fast food, parties, or gadget upgrades.",
-            "Gambling small money in F&O options guarantees 90%+ total capital loss."
+            "Requires patience: real compound growth is calm and slow, not an overnight lottery.",
+            "Requires dedication to study and implement high-yield craft skills.",
+            "Saying a gentle 'no' to mindless impulsive spending on fleeting dopamine buys."
           ],
           plan: [
-            "Acknowledge that Rs 1,200 in the stock market only earns ~Rs 144/year; do not expect magic.",
-            "Never gamble micro-capital on Telegram stock tips, meme crypto, or F&O derivative contracts.",
-            "Allocate Rs 500 toward a foundational book (e.g., The Psychology of Money, Atomic Habits).",
-            "Or allocate Rs 500 toward a high-utility skill course (coding, design, copy, technical tools).",
-            "Open a zero-brokerage direct mutual fund account on Zerodha Coin, Groww, or Kuvera.",
-            "Set up an automated monthly recurring SIP of Rs 500 in a low-cost Nifty 50 Index Fund.",
-            "Enable auto-debit on the 5th of every month so investment occurs before discretionary spending.",
-            "Direct the remaining capital into a high-interest auto-sweep bank account for sudden needs.",
-            "Adopt the 24-hour rule: wait 24 hours before making any impulse purchase over Rs 500.",
-            "Track all daily expenses using a simple spreadsheet or pen-and-paper tracking notebook.",
-            "Every time your income increases by 10%, step up your monthly index SIP by 10% immediately.",
-            "Avoid paying high annual maintenance charges (AMC) on unnecessary demat accounts.",
-            "Build your first liquid emergency buffer of Rs 25,000 before touching individual equities.",
-            "Ignore short-term market dips; rupee-cost averaging turns market drops into higher units.",
-            "Focus 90% of your energy on expanding your monthly earning income rather than stock watching."
+            "Acknowledge with peace that Rs 1,200 in the stock market yields ~Rs 144/year; release rush.",
+            "Completely avoid speculative derivative trading, meme coins, or shady Telegram tips.",
+            "Direct Rs 500 toward a masterwork book (e.g., The Psychology of Money, Atomic Habits).",
+            "Or allocate Rs 500 toward a career certification tool (design, cloud, copy, software).",
+            "Open a peaceful zero-brokerage mutual fund account (Groww, Zerodha Coin, Kuvera).",
+            "Set up an automated monthly Rs 500 SIP in a low-cost Nifty 50 Index Fund.",
+            "Schedule auto-debit for the 5th of each month so you pay your future self first.",
+            "Park the remaining balance in an auto-sweep account for sudden unexpected moments.",
+            "Practice the calming 24-hour rule: wait a full day before any purchase over Rs 500.",
+            "Track your monthly cash flows with a clean, peaceful notebook or simple spreadsheet.",
+            "Whenever income rises by 10%, gently increase your monthly SIP by 10% in tandem.",
+            "Avoid paying high maintenance fees on unneeded trading or demat accounts.",
+            "Build a peaceful starter buffer of Rs 25,000 before touching individual equities.",
+            "Remain completely calm during market dips; rupee-cost averaging turns dips into opportunities.",
+            "Focus 90% of your energy on expanding your monthly income, not watching stock charts."
           ]
         },
         general: {
-          arch: `Holistic Life Alignment & Decision Clarity (${topic})`,
-          summary: `<strong>Resolving Life Conflict and Decision Paralysis:</strong> Your situation reflects friction between daily energy expenditures and your personal well-being. Restoring stability requires stabilizing physical health and emotional boundaries first.`,
+          arch: `Equilibrium & Gentle Decision Clarity (${topic})`,
+          summary: `<strong>Finding Stillness in the Whirlwind:</strong> Your dilemma reflects a friction between daily demands and internal harmony. Resolving it does not require forcing everything at once; it begins with calming the body and clarifying the very next step.`,
           pros: [
-            "Clears chronic decision fatigue and stops paralyzing mental overthinking loops.",
-            "Restores emotional grounding and gives you a structured path forward.",
-            "Prevents reactive, fear-based choices that create long-term secondary regrets.",
-            "Reclaims baseline mental calm and physical energy reserves."
+            "Dissolves chronic overthinking and quietens internal mental loops.",
+            "Restores emotional grounding and gives you a compassionate step-by-step path.",
+            "Prevents fear-driven, reactive decisions you might regret later.",
+            "Reclaims baseline tranquility, physical energy, and restful sleep."
           ],
           cons: [
-            "Requires making difficult choices and accepting temporary lifestyle trade-offs.",
-            "Requires disciplined daily routines even when feeling unmotivated.",
-            "Staying paralyzed in indecision guarantees compounding anxiety and lost time."
+            "Accepting that every meaningful path involves conscious trade-offs.",
+            "Requires gentle daily discipline even when motivation feels quiet.",
+            "Staying frozen in indecision generates more quiet anxiety than making a gentle choice."
           ],
           plan: [
-            "Write the dilemma down on paper; externalizing thoughts immediately lowers cortisol.",
-            "Separate the problem into two distinct lists: 'Things I Can Control' vs 'Things I Cannot'.",
-            "Stop ruminating on things outside your immediate sphere of personal agency.",
-            "Prioritize physical sleep, clean hydration, and real nutrition before making big decisions.",
-            "Never make permanent life decisions late at night or while experiencing acute anger.",
-            "Talk the problem through with one objective mentor, trusted friend, or counselor.",
-            "Define the absolute worst-case scenario; you will discover it is rarely fatal or unfixable.",
-            "Break the overwhelming five-year problem down into one manageable action for today.",
-            "Spend 30 minutes walking outdoors daily without headphones to process internal thoughts.",
-            "Set strict boundaries with negative people who amplify your anxiety and self-doubt.",
-            "Practice the 10-10-10 rule: will this choice matter in 10 days, 10 months, or 10 years?",
-            "Accept that there is no perfect choice; there are only trade-offs you choose to manage.",
-            "Protect your morning hour from news, social media doomscrolling, and email noise.",
-            "Take one micro-action within the next 2 hours to break free from passive stagnation.",
-            "Review your life equilibrium metrics weekly and adjust your habits with kindness."
+            "Write your thoughts down on paper; externalizing worries immediately settles cortisol.",
+            "Divide the situation into two columns: 'What I Can Control' vs 'What I Must Release'.",
+            "Lovingly let go of outcomes that lie outside your immediate personal circle.",
+            "Ensure you have eaten warm food, drunk clean water, and slept before deciding.",
+            "Never make permanent life decisions late at night when the mind is tired.",
+            "Speak your heart to one supportive, non-judgmental friend or counselor.",
+            "Look directly at the worst-case scenario: you will see it is survivable and mendable.",
+            "Shrink the intimidating five-year horizon down into one simple, gentle action for today.",
+            "Spend 30 minutes walking in leafy open air without digital distractions.",
+            "Set kind, firm boundaries with situations or people that drain your peace.",
+            "Ask yourself: 'Will this matter in 10 days, 10 months, or 10 years?'",
+            "Accept that there is no flawless choice; there is only the path you choose to make beautiful.",
+            "Protect your first morning hour from news, social media noise, and notifications.",
+            "Take one micro-step within the next 2 hours to release the tension of feeling stuck.",
+            "Review your life equilibrium weekly with deep self-compassion and gentleness."
           ]
         }
       };
 
       const d = blueprints[type] || blueprints.general;
-
       arch.textContent = d.arch;
-      pill.textContent = "Detailed Blueprint Generated";
+      pill.textContent = "Blueprint Harmonized";
       summary.innerHTML = d.summary;
 
       prosList.innerHTML = d.pros.map(item => `<li>${item}</li>`).join('');
@@ -602,34 +866,34 @@
 
       const storyboards = {
         physical: [
-          { icon: "⚡", title: "Frame 1: Acute Strain", desc: "Mechanical nerve/tendon compression causes sharp pain and inflammation during typing." },
-          { icon: "🛡️", title: "Frame 2: Active Deloading", desc: "Ergonomic bracing, ice therapy, and voice dictation remove mechanical stress." },
-          { icon: "🌿", title: "Frame 3: Restored Mobility", desc: "Nerve gliding exercises and split ergonomics restore full pain-free work capacity." }
+          { icon: "🍃", title: "Frame 1: Acknowledging Strain", desc: "Recognizing that sharp ache is an invitation to pause and deload inflamed nerve pathways." },
+          { icon: "🛡️", title: "Frame 2: Conscious Deloading", desc: "Ergonomic resting, soothing cool compresses, and voice dictation give tissue room to breathe." },
+          { icon: "🌿", title: "Frame 3: Restored Ease", desc: "Nerve glides and open ergonomics restore effortless, pain-free daily function." }
         ],
         animal: [
-          { icon: "💔", title: "Frame 1: Biological Agony", desc: "Companion endures constant terminal pain without understanding why their body hurts." },
-          { icon: "🕊️", title: "Frame 2: Loving Farewell", desc: "In-home veterinarian delivers peaceful, pain-free transition in familiar bed." },
-          { icon: "⭐", title: "Frame 3: Peaceful Memory", desc: "Dignity preserved; pain released; caregiver remembers years of pure companionship." }
+          { icon: "🕊️", title: "Frame 1: Enduring Love", desc: "Acknowledging terminal pain and choosing compassion over delaying our own heartbreak." },
+          { icon: "🌸", title: "Frame 2: Peaceful Farewell", desc: "In-home veterinarian facilitates a painless, gentle drift into rest in familiar warmth." },
+          { icon: "⭐", title: "Frame 3: Sacred Memory", desc: "Pain released; dignity honored; the bond lives on in unblemished, joyful gratitude." }
         ],
         toxic: [
-          { icon: "🗣️", title: "Frame 1: Hostile Friction", desc: "Daily insults, gaslighting, and high cortisol erode self-worth and confidence." },
-          { icon: "💼", title: "Frame 2: The Safe Runway", desc: "Quiet emotional detachment while saving 3-month fund and sending 5 resumes daily." },
-          { icon: "🚀", title: "Frame 3: Dignified Exit", desc: "Polite resignation handed in with signed offer letter in hand; peace restored." }
+          { icon: "🌧️", title: "Frame 1: The Heavy Storm", desc: "Recognizing that chronic hostility and tension are not a price worth paying for survival." },
+          { icon: "⛵", title: "Frame 2: The Safe Harbour", desc: "Quiet detachment, building a 3-month peace reserve, and sending daily calm applications." },
+          { icon: "🌅", title: "Frame 3: Clear Horizons", desc: "Stepping into an environment where your dignity and contributions are celebrated." }
         ],
         burnout: [
-          { icon: "⏳", title: "Frame 1: Chronic Deficit", desc: "80-hour grind and 4-hour sleep cycles trigger brain fog and cardiac exhaustion." },
-          { icon: "🛑", title: "Frame 2: Hard Boundaries", desc: "Strict 50-hour weekly cap, phones off at 6:30 PM, and 4-day restorative reset." },
-          { icon: "🔋", title: "Frame 3: Cellular Recovery", desc: "Non-negotiable 7.5-hour sleep protocol restores prefrontal cognitive clarity." }
+          { icon: "⏳", title: "Frame 1: The Fading Flame", desc: "Recognizing that 80-hour exhaustion and fragmented sleep dim your natural creative light." },
+          { icon: "🛑", title: "Frame 2: Setting Sacred Borders", desc: "Enforcing digital sunsets at 6:30 PM, saying gentle nos, and honoring deep 4-day resets." },
+          { icon: "✨", title: "Frame 3: Radiant Vitality", desc: "7.5 hours of cellular sleep restores clarity, calm patience, and steady inner power." }
         ],
         financial: [
-          { icon: "💸", title: "Frame 1: Micro Dissipation", desc: "Small capital wasted on junk food or lost in high-risk options trading and crypto." },
-          { icon: "📚", title: "Frame 2: Human Capital", desc: "Rs 500 deployed into high-ROI skills and tools that increase monthly earning power." },
-          { icon: "📈", title: "Frame 3: Wealth Habit", desc: "Automated Rs 500 monthly index fund SIP compounding unshakeable discipline." }
+          { icon: "🌱", title: "Frame 1: The Modest Seed", desc: "Honoring Rs 1,200 as a valuable foundation rather than chasing reckless speculative hype." },
+          { icon: "📖", title: "Frame 2: Planting in Yourself", desc: "Investing in high-ROI craft skills and books that permanently raise monthly earning power." },
+          { icon: "🌳", title: "Frame 3: The Compounding Grove", desc: "Automated index fund SIPs building a tranquil, unshakeable lifelong security forest." }
         ],
         general: [
-          { icon: "🌪️", title: "Frame 1: Mental Friction", desc: "Overthinking loops, conflicting priorities, and decision paralysis cause fatigue." },
-          { icon: "📝", title: "Frame 2: Radical Clarity", desc: "Separating controllable actions from external noise and taking daily micro-steps." },
-          { icon: "⚖️", title: "Frame 3: Equilibrium", desc: "Physical basics, boundaries, and clear focus restore lifelong inner balance." }
+          { icon: "🌫️", title: "Frame 1: The Mental Mist", desc: "Untangling overthinking loops and recognizing that decision paralysis is just fear of error." },
+          { icon: "🧭", title: "Frame 2: The Inner Compass", desc: "Separating what you can control from noise and taking one tranquil micro-step." },
+          { icon: "☀️", title: "Frame 3: Grounded Serenity", desc: "Daily physical basics, self-compassion, and calm boundaries restore life equilibrium." }
         ]
       };
 
@@ -654,28 +918,38 @@
       if (myChart) myChart.destroy();
 
       const ctx = chartCanvas.getContext("2d");
+      
+      // Serene Emerald Gradient for Recovery
+      const recGradient = ctx.createLinearGradient(0, 0, 0, 300);
+      recGradient.addColorStop(0, "rgba(20, 184, 166, 0.35)");
+      recGradient.addColorStop(1, "rgba(20, 184, 166, 0.0)");
+
       myChart = new Chart(ctx, {
         type: "line",
         data: {
           labels: labels,
           datasets: [
             {
-              label: "Future Path: Active Recovery (%)",
+              label: "Future: Active Healing & Restoration (%)",
               data: recData,
-              borderColor: "#10b981",
-              backgroundColor: "rgba(16, 185, 129, 0.15)",
+              borderColor: "#14b8a6",
+              backgroundColor: recGradient,
               borderWidth: 3,
               fill: true,
-              tension: 0.3
+              tension: 0.35,
+              pointBackgroundColor: "#14b8a6",
+              pointRadius: 4
             },
             {
-              label: "Current Path: Inaction Decay (%)",
+              label: "Current: Inaction & Slow Decay (%)",
               data: inData,
-              borderColor: "#ef4444",
+              borderColor: "#f87171",
               borderDash: [5, 5],
-              borderWidth: 2.5,
+              borderWidth: 2,
               fill: false,
-              tension: 0.3
+              tension: 0.35,
+              pointBackgroundColor: "#f87171",
+              pointRadius: 3
             }
           ]
         },
@@ -683,15 +957,25 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            x: { grid: { color: "#243352" }, ticks: { color: "#94a3b8" } },
+            x: {
+              grid: { color: "rgba(148, 163, 184, 0.08)" },
+              ticks: { color: "#94a3b8", font: { size: 11 } }
+            },
             y: {
               min: 0,
               max: 100,
-              grid: { color: "#243352" },
-              ticks: { color: "#38bdf8", callback: (v) => v + "%" }
+              grid: { color: "rgba(148, 163, 184, 0.08)" },
+              ticks: { color: "#94a3b8", callback: (v) => v + "%" }
             }
           },
-          plugins: { legend: { labels: { color: "#f8fafc" } } }
+          plugins: {
+            legend: {
+              labels: {
+                color: "#e2e8f0",
+                font: { size: 12, family: "Inter, sans-serif" }
+              }
+            }
+          }
         }
       });
     }
@@ -703,7 +987,8 @@
       document.getElementById("kpi_equilibrium").textContent = Math.round((v + m + e) / 3) + "%";
     }
 
-    function startAIVideoEngines(type, topic) {
+    /* Calming Fluid Waves for Procedural Canvases */
+    function startHarmonicVisualizers(type, topic) {
       currentDilemmaType = type;
       if (problemAnimId) cancelAnimationFrame(problemAnimId);
       if (solutionAnimId) cancelAnimationFrame(solutionAnimId);
@@ -718,38 +1003,52 @@
       let pFrame = 0, sFrame = 0;
 
       function renderProblem() {
-        pFrame++;
-        pCtx.fillStyle = "#070c18";
+        pFrame += 0.03;
+        pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+
+        // Gentle Ambient Glow
+        const rad = pCtx.createRadialGradient(240, 95, 10, 240, 95, 160);
+        rad.addColorStop(0, "rgba(239, 68, 68, 0.15)");
+        rad.addColorStop(1, "rgba(5, 7, 12, 0)");
+        pCtx.fillStyle = rad;
         pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
 
-        pCtx.strokeStyle = "#ef4444";
+        // Fluid Tension Wave
+        pCtx.strokeStyle = "rgba(248, 113, 113, 0.75)";
         pCtx.lineWidth = 2.5;
         pCtx.beginPath();
         for (let x = 0; x < pCanvas.width; x += 3) {
-          let decay = (x / pCanvas.width) * 40;
-          let wave = Math.sin((x * 0.03) + (pFrame * 0.05)) * 20;
-          let y = 90 + decay + wave;
+          let decay = (x / pCanvas.width) * 35;
+          let y = 95 + decay + Math.sin(x * 0.02 + pFrame) * 16 + Math.cos(x * 0.04 - pFrame * 0.5) * 8;
           if (x === 0) pCtx.moveTo(x, y); else pCtx.lineTo(x, y);
         }
         pCtx.stroke();
+
         problemAnimId = requestAnimationFrame(renderProblem);
       }
 
       function renderSolution() {
-        sFrame++;
-        sCtx.fillStyle = "#070c18";
+        sFrame += 0.025;
+        sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+
+        // Restorative Aurora Glow
+        const rad = sCtx.createRadialGradient(240, 95, 10, 240, 95, 160);
+        rad.addColorStop(0, "rgba(20, 184, 166, 0.2)");
+        rad.addColorStop(1, "rgba(5, 7, 12, 0)");
+        sCtx.fillStyle = rad;
         sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
 
-        sCtx.strokeStyle = "#10b981";
-        sCtx.lineWidth = 3;
+        // Smooth Oceanic Wave
+        sCtx.strokeStyle = "rgba(52, 211, 153, 0.85)";
+        sCtx.lineWidth = 2.8;
         sCtx.beginPath();
         for (let x = 0; x < sCanvas.width; x += 3) {
-          let growth = Math.pow(x / sCanvas.width, 1.8) * 85;
-          let wave = Math.sin((x * 0.02) - (sFrame * 0.04)) * 6;
-          let y = 145 - growth + wave;
+          let rise = Math.pow(x / sCanvas.width, 1.6) * 65;
+          let y = 140 - rise + Math.sin(x * 0.015 - sFrame) * 10;
           if (x === 0) sCtx.moveTo(x, y); else sCtx.lineTo(x, y);
         }
         sCtx.stroke();
+
         solutionAnimId = requestAnimationFrame(renderSolution);
       }
 
