@@ -10,45 +10,64 @@
 <body>
   <div class="app-container">
     
-    <!-- Top Header -->
+    <!-- Header -->
     <header class="header">
       <div class="header-top">
-        <span class="badge">SimuSense Cognitive Engine</span>
-        <span class="version-tag">NLP Profiler + Mathematical Twin</span>
+        <span class="badge">SimuSense AI Core</span>
+        <span class="version-tag">Compiler & Decision Engine v2.5</span>
       </div>
       <h1>Natural Language Life Dilemma Simulator</h1>
-      <p>Type any real-life problem or situation. SimuSense extracts your state, compiles your life profile, and stress-tests your future.</p>
+      <p>Type your personal or financial dilemma. SimuSense compiles your profile, models the variables, and outputs the stress-tested verdict.</p>
     </header>
 
-    <!-- Step 1: Dilemma Input Box -->
+    <!-- 1. Dilemma Input Section -->
     <section class="card dilemma-card">
       <h2>1. Describe Your Real-Life Dilemma</h2>
-      <p class="section-desc">Type your dilemma naturally in plain English (include as many details like age, salary, savings, or dependents as you want, or try a preset below).</p>
+      <p class="section-desc">Type your scenario in plain English, or click any preset to test instantly.</p>
 
-      <textarea id="userDilemma" rows="3" placeholder="Example: I am 27 years old earning ₹70,000/month with ₹4 Lakh savings and 2 dependents. What if I leave my job for 2 years to prepare for UPSC, or what if an emergency strikes?"></textarea>
+      <textarea id="userDilemma" rows="3" placeholder="e.g., I am 28 years old earning ₹75,000/month with ₹5 Lakh in savings. What happens to my family if I die tomorrow with ₹25 Lakh insurance cover?"></textarea>
 
-      <!-- Quick Preset Chips -->
+      <!-- Preset Chips -->
       <div class="preset-chips">
-        <span class="chip-label">Quick Real-Life Presets:</span>
-        <button class="chip" onclick="loadPreset('family_loss')">What if I pass away tomorrow?</button>
-        <button class="chip" onclick="loadPreset('career_upsc')">What if I quit my job for 2 yrs to study?</button>
-        <button class="chip" onclick="loadPreset('income_jump')">What if I earn 3x salary with lifestyle creep?</button>
-        <button class="chip" onclick="loadPreset('medical_crisis')">What if a ₹12L medical emergency hits?</button>
+        <span class="chip-label">Quick Presets:</span>
+        <button type="button" class="chip" onclick="loadPreset('family_loss')">What if I pass away tomorrow?</button>
+        <button type="button" class="chip" onclick="loadPreset('career_upsc')">What if I quit job for 2 yrs to study?</button>
+        <button type="button" class="chip" onclick="loadPreset('income_jump')">What if I earn 3x salary with lifestyle creep?</button>
+        <button type="button" class="chip" onclick="loadPreset('medical_crisis')">What if a ₹12L medical emergency hits?</button>
       </div>
 
-      <button id="analyzeBtn" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Compile Life Profile</button>
+      <button type="button" id="analyzeBtn" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Compile Life Profile</button>
+    </section>
+
+    <!-- 2. Analysis & Conclusion Banner -->
+    <section class="card conclusion-card" id="conclusionCard" style="display: none;">
+      <div class="conclusion-header">
+        <span class="status-pill" id="verdictPill">Pending</span>
+        <h3 id="verdictTitle">AI Scenario Diagnosis</h3>
+      </div>
+      <p id="verdictSummary" class="verdict-text"></p>
+      <div class="conclusion-grid">
+        <div class="conclusion-box">
+          <span class="conclusion-label">Compiled Core Risk</span>
+          <strong id="riskText">-</strong>
+        </div>
+        <div class="conclusion-box">
+          <span class="conclusion-label">Recommended Action</span>
+          <strong id="actionText">-</strong>
+        </div>
+      </div>
     </section>
 
     <!-- Main Workspace Grid -->
     <main class="dashboard-grid">
       
-      <!-- Left Column: Auto-Compiled Profile & Dynamic Shocks -->
+      <!-- Left Column: Auto-Compiled Profile Form -->
       <section class="card input-section">
         <div class="profile-header">
           <h2>2. Compiled State Profile</h2>
-          <span class="badge-accent">Auto-Extracted</span>
+          <span class="badge-accent" id="extractedBadge">Awaiting Input</span>
         </div>
-        <p class="section-desc">Extracted from your dilemma. You can edit any parameter directly to fine-tune the model.</p>
+        <p class="section-desc">Extracted from your text. You can also edit these values manually.</p>
 
         <div class="form-row">
           <div class="form-group">
@@ -85,10 +104,10 @@
 
         <div class="divider"></div>
 
-        <h2>3. Identified Scenario & Shock Rules</h2>
+        <h2>3. Identified Scenario Parameters</h2>
         <div class="form-group">
-          <label for="detectedScenario">Inferred Life Event:</label>
-          <select id="detectedScenario" onchange="runDeterministicSimulation()">
+          <label for="detectedScenario">Inferred Event Archetype:</label>
+          <select id="detectedScenario" onchange="onScenarioDropdownChange()">
             <option value="contingency_death">Contingency: Sudden Loss of Primary Earner</option>
             <option value="career_sabbatical">Career Sabbatical: Zero Income Runway</option>
             <option value="income_multiplier">Wealth Growth: Salary Surge & Lifestyle Creep</option>
@@ -98,14 +117,14 @@
 
         <div id="scenarioParameters" class="dynamic-inputs-box"></div>
 
-        <button class="btn-secondary" onclick="runDeterministicSimulation()">Re-Calculate Trajectory</button>
+        <button type="button" class="btn-secondary" onclick="runDeterministicSimulation()">Recalculate Projections</button>
       </section>
 
-      <!-- Right Column: Trajectory Chart & Automated Insights -->
+      <!-- Right Column: Trajectory Chart & Key Metrics -->
       <section class="card results-section">
         <div class="results-header">
           <div>
-            <h2>15-Year Trajectory & Stress-Test</h2>
+            <h2>15-Year Trajectory Stress-Test</h2>
             <p class="subtitle" id="scenarioSubTitle">Status Quo vs. Dilemma Outcome</p>
           </div>
           <span id="statusBadge" class="status-pill status-safe">Secure</span>
@@ -127,21 +146,12 @@
           </div>
         </div>
 
-        <!-- Interactive Trajectory Graph -->
+        <!-- Chart Container -->
         <div class="chart-container">
           <canvas id="trajectoryChart"></canvas>
         </div>
 
-        <!-- Stress-Test Diagnostic Insights -->
+        <!-- Diagnostic Stress-Test Insights -->
         <div class="insights-card">
-          <h3>SimuSense Stress-Test Insights & Recommendations</h3>
+          <h3>Stress-Test Diagnostic Findings:</h3>
           <ul id="insightsList"></ul>
-        </div>
-      </section>
-
-    </main>
-  </div>
-
-  <script src="app.js"></script>
-</body>
-</html>
