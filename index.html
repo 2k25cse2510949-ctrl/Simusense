@@ -1,360 +1,109 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimuSense | Explore Your Possible Futures</title>
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b1020;
-      color: #f5f3ff;
-      line-height: 1.6;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px 8%;
-      border-bottom: 1px solid #272c43;
-    }
-
-    .logo { font-size: 24px; font-weight: bold; }
-    .logo span { color: #a78bfa; }
-
-    .tag {
-      color: #c4b5fd;
-      font-size: 12px;
-      border: 1px solid #51417c;
-      padding: 6px 12px;
-      border-radius: 20px;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: auto;
-      padding: 65px 24px;
-    }
-
-    .intro { text-align: center; margin-bottom: 45px; }
-
-    .intro h1 {
-      font-size: clamp(34px, 6vw, 58px);
-      line-height: 1.12;
-      margin: 18px 0;
-    }
-
-    .intro h1 span { color: #a78bfa; }
-
-    .intro p {
-      color: #b8bfd3;
-      max-width: 650px;
-      margin: 18px auto;
-    }
-
-    .eyebrow {
-      color: #c4b5fd;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-size: 12px;
-    }
-
-    .section-title { margin-bottom: 22px; }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-
-    .card {
-      background: #141a2e;
-      border: 1px solid #2b3350;
-      border-radius: 16px;
-      padding: 24px;
-      transition: transform .2s, border-color .2s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: #a78bfa;
-    }
-
-    .symbol { font-size: 30px; }
-    .card h3 { margin: 12px 0 8px; }
-    .card p { color: #b8bfd3; font-size: 14px; }
-
-    button {
-      background: #8b5cf6;
-      color: white;
-      border: 0;
-      border-radius: 9px;
-      padding: 12px 17px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    button:hover { background: #7c3aed; }
-
-    .card button { width: 100%; margin-top: 12px; }
-
-    .note {
-      margin-top: 30px;
-      padding: 18px;
-      background: #141a2e;
-      border-radius: 12px;
-      border: 1px solid #2b3350;
-      color: #b8bfd3;
-      font-size: 13px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 24px;
-      color: #858da7;
-      border-top: 1px solid #272c43;
-      font-size: 13px;
-    }
-
-    @media (max-width: 500px) {
-      header { padding: 18px; }
-      main { padding: 40px 18px; }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SimuSense — Life Decision & Contingency Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Chart.js CDN for interactive visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <div class="logo">Simu<span>Sense</span> ✦</div>
-    <div class="tag">YOUR FUTURE, EXPLORED</div>
-  </header>
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="header">
+      <div class="badge">SimuSense v1.0</div>
+      <h1>Real-Life What-If Simulator</h1>
+      <p>Simulate financial survival, career pivots, and lifestyle multipliers before taking real-world risks.</p>
+    </header>
 
-  <main>
-    <section class="intro">
-      <div class="eyebrow">Think beyond today</div>
-      <h1>Explore your <span>possible futures.</span></h1>
-      <p>
-        What if you chose a different degree, changed your daily habits,
-        or made a new financial decision? Explore possibilities, compare
-        outcomes, and plan your next move with SimuSense.
-      </p>
-    </section>
+    <!-- Main Grid -->
+    <main class="dashboard-grid">
+      
+      <!-- Left Column: Inputs -->
+      <section class="card input-section">
+        <h2>1. Current Life Baseline</h2>
+        <p class="section-desc">Enter your current financial & routine reality.</p>
 
-    <section>
-      <h2 class="section-title">Choose your What-If scenario</h2>
+        <div class="form-group">
+          <label for="age">Current Age: <span id="ageVal">25</span></label>
+          <input type="range" id="age" min="18" max="65" value="25" />
+        </div>
 
-      <div class="cards">
-        <article class="card">
-          <div class="symbol">🎓</div>
-          <h3>Education & Career</h3>
-          <p>
-            Compare B.Tech, BBA and B.Sc. Explore study plans,
-            costs, skills and possible career pathways.
-          </p>
-          <button onclick="openScenario('career')">Explore career paths →</button>
-        </article>
+        <div class="form-group">
+          <label for="net_worth">Liquid Savings & Investments (₹)</label>
+          <input type="number" id="net_worth" value="300000" step="50000" />
+        </div>
 
-        <article class="card">
-          <div class="symbol">📚</div>
-          <h3>Study & Time</h3>
-          <p>
-            Change your study hours and compare weekly study time
-            with your available free time.
-          </p>
-          <button onclick="openScenario('study')">Explore study plans →</button>
-        </article>
+        <div class="form-group">
+          <label for="monthly_income">Monthly In-Hand Income (₹)</label>
+          <input type="number" id="monthly_income" value="60000" step="5000" />
+        </div>
 
-        <article class="card">
-          <div class="symbol">💰</div>
-          <h3>Budget & Savings</h3>
-          <p>
-            Change your monthly savings and explore how your
-            money could grow over time.
-          </p>
-          <button onclick="openScenario('budget')">Explore savings →</button>
-        </article>
+        <div class="form-group">
+          <label for="monthly_expense">Monthly Mandatory Expenses (₹)</label>
+          <input type="number" id="monthly_expense" value="35000" step="5000" />
+        </div>
 
-        <article class="card">
-          <div class="symbol">⏰</div>
-          <h3>Daily Routine</h3>
-          <p>
-            Rearrange sleep, study, work and leisure to see
-            how your daily schedule changes.
-          </p>
-          <button onclick="openScenario('routine')">Explore routines →</button>
-        </article>
+        <div class="divider"></div>
 
-        <article class="card">
-          <div class="symbol">⚡</div>
-          <h3>Energy & Resources</h3>
-          <p>
-            Explore equipment usage, estimated electricity
-            consumption and potential cost savings.
-          </p>
-          <button onclick="openScenario('energy')">Explore energy →</button>
-        </article>
-      </div>
-    </section>
+        <h2>2. Choose Your "What-If" Scenario</h2>
+        <div class="form-group">
+          <label for="scenarioSelect">Select Life Shock / Decision:</label>
+          <select id="scenarioSelect">
+            <option value="death">What if I pass away tomorrow? (Family Survival)</option>
+            <option value="rich">What if my income jumps 3x? (Wealth & Lifestyle)</option>
+            <option value="startup">What if I quit to pursue a startup / study? (Runway)</option>
+          </select>
+        </div>
 
-    <div class="note">
-      <strong>How SimuSense works:</strong>
-      Choose a situation, adjust the assumptions, compare alternative
-      scenarios, and use the results to plan your next steps.
-      Estimates are not guarantees of future outcomes.
-    </div>
-  </main>
+        <!-- Dynamic Contextual Inputs -->
+        <div id="dynamicInputs" class="dynamic-inputs-box">
+          <!-- Populated by JavaScript based on scenario selection -->
+        </div>
 
-  <footer>
-    SimuSense © 2026 · Explore possibilities. Make informed decisions.
-  </footer>
+        <button id="runBtn" class="btn-primary">Run What-If Simulation</button>
+      </section>
 
-<section id="future-lab" style="max-width:1100px;margin:45px auto;padding:24px;color:#f5f3ff;">
-  <p style="color:#c4b5fd;letter-spacing:2px;">SIMUSENSE FUTURE LAB</p>
-  <h2>Compare Your Possible Futures</h2>
-  <p style="color:#b8bfd3;">
-    Explore different education paths and see how your estimated
-    costs and planned learning hours change.
-  </p>
+      <!-- Right Column: Results & Interactive Visualization -->
+      <section class="card results-section">
+        <div class="results-header">
+          <h2>Simulation Trajectory (15 Years)</h2>
+          <span id="statusBadge" class="status-pill status-safe">Stable</span>
+        </div>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+        <!-- Key Stats Highlight Cards -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Family Runway / Depletion</div>
+            <div class="stat-value" id="runwayMetric">15+ Years</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">15-Yr Net Worth Delta</div>
+            <div class="stat-value" id="deltaMetric">₹0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Financial Solvency</div>
+            <div class="stat-value" id="solvencyMetric">100%</div>
+          </div>
+        </div>
 
-    <div style="background:#141a2e;padding:22px;border-radius:14px;border:1px solid #51417c;">
-      <h3>Scenario A</h3>
-      <label for="degreeA">Choose a degree</label>
-      <select id="degreeA" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
-        <option value="B.Tech">B.Tech</option>
-        <option value="BBA">BBA</option>
-        <option value="B.Sc.">B.Sc.</option>
-      </select>
+        <!-- The Interactive Chart -->
+        <div class="chart-container">
+          <canvas id="trajectoryChart"></canvas>
+        </div>
 
-      <label for="feeA">Estimated annual college fee (₹)</label>
-      <input id="feeA" type="number" min="0" value="100000" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
+        <!-- Automated Diagnostic Insights -->
+        <div class="insights-card">
+          <h3>Deterministic Stress-Test Insights:</h3>
+          <ul id="insightsList"></ul>
+        </div>
+      </section>
 
-      <label for="yearsA">Course duration (years)</label>
-      <input id="yearsA" type="number" min="1" max="10" value="4" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
-
-      <label for="hoursA">Planned learning hours per week</label>
-      <input id="hoursA" type="number" min="0" max="168" value="10" style="display:block;width:100%;padding:10px;margin-top:8px;">
-    </div>
-
-    <div style="background:#141a2e;padding:22px;border-radius:14px;border:1px solid #51417c;">
-      <h3>Scenario B</h3>
-      <label for="degreeB">Choose a degree</label>
-      <select id="degreeB" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
-        <option value="BBA">BBA</option>
-        <option value="B.Tech">B.Tech</option>
-        <option value="B.Sc.">B.Sc.</option>
-      </select>
-
-      <label for="feeB">Estimated annual college fee (₹)</label>
-      <input id="feeB" type="number" min="0" value="50000" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
-
-      <label for="yearsB">Course duration (years)</label>
-      <input id="yearsB" type="number" min="1" max="10" value="3" style="display:block;width:100%;padding:10px;margin:8px 0 16px;">
-
-      <label for="hoursB">Planned learning hours per week</label>
-      <input id="hoursB" type="number" min="0" max="168" value="10" style="display:block;width:100%;padding:10px;margin-top:8px;">
-    </div>
+    </main>
   </div>
 
-  <button onclick="compareFutures()" style="margin-top:22px;padding:13px 22px;background:#8b5cf6;color:white;border:0;border-radius:9px;cursor:pointer;">
-    Compare My Futures
-  </button>
-
-  <div id="futureResults" aria-live="polite" style="margin-top:24px;"></div>
-
-  <p style="color:#9ca3b8;font-size:13px;margin-top:20px;">
-    Estimates use your inputs and assume fees remain constant. They exclude
-    living expenses, fee increases, scholarships and other costs. Learning
-    hours are plans, not guarantees of academic or career outcomes.
-  </p>
-</section>
-
-<script>
-function compareFutures() {
-  const scenarios = [
-    {
-      name: document.getElementById("degreeA").value,
-      fee: Number(document.getElementById("feeA").value),
-      years: Number(document.getElementById("yearsA").value),
-      hours: Number(document.getElementById("hoursA").value)
-    },
-    {
-      name: document.getElementById("degreeB").value,
-      fee: Number(document.getElementById("feeB").value),
-      years: Number(document.getElementById("yearsB").value),
-      hours: Number(document.getElementById("hoursB").value)
-    }
-  ];
-
-  const valid = scenarios.every(s =>
-    Number.isFinite(s.fee) && s.fee >= 0 &&
-    Number.isInteger(s.years) && s.years >= 1 && s.years <= 10 &&
-    Number.isFinite(s.hours) && s.hours >= 0 && s.hours <= 168
-  );
-
-  const output = document.getElementById("futureResults");
-
-  if (!valid) {
-    output.textContent =
-      "Please enter valid fees, a course duration from 1 to 10 years, and weekly learning hours from 0 to 168.";
-    return;
-  }
-
-  const results = scenarios.map((s, i) => ({
-    ...s,
-    totalFee: s.fee * s.years,
-    totalLearning: s.hours * 52 * s.years,
-    label: i === 0 ? "Scenario A" : "Scenario B"
-  }));
-
-  const money = amount => "₹" + amount.toLocaleString("en-IN");
-
-  output.innerHTML = `
-    <h3>Your comparison</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
-      ${results.map(r => `
-        <div style="background:#141a2e;border:1px solid #51417c;border-radius:12px;padding:20px;">
-          <h3>${r.label}: ${r.name}</h3>
-          <p>Estimated total tuition</p>
-          <h2 style="color:#c4b5fd;">${money(r.totalFee)}</h2>
-          <p>Planned learning time</p>
-          <strong>${r.totalLearning.toLocaleString("en-IN")} hours</strong>
-          <p>Course duration: ${r.years} years</p>
-        </div>
-      `).join("")}
-    </div>
-    <div style="background:#141a2e;padding:20px;border-radius:12px;margin-top:16px;">
-      <h3>What changes between the scenarios?</h3>
-      <p>Tuition difference: <strong>${money(Math.abs(results[0].totalFee - results[1].totalFee))}</strong></p>
-      <p>Planned learning-time difference: <strong>${Math.abs(results[0].totalLearning - results[1].totalLearning).toLocaleString("en-IN")} hours</strong></p>
-      <p>${results[0].totalFee < results[1].totalFee
-        ? "Scenario A has the lower estimated tuition."
-        : results[0].totalFee > results[1].totalFee
-        ? "Scenario B has the lower estimated tuition."
-        : "Both scenarios have the same estimated tuition."}</p>
-      <p style="color:#b8bfd3;font-size:13px;">Lower tuition alone does not mean a degree is the better choice. Consider interests, eligibility, institution quality and career goals too.</p>
-    </div>
-  `;
-}
-</script>
-
-  <script>
- function openScenario(scenario) {
-  if (scenario === "career") {
-    document.getElementById("future-lab").scrollIntoView({
-      behavior: "smooth"
-    });
-  } else {
-    alert("This scenario is planned for a future SimuSense update.");
-  }
-}
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
-
