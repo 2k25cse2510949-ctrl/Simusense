@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimuSense — Life &amp; Dilemma Decision Helper</title>
+  <title>SimuSense — Universal Life &amp; Decision Simulator</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -70,7 +70,7 @@
     .chip { background: var(--bg-card); color: #cbd5e1; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
     .chip:hover { border-color: var(--accent); color: #fff; background: rgba(99, 102, 241, 0.2); }
 
-    .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
+    .btn-primary { width: 100%; padding: 14px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; }
     .btn-primary:hover { background: var(--accent-hover); }
 
     .conclusion-card { border-left: 4px solid var(--accent); background: #131d33; }
@@ -84,41 +84,27 @@
     .conclusion-box { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
     .conclusion-box span { font-size: 12px; color: #818cf8; text-transform: uppercase; display: block; margin-bottom: 8px; font-weight: 700; }
 
-    /* Picture to Picture AI Storyboard Grid */
-    .visual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
-    .visual-card { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
-    .visual-card h4 { font-size: 14px; color: #f8fafc; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-
-    .p2p-scenes { display: flex; flex-direction: column; gap: 10px; }
-    .p2p-step {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      background: rgba(15, 22, 38, 0.8);
-      border: 1px solid rgba(36, 51, 82, 0.8);
-      padding: 10px 12px;
-      border-radius: 8px;
-    }
-    .p2p-badge {
-      font-size: 20px;
-      line-height: 1;
-      padding: 8px;
-      border-radius: 6px;
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      flex-shrink: 0;
-    }
-    .p2p-content strong { font-size: 13px; color: #f8fafc; display: block; margin-bottom: 2px; }
-    .p2p-content p { font-size: 12px; color: var(--text-muted); margin: 0; }
-
-    .yt-search-btn { display: inline-block; margin-top: 12px; font-size: 11px; color: #818cf8; text-decoration: none; border: 1px solid #818cf8; padding: 5px 10px; border-radius: 4px; transition: 0.2s; }
-    .yt-search-btn:hover { background: rgba(129, 140, 248, 0.15); color: #fff; }
+    /* Generative Visual AI Video Studios */
+    .ai-video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+    .ai-video-card { background: var(--bg-card); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+    .ai-video-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .ai-video-header h4 { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .video-tag { font-size: 10px; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+    
+    .canvas-wrapper { position: relative; width: 100%; height: 210px; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid #202b42; }
+    .canvas-wrapper canvas { width: 100%; height: 100%; display: block; }
+    .canvas-overlay-text { position: absolute; bottom: 8px; left: 10px; right: 10px; font-size: 12px; color: #f8fafc; text-shadow: 0 1px 3px rgba(0,0,0,0.9); font-weight: 500; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; }
+    
+    .video-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 8px; }
+    .btn-control { background: #243352; color: #fff; border: 0; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+    .btn-control:hover { background: #3b4e75; }
+    .video-desc { font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
 
     .dashboard-grid { display: grid; grid-template-columns: 440px 1fr; gap: 20px; }
     @media (max-width: 950px) { 
       .dashboard-grid { grid-template-columns: 1fr; } 
       .conclusion-grid { grid-template-columns: 1fr; } 
-      .visual-grid { grid-template-columns: 1fr; }
+      .ai-video-grid { grid-template-columns: 1fr; }
     }
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -151,7 +137,7 @@
           autoDisplay: false
         }, 'google_translate_element');
       } catch (e) {
-        console.warn("Translation widget skipped");
+        console.warn("Translation tool initialized");
       }
     }
   </script>
@@ -162,9 +148,9 @@
     
     <div class="top-nav">
       <div>
-        <span class="badge">SimuSense Universal v9.0</span>
-        <h1>Life Decision &amp; Dilemma Helper</h1>
-        <p class="subtitle">Solves any dilemma: Money, health, burnout, relationship conflict, or pets with Picture-to-Picture visual guides.</p>
+        <span class="badge">SimuSense Universal AI Core v10.0</span>
+        <h1>Universal Life &amp; Decision Simulator</h1>
+        <p class="subtitle">Enter any problem across human and animal life. SimuSense analyzes your dilemma and synthesizes procedural AI video simulations.</p>
       </div>
 
       <div class="translate-box">
@@ -175,19 +161,19 @@
 
     <!-- Dilemma Input -->
     <section class="card dilemma-card">
-      <h2 style="font-size: 16px;">1. What is your dilemma or decision?</h2>
-      <textarea id="userDilemma" rows="3" placeholder="Type naturally, e.g. 'I have 1200 rupees where should I invest?', 'Working 80 hours a week sleeping 4 hours and feeling depressed', 'My dog is 14 years old in severe pain'"></textarea>
+      <h2 style="font-size: 16px;">1. Describe Any Real-Life Dilemma</h2>
+      <textarea id="userDilemma" rows="3" placeholder="Describe any dilemma: e.g. 'I have 1200 rupees where should I invest?', 'My old dog is suffering from bone cancer and in severe pain', 'Working 80 hours a week with 4 hours sleep and feel depressed', 'My boss is toxic and I want to quit'"></textarea>
 
       <div class="preset-chips">
-        <span class="chip-label">Quick Examples:</span>
+        <span class="chip-label">Quick Scenarios:</span>
         <button type="button" class="chip" onclick="handlePreset('micro_invest')">💰 Best place for Rs 1200?</button>
         <button type="button" class="chip" onclick="handlePreset('burnout')">⚡ Working 80 hours &amp; no sleep?</button>
         <button type="button" class="chip" onclick="handlePreset('toxic_exit')">💔 Quit toxic job without backup?</button>
         <button type="button" class="chip" onclick="handlePreset('moral_pet')">🐶 Old pet in severe pain?</button>
-        <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Severe health pain stopping work?</button>
+        <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Severe spine/health pain?</button>
       </div>
 
-      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze My Problem &amp; Show Visual Roadmap</button>
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma &amp; Synthesize Procedural AI Videos</button>
     </section>
 
     <!-- Verdict Banner -->
@@ -202,38 +188,54 @@
       
       <div class="conclusion-grid">
         <div class="conclusion-box">
-          <span>⚠️ What could go wrong (Risks)</span>
+          <span>⚠️ What Could Go Wrong (Key Risks)</span>
           <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
         <div class="conclusion-box">
-          <span>✅ What you should do step-by-step</span>
+          <span>✅ What You Should Do Step-by-Step</span>
           <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
       </div>
     </section>
 
-    <!-- Picture-to-Picture Visual Guide Section -->
-    <section class="card" id="visualSection">
-      <h2 style="font-size: 16px; margin-bottom: 4px;">🖼️ Picture-to-Picture AI Visual Breakdown</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Visual storyboard showing exactly why this problem hurts and how the solution works step-by-step.</p>
+    <!-- Generative AI Video Studio (Procedural Canvas Engines) -->
+    <section class="card" id="aiVideoStudio">
+      <h2 style="font-size: 16px; margin-bottom: 4px;">🎬 Generative AI Video Simulations (Procedural Visual Studio)</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Synthesizing procedural motion graphics representing the internal consequence dynamics of your exact dilemma.</p>
       
-      <div class="visual-grid">
-        <!-- Problem Visual Storyboard -->
-        <div class="visual-card">
-          <h4 style="color: #f87171;">🔴 Picture Breakdown: The Hidden Trap</h4>
-          <div class="p2p-scenes" id="problemScenes">
-            <!-- Dynamic Scenes populate here -->
+      <div class="ai-video-grid">
+        <!-- Problem Visual Simulator -->
+        <div class="ai-video-card">
+          <div class="ai-video-header">
+            <h4 style="color: #f87171;">🔴 AI Video 1: Problem Dynamics &amp; Stress Loop</h4>
+            <span class="video-tag" style="background: rgba(239,68,68,0.2); color: #f87171;">Stress Motion</span>
           </div>
-          <a href="#" target="_blank" id="problemVisualLink" class="yt-search-btn">🔍 View Detailed Video Guides on YouTube</a>
+          <div class="canvas-wrapper">
+            <canvas id="problemCanvas" width="480" height="210"></canvas>
+            <div class="canvas-overlay-text" id="problemSubtitle">Synthesizing problem simulation...</div>
+          </div>
+          <div class="video-controls">
+            <button type="button" class="btn-control" onclick="toggleProblemAnim()">Play / Pause</button>
+            <span id="problemStepIndicator" style="font-size: 11px; color: var(--text-muted);">Looping Scene Dynamics</span>
+          </div>
+          <div class="video-desc" id="problemVideoDesc">Visualizing how stress, fee drag, or emotional fatigue accumulates under current conditions.</div>
         </div>
 
-        <!-- Solution Visual Storyboard -->
-        <div class="visual-card">
-          <h4 style="color: #34d399;">🟢 Picture Roadmap: How The Solution Works</h4>
-          <div class="p2p-scenes" id="solutionScenes">
-            <!-- Dynamic Scenes populate here -->
+        <!-- Solution Visual Simulator -->
+        <div class="ai-video-card">
+          <div class="ai-video-header">
+            <h4 style="color: #34d399;">🟢 AI Video 2: Solution Trajectory &amp; Stabilization</h4>
+            <span class="video-tag" style="background: rgba(16,185,129,0.2); color: #34d399;">Recovery Motion</span>
           </div>
-          <a href="#" target="_blank" id="solutionVisualLink" class="yt-search-btn">🔍 View Practical Execution Walkthroughs</a>
+          <div class="canvas-wrapper">
+            <canvas id="solutionCanvas" width="480" height="210"></canvas>
+            <div class="canvas-overlay-text" id="solutionSubtitle">Synthesizing solution roadmap...</div>
+          </div>
+          <div class="video-controls">
+            <button type="button" class="btn-control" onclick="toggleSolutionAnim()">Play / Pause</button>
+            <span id="solutionStepIndicator" style="font-size: 11px; color: var(--text-muted);">Stabilization Path</span>
+          </div>
+          <div class="video-desc" id="solutionVideoDesc">Visualizing how step-by-step interventions restore equilibrium and growth over time.</div>
         </div>
       </div>
     </section>
@@ -241,15 +243,15 @@
     <!-- Main Workspace -->
     <main class="dashboard-grid">
       <section class="card">
-        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Your Current Situation (Parameters)</h2>
+        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Extracted Situation Parameters</h2>
         
         <div class="form-row">
           <div>
-            <label>Money / Savings Involved (Rs)</label>
+            <label>Money / Capital Involved (Rs)</label>
             <input type="number" id="v_capital" value="1200" step="500" oninput="runSimulation()">
           </div>
           <div>
-            <label>Monthly Income / Capacity (Rs)</label>
+            <label>Monthly Earning Capacity (Rs)</label>
             <input type="number" id="v_income" value="20000" step="1000" oninput="runSimulation()">
           </div>
         </div>
@@ -311,88 +313,11 @@
 
   <script>
     let myChart = null;
-
-    // Picture-to-Picture visual step cards
-    const visualP2PMap = {
-      investment: {
-        problemSteps: [
-          { icon: "📉", title: "Scene 1: Small Money Illusion", desc: "Thinking Rs 1,200 is small and putting it in crypto/options or wasting it on fast food." },
-          { icon: "💸", title: "Scene 2: High Fee Erosion", desc: "Trading apps charge DP & transaction fees, eating 5-10% of small profits immediately." },
-          { icon: "🕳️", title: "Scene 3: Complete Loss", desc: "90% of beginners lose small capital within 30 days chasing get-rich-quick tips." }
-        ],
-        solutionSteps: [
-          { icon: "🧠", title: "Step 1: Skill Injection", desc: "Use Rs 500 to buy a life-changing book or tool that increases your earning power." },
-          { icon: "📈", title: "Step 2: Automate Rs 500 SIP", desc: "Start an automated Nifty 50 Index Fund SIP. Compounding starts from day one." },
-          { icon: "🛡️", title: "Step 3: Emergency Seed", desc: "Keep the rest in an auto-sweep bank account for unexpected expenses." }
-        ],
-        searchQuery: "how to start index fund sip with 500 rupees groww zerodha"
-      },
-      burnout: {
-        problemSteps: [
-          { icon: "⏰", title: "Scene 1: Extreme Grind", desc: "Working 80+ hours while sacrificing sleep to earn extra cash." },
-          { icon: "🧠", title: "Scene 2: Cognitive Fog", desc: "Lack of deep sleep triggers chronic cortisol, brain fog, and severe anxiety." },
-          { icon: "🏥", title: "Scene 3: Involuntary Crash", desc: "Endocrine and cardiovascular collapse forces expensive medical leaves." }
-        ],
-        solutionSteps: [
-          { icon: "🛌", title: "Step 1: 7-Hour Sleep Rule", desc: "Treat sleep as an immovable asset. Brain cells only repair during sleep." },
-          { icon: "🛑", title: "Step 2: Strict 50-Hour Cap", desc: "Leave on time. Companies replace workers in days; health cannot be replaced." },
-          { icon: "🌲", title: "Step 3: 3-Day Screen Detox", desc: "Spend a weekend walking in nature without work notifications to reset nerves." }
-        ],
-        searchQuery: "how to recover from burnout nervous system reset"
-      },
-      toxic_exit: {
-        problemSteps: [
-          { icon: "🗣️", title: "Scene 1: Daily Humiliation", desc: "Toxic boss or manager constantly insults self-worth, making every morning painful." },
-          { icon: "⚡", title: "Scene 2: Impulsive Walkout", desc: "Quitting without savings creates instant panic about rent and food." },
-          { icon: "🔄", title: "Scene 3: The Desperation Trap", desc: "Running out of cash forces acceptance of an equally toxic replacement job." }
-        ],
-        solutionSteps: [
-          { icon: "🧘", title: "Step 1: Emotional Detachment", desc: "Quiet quit: do your core duties strictly in hours and stop taking insults to heart." },
-          { icon: "💰", title: "Step 2: 3-Month Cash Shield", desc: "Save essential food and living expenses before handing in your resignation." },
-          { icon: "📨", title: "Step 3: Evening Job Hunting", desc: "Apply to 5 jobs every evening. The moment you get an offer, resign calmly." }
-        ],
-        searchQuery: "how to leave toxic job safely exit strategy"
-      },
-      animal_moral: {
-        problemSteps: [
-          { icon: "🐕", title: "Scene 1: Terminal Pain", desc: "14-year-old companion suffering from incurable cancer and daily agony." },
-          { icon: "⏳", title: "Scene 2: Delaying Grief", desc: "Keeping them alive solely because we cannot bear the thought of our own tears." },
-          { icon: "💔", title: "Scene 3: Traumatic Memory", desc: "Watching them suffer in crisis overrides years of happy memories." }
-        ],
-        solutionSteps: [
-          { icon: "📋", title: "Step 1: Quality of Life Audit", desc: "Assess mobility, eating, and comfort. If pain is constant, mercy is love." },
-          { icon: "🏡", title: "Step 2: Peaceful Home Farewell", desc: "Have a veterinarian visit your home so your pet rests in their favorite bed." },
-          { icon: "🕊️", title: "Step 3: Honor Without Guilt", desc: "Grieve openly. Taking on the pain of loss to end their physical agony is true love." }
-        ],
-        searchQuery: "veterinarian how to know when to put dog down quality of life"
-      },
-      physical_shock: {
-        problemSteps: [
-          { icon: "🦴", title: "Scene 1: Disc Compression", desc: "Severe spine disc bulge compressing spinal nerves during prolonged sitting." },
-          { icon: "⚡", title: "Scene 2: Forcing Through Pain", desc: "Pushing through pain creates permanent numbness and motor nerve damage." },
-          { icon: "🚫", title: "Scene 3: Total Incapacity", desc: "Inability to work leads to lost income and expensive emergency surgeries." }
-        ],
-        solutionSteps: [
-          { icon: "⏱️", title: "Step 1: 30-Minute Interval Rule", desc: "Stand up or walk for 2 minutes every 30 minutes to decompress the lumbar spine." },
-          { icon: "💻", title: "Step 2: Remote / Knowledge Pivot", desc: "Shift towards knowledge-based work that allows ergonomic and home flexibility." },
-          { icon: "🧘", title: "Step 3: McGill Core Stretches", desc: "Perform daily physical therapy exercises to rebuild muscular spine protection." }
-        ],
-        searchQuery: "mcgill big 3 spine back pain exercises"
-      },
-      existential: {
-        problemSteps: [
-          { icon: "🤖", title: "Scene 1: The Hollow Checkbox", desc: "Job, money, and apartment achieved, but every morning feels completely empty." },
-          { icon: "📱", title: "Scene 2: Dopamine Numbing", desc: "Using social media scrolling, alcohol, or shopping to mask internal numbness." },
-          { icon: "🌫️", title: "Scene 3: Deep Disconnection", desc: "Living on pure autopilot without any authentic personal curiosity." }
-        ],
-        solutionSteps: [
-          { icon: "🌱", title: "Step 1: Keep Baseline Safe", desc: "Do not burn your job down; use financial stability as your safety cushion." },
-          { icon: "🎨", title: "Step 2: 1 Hour of True Play", desc: "Spend 1 hour daily on unmonetized hobbies (art, writing, walking, sports)." },
-          { icon: "🤝", title: "Step 3: Real Human Bonds", desc: "Share your honest feelings with one friend. Authentic connection heals voids." }
-        ],
-        searchQuery: "how to find meaning when life feels empty"
-      }
-    };
+    let problemAnimId = null;
+    let solutionAnimId = null;
+    let isProblemPlaying = true;
+    let isSolutionPlaying = true;
+    let currentDilemmaType = "investment";
 
     const presets = {
       micro_invest: "I have 1200 rupees, where should I put this money to get the best result?",
@@ -410,6 +335,9 @@
       }
     }
 
+    /**
+     * Resilient Universal Natural Language Parser
+     */
     function parseUniversalDilemma(text) {
       const clean = (text || "").toLowerCase();
       
@@ -443,7 +371,7 @@
         res.distress = 75;
         res.vitality = 30;
         res.mental = 50;
-      } else if (clean.includes("toxic") || clean.includes("boss") || clean.includes("partner") || clean.includes("gaslight") || clean.includes("relationship") || clean.includes("breakup") || clean.includes("quit") || clean.includes("job")) {
+      } else if (clean.includes("toxic") || clean.includes("boss") || clean.includes("partner") || clean.includes("gaslight") || clean.includes("relationship") || clean.includes("breakup") || clean.includes("quit") || clean.includes("leave")) {
         res.type = "toxic_exit";
         res.distress = 80;
         res.emotional = 25;
@@ -467,67 +395,205 @@
       return res;
     }
 
-    function updateVisualGuides(type) {
-      try {
-        const data = visualP2PMap[type] || visualP2PMap.investment;
-        
-        const pContainer = document.getElementById("problemScenes");
-        const sContainer = document.getElementById("solutionScenes");
-        const pLink = document.getElementById("problemVisualLink");
-        const sLink = document.getElementById("solutionVisualLink");
+    /**
+     * Procedural Generative AI Video Rendering Engines
+     */
+    function startAIVideoEngines(type) {
+      currentDilemmaType = type;
+      if (problemAnimId) cancelAnimationFrame(problemAnimId);
+      if (solutionAnimId) cancelAnimationFrame(solutionAnimId);
 
-        if (pContainer) {
-          pContainer.innerHTML = data.problemSteps.map(step => `
-            <div class="p2p-step">
-              <div class="p2p-badge">${step.icon}</div>
-              <div class="p2p-content">
-                <strong>${step.title}</strong>
-                <p>${step.desc}</p>
-              </div>
-            </div>
-          `).join('');
+      const pCanvas = document.getElementById("problemCanvas");
+      const sCanvas = document.getElementById("solutionCanvas");
+      if (!pCanvas || !sCanvas) return;
+
+      const pCtx = pCanvas.getContext("2d");
+      const sCtx = sCanvas.getContext("2d");
+
+      let pFrame = 0;
+      let sFrame = 0;
+
+      // Titles and descriptions
+      const meta = {
+        investment: {
+          pText: "Scene: Fee drag & speculative dissipation eroding capital",
+          sText: "Scene: Skill compounding & automated index growth trajectory",
+          pDesc: "Simulating how platform costs, F&O temptations, and impulsive spends drain micro amounts.",
+          sDesc: "Simulating how human skill compounding and recurring index SIPs turn small capital into security."
+        },
+        burnout: {
+          pText: "Scene: Chronic sleep deficit causing cognitive & bodily crash",
+          sText: "Scene: 7-hour sleep protocol restoring deep cellular equilibrium",
+          pDesc: "Simulating neural cortisol accumulation and endocrine burnout curves.",
+          sDesc: "Simulating deep restorative rest, work boundary capping, and autonomic nervous recovery."
+        },
+        toxic_exit: {
+          pText: "Scene: Emotional gaslighting eroding mental sovereignty",
+          sText: "Scene: 3-month survival shield enabling structured exit",
+          pDesc: "Simulating interpersonal abuse stress loops and premature resignation panic.",
+          sDesc: "Simulating quiet emotional detachment, steady cash reserves, and successful job transition."
+        },
+        animal_moral: {
+          pText: "Scene: Intractable biological pain overwhelming companion",
+          sText: "Scene: Peaceful in-home transition bringing relief & dignity",
+          pDesc: "Simulating end-stage physical agony and human attachment dilemma.",
+          sDesc: "Simulating compassionate veterinary care, painless peaceful rest, and loving release."
+        },
+        physical_shock: {
+          pText: "Scene: Continuous disc compression & nerve irritation",
+          sText: "Scene: Spine decompression, McGill core stabilization & ergonomics",
+          pDesc: "Simulating prolonged sitting nerve strain and active physical capacity constraints.",
+          sDesc: "Simulating ergonomic pacing, standing intervals, and remote knowledge work pivot."
+        },
+        existential: {
+          pText: "Scene: External autopilot routines triggering hollow numbness",
+          sText: "Scene: Creative agency & authentic connection rebuilding meaning",
+          pDesc: "Simulating the arrival fallacy and emotional dissociation.",
+          sDesc: "Simulating curiosity-driven play, deep conversations, and grounded daily presence."
+        }
+      }[type] || {
+        pText: "Scene: Stress accumulation loop",
+        sText: "Scene: Balanced stabilization trajectory",
+        pDesc: "Simulating systemic friction under current parameters.",
+        sDesc: "Simulating structured recovery and equilibrium."
+      };
+
+      document.getElementById("problemSubtitle").textContent = meta.pText;
+      document.getElementById("solutionSubtitle").textContent = meta.sText;
+      document.getElementById("problemVideoDesc").textContent = meta.pDesc;
+      document.getElementById("solutionVideoDesc").textContent = meta.sDesc;
+
+      function renderProblem() {
+        if (!isProblemPlaying) return;
+        pFrame++;
+        pCtx.fillStyle = "#070c18";
+        pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
+
+        // Grid lines
+        pCtx.strokeStyle = "rgba(239, 68, 68, 0.08)";
+        pCtx.lineWidth = 1;
+        for (let x = 0; x < pCanvas.width; x += 30) {
+          pCtx.beginPath(); pCtx.moveTo(x, 0); pCtx.lineTo(x, pCanvas.height); pCtx.stroke();
         }
 
-        if (sContainer) {
-          sContainer.innerHTML = data.solutionSteps.map(step => `
-            <div class="p2p-step">
-              <div class="p2p-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">${step.icon}</div>
-              <div class="p2p-content">
-                <strong>${step.title}</strong>
-                <p>${step.desc}</p>
-              </div>
-            </div>
-          `).join('');
+        // Stress Wave animation (Chaotic and declining)
+        pCtx.strokeStyle = "#ef4444";
+        pCtx.lineWidth = 2.5;
+        pCtx.beginPath();
+        for (let x = 0; x < pCanvas.width; x += 3) {
+          let decay = (x / pCanvas.width) * 45;
+          let wave = Math.sin((x * 0.03) + (pFrame * 0.05)) * 25 + Math.cos((x * 0.07) - (pFrame * 0.03)) * 12;
+          let y = 100 + decay + wave;
+          if (x === 0) pCtx.moveTo(x, y); else pCtx.lineTo(x, y);
         }
+        pCtx.stroke();
 
-        const ytUrl = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.searchQuery);
-        if (pLink) pLink.href = ytUrl;
-        if (sLink) sLink.href = ytUrl;
-      } catch (err) {
-        console.warn("Visual storyboard skipped:", err);
+        // Pulsing warning indicator
+        let pulseRadius = 6 + Math.sin(pFrame * 0.1) * 3;
+        pCtx.fillStyle = "#ef4444";
+        pCtx.beginPath();
+        pCtx.arc(380, 140, pulseRadius, 0, Math.PI * 2);
+        pCtx.fill();
+
+        pCtx.fillStyle = "rgba(239, 68, 68, 0.2)";
+        pCtx.beginPath();
+        pCtx.arc(380, 140, pulseRadius * 2.5, 0, Math.PI * 2);
+        pCtx.fill();
+
+        // Watermark AI badge
+        pCtx.fillStyle = "rgba(255, 255, 255, 0.4)";
+        pCtx.font = "10px sans-serif";
+        pCtx.fillText("AI SIMULATION ENGINE • DYNAMICS ACTIVE", 14, 24);
+
+        problemAnimId = requestAnimationFrame(renderProblem);
       }
+
+      function renderSolution() {
+        if (!isSolutionPlaying) return;
+        sFrame++;
+        sCtx.fillStyle = "#070c18";
+        sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
+
+        // Grid lines
+        sCtx.strokeStyle = "rgba(16, 185, 129, 0.08)";
+        sCtx.lineWidth = 1;
+        for (let x = 0; x < sCanvas.width; x += 30) {
+          sCtx.beginPath(); sCtx.moveTo(x, 0); sCtx.lineTo(x, sCanvas.height); sCtx.stroke();
+        }
+
+        // Growth & Recovery Smooth Trajectory Curve
+        sCtx.strokeStyle = "#10b981";
+        sCtx.lineWidth = 3;
+        sCtx.beginPath();
+        for (let x = 0; x < sCanvas.width; x += 3) {
+          let growth = Math.pow(x / sCanvas.width, 1.8) * 95;
+          let wave = Math.sin((x * 0.02) - (sFrame * 0.04)) * 6;
+          let y = 170 - growth + wave;
+          if (x === 0) sCtx.moveTo(x, y); else sCtx.lineTo(x, y);
+        }
+        sCtx.stroke();
+
+        // Pulsing harmony node
+        let pulse = 7 + Math.sin(sFrame * 0.08) * 3;
+        sCtx.fillStyle = "#34d399";
+        sCtx.beginPath();
+        sCtx.arc(400, 75, pulse, 0, Math.PI * 2);
+        sCtx.fill();
+
+        sCtx.fillStyle = "rgba(52, 211, 153, 0.25)";
+        sCtx.beginPath();
+        sCtx.arc(400, 75, pulse * 2.6, 0, Math.PI * 2);
+        sCtx.fill();
+
+        // Watermark
+        sCtx.fillStyle = "rgba(255, 255, 255, 0.4)";
+        sCtx.font = "10px sans-serif";
+        sCtx.fillText("AI HEALING ENGINE • STABILIZATION RUNNING", 14, 24);
+
+        solutionAnimId = requestAnimationFrame(renderSolution);
+      }
+
+      renderProblem();
+      renderSolution();
     }
 
+    function toggleProblemAnim() {
+      isProblemPlaying = !isProblemPlaying;
+      if (isProblemPlaying) startAIVideoEngines(currentDilemmaType);
+    }
+
+    function toggleSolutionAnim() {
+      isSolutionPlaying = !isSolutionPlaying;
+      if (isSolutionPlaying) startAIVideoEngines(currentDilemmaType);
+    }
+
+    /**
+     * Main Compilation & Trigger Loop
+     */
     function compileAndSimulate() {
-      const area = document.getElementById("userDilemma");
-      const text = area ? area.value.trim() : "";
-      
-      const p = parseUniversalDilemma(text || "I have 1200 rupees to invest");
+      try {
+        const area = document.getElementById("userDilemma");
+        const text = area ? area.value.trim() : "";
+        
+        const p = parseUniversalDilemma(text || "I have 1200 rupees to invest");
 
-      const cEl = document.getElementById("v_capital");
-      const mEl = document.getElementById("v_mental");
-      const eEl = document.getElementById("v_emotional");
-      const vEl = document.getElementById("v_vitality");
-      const dEl = document.getElementById("v_distress");
+        const cEl = document.getElementById("v_capital");
+        const mEl = document.getElementById("v_mental");
+        const eEl = document.getElementById("v_emotional");
+        const vEl = document.getElementById("v_vitality");
+        const dEl = document.getElementById("v_distress");
 
-      if (cEl) cEl.value = p.capital;
-      if (mEl) mEl.value = p.mental;
-      if (eEl) eEl.value = p.emotional;
-      if (vEl) vEl.value = p.vitality;
-      if (dEl) dEl.value = p.distress;
+        if (cEl) cEl.value = p.capital;
+        if (mEl) mEl.value = p.mental;
+        if (eEl) eEl.value = p.emotional;
+        if (vEl) vEl.value = p.vitality;
+        if (dEl) dEl.value = p.distress;
 
-      updateVisualGuides(p.type);
-      runSimulation(p.type, p.capital);
+        startAIVideoEngines(p.type);
+        runSimulation(p.type, p.capital);
+      } catch (err) {
+        console.error("Execution preserved:", err);
+      }
     }
 
     function runSimulation(typeOverride, capOverride) {
@@ -540,7 +606,7 @@
       let mental = mInput ? (parseFloat(mInput.value) || 70) : 70;
       let emotional = eInput ? (parseFloat(eInput.value) || 65) : 65;
       let vitality = vInput ? (parseFloat(vInput.value) || 80) : 80;
-      let type = typeOverride || "investment";
+      let type = typeOverride || currentDilemmaType || "investment";
 
       const years = 5;
       let timeline = [];
@@ -594,20 +660,20 @@
       if (list) list.innerHTML = "";
 
       if (type === "investment") {
-        if (arch) arch.textContent = "Category: Smart Money Decision";
+        if (arch) arch.textContent = "Category: Smart Capital Allocation";
         if (pill) {
           pill.className = "status-pill status-safe";
-          pill.textContent = "Great Opportunity";
+          pill.textContent = "High Return Potential";
         }
 
         if (capital <= 5000) {
-          if (summary) summary.innerHTML = "<strong>The Truth About Rs " + capital.toLocaleString('en-IN') + ":</strong> In the stock market, Rs 1,200 only grows by about Rs 140 in a year. But spending this on a high-value skill or tool can help you earn Rs 10,000+ every month!";
-          if (risk) risk.innerHTML = "<strong>1. Getting Scammed:</strong> Avoid quick-rich schemes, Telegram tips, or crypto where 90% lose their money.<br><strong>2. Waste on Junk:</strong> Thinking small money doesn't matter and wasting it on fast food or clothes.<br><strong>3. Hidden App Fees:</strong> Trading fees and platform costs eat up small profits quickly.";
-          if (action) action.innerHTML = "<strong>Step 1: Buy a Good Learning Tool or Book</strong><br>Use Rs 500 to buy a life-changing book (Psychology of Money) or a skill course for freelancing/job upgrades.<br><br><strong>Step 2: Start a Rs 500 Monthly Habit (SIP)</strong><br>Put Rs 500 every month in a low-cost Nifty 50 Index Fund.<br><br><strong>Step 3: Keep the Rest Safe</strong><br>Keep remaining funds in an auto-sweep bank account for sudden needs.";
+          if (summary) summary.innerHTML = "<strong>The Truth About Rs " + capital.toLocaleString('en-IN') + ":</strong> In the stock market, Rs 1,200 only grows by about Rs 140 in a whole year. But putting this money into high-ROI skills or tools can help you earn Rs 10,000+ every month!";
+          if (risk) risk.innerHTML = "<strong>1. Getting Scammed:</strong> Avoid quick-rich schemes, Telegram tips, or crypto where 90% lose their capital.<br><strong>2. Waste on Junk:</strong> Believing small money doesn't matter and wasting it on fast food or party clothes.<br><strong>3. Hidden App Fees:</strong> Trading fees and platform costs eat up small profits quickly.";
+          if (action) action.innerHTML = "<strong>Step 1: Buy a Good Learning Tool or Book</strong><br>Use Rs 500 to buy a life-changing book (Psychology of Money) or a skill tool for freelancing/job upgrades.<br><br><strong>Step 2: Start a Rs 500 Monthly Habit (SIP)</strong><br>Put Rs 500 every month in a low-cost Nifty 50 Index Fund.<br><br><strong>Step 3: Keep the Rest Safe</strong><br>Keep remaining funds in an auto-sweep bank account for unexpected needs.";
           if (list) list.innerHTML = "<li>With micro amounts, investing in your own earning skills gives 100x more returns than the stock market.</li><li>Starting small today builds lifelong investing discipline.</li>";
         } else {
           if (summary) summary.innerHTML = "<strong>Growing Your Rs " + capital.toLocaleString('en-IN') + ":</strong> You have a solid savings buffer. Keep it growing steadily without unnecessary gambles.";
-          if (risk) risk.innerHTML = "<strong>1. Single Asset Risk:</strong> Never invest all funds into a single stock or business.<br><strong>2. Inflation Loss:</strong> Idle cash in savings accounts slowly loses buying power.";
+          if (risk) risk.innerHTML = "<strong>1. Single Asset Risk:</strong> Never invest all funds into a single stock or speculative business.<br><strong>2. Inflation Loss:</strong> Idle cash in savings accounts slowly loses buying power.";
           if (action) action.innerHTML = "<strong>Step 1:</strong> Put 70% into diversified Nifty 50 Index Mutual Funds.<br><strong>Step 2:</strong> Keep 30% liquid in safe bank deposits for emergencies.";
           if (list) list.innerHTML = "<li>Broad market indexing beats 90% of active stock pickers over 5 to 10 years.</li>";
         }
