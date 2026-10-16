@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SimuSense — Universal Life Decision & Dilemma Engine</title>
+  <title>SimuSense — Universal Life & Consciousness Dilemma Engine</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --bg-primary: #0a0e17;
-      --bg-surface: #121826;
-      --bg-card: #1a2234;
-      --border-color: #27334a;
+      --bg-primary: #070a12;
+      --bg-surface: #0f1626;
+      --bg-card: #162035;
+      --border-color: #243352;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --accent: #6366f1;
@@ -21,6 +21,8 @@
       --warning: #f59e0b;
       --mental: #38bdf8;
       --emotional: #ec4899;
+      --vitality: #22c55e;
+      --survival: #a855f7;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -32,20 +34,21 @@
     .subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
 
     .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-    .dilemma-card { border: 1px solid var(--accent); background: #141b2d; }
-    textarea { width: 100%; padding: 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 14px; resize: vertical; outline: none; margin: 10px 0; }
-    
+    .dilemma-card { border: 1px solid var(--accent); background: #111a30; }
+    textarea { width: 100%; padding: 14px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 14px; resize: vertical; outline: none; margin: 10px 0; min-height: 90px; }
+    textarea:focus { border-color: var(--accent); }
+
     .preset-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
     .chip-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-    .chip { background: var(--bg-card); color: #cbd5e1; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-    .chip:hover { border-color: var(--accent); color: #fff; background: rgba(99, 102, 241, 0.15); }
+    .chip { background: var(--bg-card); color: #cbd5e1; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+    .chip:hover { border-color: var(--accent); color: #fff; background: rgba(99, 102, 241, 0.2); }
 
     .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
     .btn-primary:hover { background: var(--accent-hover); }
 
-    /* Verdict Card */
-    .conclusion-card { border-left: 4px solid var(--accent); background: #151f33; }
-    .conclusion-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    /* Diagnosis Banner */
+    .conclusion-card { border-left: 4px solid var(--accent); background: #131d33; }
+    .conclusion-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
     .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
     .status-safe { background: rgba(16, 185, 129, 0.2); color: #34d399; }
     .status-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; }
@@ -62,17 +65,17 @@
     label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
     input, select { width: 100%; padding: 9px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 13px; outline: none; }
 
-    /* 4-Vector Health Stats */
+    /* Universal Consciousness Pillar Stats */
     .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
     @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr 1fr; } }
-    .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; text-align: center; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; text-align: center; }
     .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
-    .stat-value { font-size: 15px; font-weight: 700; margin-top: 4px; }
+    .stat-value { font-size: 16px; font-weight: 700; margin-top: 4px; }
 
-    .chart-container { height: 280px; position: relative; margin-bottom: 16px; }
-    .insights-card { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
+    .chart-container { height: 300px; position: relative; margin-bottom: 16px; }
+    .insights-card { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 4px; }
     .insights-card ul { padding-left: 18px; font-size: 13px; color: var(--text-muted); margin-top: 6px; }
-    .insights-card li { margin-bottom: 4px; }
+    .insights-card li { margin-bottom: 6px; }
   </style>
 </head>
 <body>
@@ -80,41 +83,43 @@
     
     <header class="header">
       <span class="badge">SimuSense Universal Core</span>
-      <h1>Universal Holistic Decision Simulator</h1>
-      <p class="subtitle">Simulate real-life dilemmas across 4 interconnected human pillars: Financial, Physical Vitality, Mental Health, and Emotional Stability.</p>
+      <h1>Universal Consciousness & Life Dilemma Engine</h1>
+      <p class="subtitle">Solves any dilemma across the living spectrum: Emotional conflicts, physical breakdowns, ethical moral choices, mental exhaustion, or material survival.</p>
     </header>
 
     <!-- Dilemma Input -->
     <section class="card dilemma-card">
-      <h2 style="font-size: 16px;">1. State Any Real-Life Dilemma</h2>
-      <textarea id="userDilemma" rows="3" placeholder="Type naturally, e.g.: I am working 80 hours a week sleeping 5 hours for 1 Lakh/month, but feeling burned out and depressed. Should I quit or push through?"></textarea>
+      <h2 style="font-size: 16px;">1. State Any Dilemma (Living Beings, Feelings, Moral, Physical, Mental, or Life Choices)</h2>
+      <textarea id="userDilemma" rows="3" placeholder="Describe anything you or any living being is struggling with... e.g., 'My dog is 14 years old and in constant pain, doctor says euthanize but I can't bear the guilt', or 'I feel completely hollow inside despite having a good job', or 'My toxic partner threatens me whenever I try to leave'"></textarea>
 
       <div class="preset-chips">
-        <span class="chip-label">Quick Dilemma Presets:</span>
-        <button type="button" class="chip" onclick="handlePreset('burnout')">Burnout: 80hr work & 5hr sleep for money?</button>
-        <button type="button" class="chip" onclick="handlePreset('toxic_exit')">Toxic Exit: Quit toxic job/boss with no backup?</button>
-        <button type="button" class="chip" onclick="handlePreset('chronic_health')">Health Shock: Illness cuts working capacity by 40%?</button>
-        <button type="button" class="chip" onclick="handlePreset('family_loss')">Contingency: Demise of primary earner?</button>
+        <span class="chip-label">Explore Universal Presets:</span>
+        <button type="button" class="chip" onclick="handlePreset('moral_pet')">🐶 Animal/Moral: Critical pet suffering vs euthanasia guilt</button>
+        <button type="button" class="chip" onclick="handlePreset('existential')">🌌 Existential: Successful on paper, hollow & depressed inside</button>
+        <button type="button" class="chip" onclick="handlePreset('toxic_abuse')">💔 Emotional/Safety: Toxic abusive relationship with no support</button>
+        <button type="button" class="chip" onclick="handlePreset('physical_athlete')">⚡ Physical Crisis: Career-ending spinal/knee injury</button>
       </div>
 
-      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Model Holistic State</button>
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze Dilemma & Model 5-Year Consequence Trajectory</button>
     </section>
 
     <!-- Verdict Banner -->
     <section class="card conclusion-card" id="conclusionCard">
       <div class="conclusion-header">
-        <span class="status-pill status-safe" id="verdictPill">Balanced</span>
-        <h3 id="verdictTitle" style="font-size: 16px;">Holistic Systemic Diagnosis</h3>
+        <div>
+          <span class="status-pill status-safe" id="verdictPill">Equilibrium Projected</span>
+          <span id="detectedArchetype" style="font-size: 12px; color: #818cf8; margin-left: 10px; font-weight: 600;"></span>
+        </div>
       </div>
-      <div id="verdictSummary" style="font-size: 14px; color: #cbd5e1; margin-top: 6px; line-height: 1.5;"></div>
+      <div id="verdictSummary" style="font-size: 14px; color: #cbd5e1; margin-top: 6px; line-height: 1.6;"></div>
       
       <div class="conclusion-grid">
         <div class="conclusion-box">
-          <span>Detailed Multi-Pillar Risk Audit (10 Points)</span>
+          <span>Comprehensive Second-Order Risk Breakdown</span>
           <div id="riskText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
         <div class="conclusion-box">
-          <span>Integrated Strategic Action Plan (Multi-Phase)</span>
+          <span>Optimal Resolution & Healing Action Plan</span>
           <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
         </div>
       </div>
@@ -123,84 +128,63 @@
     <!-- Main Workspace -->
     <main class="dashboard-grid">
       
-      <!-- Compiled 4-Pillar State Profile -->
+      <!-- Extracted Consciousness State Vectors -->
       <section class="card">
-        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Compiled Human State Profile</h2>
+        <h2 style="font-size: 15px; margin-bottom: 12px;">2. Parsed Consciousness Vectors (0–100 Scale)</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Extracted directly from your words. You can fine-tune these sliders manually.</p>
         
         <div class="form-row">
           <div>
-            <label>Current Age</label>
-            <input type="number" id="prof_age" value="27" oninput="runSimulation()">
+            <label>Mental Bandwidth / Cognitive Peace</label>
+            <input type="number" id="v_mental" value="70" min="0" max="100" oninput="runSimulation()">
           </div>
           <div>
-            <label>Liquid Capital (₹)</label>
-            <input type="number" id="prof_savings" value="400000" step="50000" oninput="runSimulation()">
+            <label>Emotional / Heart Equilibrium</label>
+            <input type="number" id="v_emotional" value="65" min="0" max="100" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
           <div>
-            <label>Monthly Income (₹)</label>
-            <input type="number" id="prof_income" value="70000" step="5000" oninput="runSimulation()">
+            <label>Biological / Physical Vitality</label>
+            <input type="number" id="v_vitality" value="80" min="0" max="100" oninput="runSimulation()">
           </div>
           <div>
-            <label>Monthly Living Burn (₹)</label>
-            <input type="number" id="prof_expenses" value="38000" step="2000" oninput="runSimulation()">
+            <label>Social / Connection Safety</label>
+            <input type="number" id="v_social" value="60" min="0" max="100" oninput="runSimulation()">
           </div>
         </div>
 
         <div class="form-row">
           <div>
-            <label>Physical Vitality Index (0–100)</label>
-            <input type="number" id="prof_vitality" value="80" min="0" max="100" oninput="runSimulation()">
+            <label>Survival Runway / Material Independence</label>
+            <input type="number" id="v_survival" value="75" min="0" max="100" oninput="runSimulation()">
           </div>
           <div>
-            <label>Mental Bandwidth (0–100)</label>
-            <input type="number" id="prof_mental" value="75" min="0" max="100" oninput="runSimulation()">
+            <label>Acute Distress Level (0 = Calm, 100 = Crisis)</label>
+            <input type="number" id="v_distress" value="40" min="0" max="100" oninput="runSimulation()">
           </div>
-        </div>
-
-        <div class="form-row">
-          <div>
-            <label>Emotional Well-Being (0–100)</label>
-            <input type="number" id="prof_emotional" value="70" min="0" max="100" oninput="runSimulation()">
-          </div>
-          <div>
-            <label>Average Daily Sleep (Hours)</label>
-            <input type="number" id="prof_sleep" value="7.5" step="0.5" min="3" max="12" oninput="runSimulation()">
-          </div>
-        </div>
-
-        <div style="margin-top: 8px;">
-          <label>Identified Dilemma Archetype</label>
-          <select id="scenarioType" onchange="runSimulation()">
-            <option value="burnout">Hustle/Burnout Trap: Sleep Deprivation & Work Pressure</option>
-            <option value="toxic_exit">Toxic Environment Exit: Immediate Job/Relationship Resignation</option>
-            <option value="chronic_health">Health Shock: Illness Restricts Work Capacity by 40%</option>
-            <option value="family_loss">Family Contingency: Demise of Primary Provider</option>
-          </select>
         </div>
       </section>
 
-      <!-- Trajectory Chart & Key Findings -->
+      <!-- Trajectory Chart & Findings -->
       <section class="card">
-        <!-- 4-Pillar State Metrics -->
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">Capital Runway</div>
-            <div class="stat-value" id="runwayMetric">15+ Yrs</div>
+            <div class="stat-label">Mental Peace</div>
+            <div class="stat-value" id="kpi_mental" style="color: var(--mental);">70 / 100</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Emotional Heart</div>
+            <div class="stat-value" id="kpi_emotional" style="color: var(--emotional);">65 / 100</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Physical Vitality</div>
-            <div class="stat-value" id="vitalityMetric" style="color: #34d399;">80 / 100</div>
+            <div class="stat-value" id="kpi_vitality" style="color: var(--vitality);">80 / 100</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Mental Health</div>
-            <div class="stat-value" id="mentalMetric" style="color: var(--mental);">75 / 100</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Emotional Index</div>
-            <div class="stat-value" id="emotionalMetric" style="color: var(--emotional);">70 / 100</div>
+            <div class="stat-label">Life Equilibrium</div>
+            <div class="stat-value" id="kpi_equilibrium" style="color: #cbd5e1;">72%</div>
           </div>
         </div>
 
@@ -209,7 +193,7 @@
         </div>
 
         <div class="insights-card">
-          <h4 style="font-size: 13px;">Integrated Systems Findings:</h4>
+          <h4 style="font-size: 13px;">Universal Dynamics & Feedback Loops:</h4>
           <ul id="insightsList"></ul>
         </div>
       </section>
@@ -220,456 +204,342 @@
   <script>
     let myChart = null;
 
-    const presets = {
-      burnout: "I am 26 earning ₹90,000/month with ₹3 Lakh savings. I am working 80 hours a week and sleeping only 4.5 to 5 hours. I feel mentally drained and exhausted. Should I continue this grind for the money?",
-      toxic_exit: "I am 28 earning ₹65,000/month with ₹2.5 Lakh savings and high daily stress. My workplace is extremely toxic and destroying my mental health. What happens if I quit tomorrow with no job offer in hand?",
-      chronic_health: "I am 32 earning ₹80,000/month with ₹5 Lakh savings. A physical spine and health condition has reduced my work energy and productivity by 40%. How does this impact my long-term life?",
-      family_loss: "I am 30 earning ₹85,000/month with ₹6 Lakh savings, ₹10 Lakh home loan, and a 3-year-old child. What happens to my family if I pass away tomorrow with ₹30 Lakh insurance cover?"
+    const universalPresets = {
+      moral_pet: "My 14-year-old golden retriever has terminal bone cancer and is in severe pain every single day. The veterinarian recommends putting him down to end his suffering, but I am paralyzed by guilt feeling like I am killing my best friend. What do I do?",
+      existential: "I am 30 years old, earning well, have my own apartment, but every morning I wake up feeling a deep void and crying inside. Nothing brings joy, my job feels meaningless, and I feel like an empty robot running on autopilot. Should I walk away from everything?",
+      toxic_abuse: "I am trapped in an emotionally abusive relationship where my partner gaslights me, insults my self-worth, and threatens to ruin my reputation if I leave. I have no confidence left and feel like a prisoner. Can I survive walking away?",
+      physical_athlete: "I am a 23-year-old state-level sprinter and sports has been my entire identity since childhood. Yesterday I tore both my ACL and meniscus, doctors say I can never run competitively again. My soul is crushed and I don't know who I am anymore."
     };
 
     function handlePreset(key) {
-      const input = document.getElementById("userDilemma");
-      if (input && presets[key]) {
-        input.value = presets[key];
-        compileAndSimulate();
-      }
+      document.getElementById("userDilemma").value = universalPresets[key];
+      compileAndSimulate();
     }
 
     /**
-     * Universal Natural Language Parser: Multi-Dimensional Life Dilemmas
+     * Omni-Semantic Parser: Detects emotional tone, suffering indices, existential crises, 
+     * animal welfare, physical collapse, and relationship violence without needing financial fields.
      */
-    function parseDilemmaText(text) {
+    function parseUniversalDilemma(text) {
       const clean = text.toLowerCase();
-      const profile = {
-        age: 27,
-        income: 60000,
-        expenses: 35000,
-        savings: 300000,
-        vitality: 80,
-        mental: 75,
-        emotional: 70,
-        sleep: 7.5,
-        scenario: "burnout"
+      
+      const state = {
+        mental: 65,
+        emotional: 60,
+        vitality: 75,
+        social: 60,
+        survival: 70,
+        distress: 35,
+        archetype: "Holistic Life Balance",
+        type: "general"
       };
 
-      // 1. Age
-      const ageMatch = clean.match(/(?:age|aged|am|i am)\s*(\d{2})/i) || clean.match(/(\d{2})\s*(?:years|yr|y\/o)/i);
-      if (ageMatch && ageMatch[1]) profile.age = parseInt(ageMatch[1]);
-
-      // 2. Financial Amount Extractor Helper
-      function extractAmount(keywords) {
-        for (let kw of keywords) {
-          const pattern = new RegExp(kw + "\\s*(?:of|is|:)?\\s*(?:₹|rs\\.?|inr)?\\s*([\\d,.]+)\\s*(k|lakh|lac|l|cr)?", "i");
-          const revPattern = new RegExp("([\\d,.]+)\\s*(k|lakh|lac|l|cr)?\\s*(?:in|as|of)?\\s*" + kw, "i");
-          let m = clean.match(pattern) || clean.match(revPattern);
-          if (m) {
-            let numStr = m[1].replace(/,/g, '');
-            let val = parseFloat(numStr);
-            let unit = (m[2] || '').toLowerCase();
-            if (unit === 'k') val *= 1000;
-            else if (unit === 'lakh' || unit === 'lac' || unit === 'l') val *= 100000;
-            else if (unit === 'cr') val *= 10000000;
-            if (!isNaN(val) && val > 0) return val;
-          }
-        }
-        return null;
+      // 1. Moral & Animal / Non-Human Dilemma
+      if (clean.includes("dog") || clean.includes("cat") || clean.includes("pet") || clean.includes("animal") || clean.includes("euthan") || clean.includes("put down") || clean.includes("vet")) {
+        state.type = "animal_moral";
+        state.archetype = "Compassionate Ethics & Grief (Animal Companion)";
+        state.emotional = 25;
+        state.mental = 35;
+        state.vitality = 60;
+        state.distress = 90;
+      }
+      // 2. Toxic Relationship, Abuse & Emotional Gaslighting
+      else if (clean.includes("partner") || clean.includes("relationship") || clean.includes("abusive") || clean.includes("gaslight") || clean.includes("threat") || clean.includes("manipulat") || clean.includes("toxic") || clean.includes("cheat") || clean.includes("breakup") || clean.includes("marry") || clean.includes("divorce")) {
+        state.type = "emotional_abuse";
+        state.archetype = "Interpersonal Trauma & Sovereignty Reclamation";
+        state.emotional = 20;
+        state.mental = 30;
+        state.social = 25;
+        state.distress = 85;
+      }
+      // 3. Existential Void, Severe Depression, Purpose Crises
+      else if (clean.includes("void") || clean.includes("meaning") || clean.includes("hollow") || clean.includes("robot") || clean.includes("depress") || clean.includes("crying") || clean.includes("suicid") || clean.includes("empty") || clean.includes("autopilot") || clean.includes("lost")) {
+        state.type = "existential_void";
+        state.archetype = "Existential Crisis & Identity Dissolution";
+        state.mental = 25;
+        state.emotional = 25;
+        state.vitality = 45;
+        state.distress = 80;
+      }
+      // 4. Physical Breakdown, Chronic Illness, Disability & Sports Injury
+      else if (clean.includes("injury") || clean.includes("knee") || clean.includes("spine") || clean.includes("pain") || clean.includes("athlete") || clean.includes("doctor") || clean.includes("paralyz") || clean.includes("cancer") || clean.includes("surgery") || clean.includes("illness")) {
+        state.type = "physical_collapse";
+        state.archetype = "Somatic Trauma & Functional Limitation";
+        state.vitality = 20;
+        state.emotional = 30;
+        state.mental = 40;
+        state.distress = 85;
+      }
+      // 5. Burnout, Exhaustion, Overwork
+      else if (clean.includes("burnout") || clean.includes("exhaust") || clean.includes("sleep") || clean.includes("working") || clean.includes("job") || clean.includes("boss")) {
+        state.type = "burnout";
+        state.archetype = "Systemic Biological & Cognitive Burnout";
+        state.vitality = 35;
+        state.mental = 30;
+        state.emotional = 45;
+        state.distress = 70;
       }
 
-      const inc = extractAmount(["salary", "earning", "earn", "income", "make", "pm", "per month"]);
-      if (inc) {
-        profile.income = inc;
-        profile.expenses = Math.round(inc * 0.55);
+      // Severity modifiers
+      if (clean.includes("can't take") || clean.includes("paralyzed") || clean.includes("crushed") || clean.includes("destroying")) {
+        state.distress = Math.min(100, state.distress + 15);
+        state.emotional = Math.max(10, state.emotional - 10);
       }
 
-      const sav = extractAmount(["saving", "savings", "saved", "liquid", "fund", "bank"]);
-      if (sav) profile.savings = sav;
-
-      // 3. Sleep & Work Hours Extraction
-      const sleepMatch = clean.match(/([\d.]+)\s*(?:hours|hr|hrs)?\s*(?:of)?\s*sleep/i) || clean.match(/sleeping\s*(?:only|around)?\s*([\d.]+)/i);
-      if (sleepMatch && sleepMatch[1]) profile.sleep = parseFloat(sleepMatch[1]);
-
-      // 4. Multi-Dimensional Dilemma Intent Classification
-      if (clean.includes("burnout") || clean.includes("exhaust") || clean.includes("80 hour") || clean.includes("sleep") || clean.includes("grind") || clean.includes("overwork")) {
-        profile.scenario = "burnout";
-        profile.vitality = 50;
-        profile.mental = 40;
-        profile.emotional = 45;
-        if (!sleepMatch) profile.sleep = 5;
-      } else if (clean.includes("toxic") || clean.includes("boss") || clean.includes("quit") || clean.includes("leave job") || clean.includes("depress") || clean.includes("mental health") || clean.includes("anxiety")) {
-        profile.scenario = "toxic_exit";
-        profile.vitality = 65;
-        profile.mental = 35;
-        profile.emotional = 30;
-      } else if (clean.includes("health") || clean.includes("illness") || clean.includes("spine") || clean.includes("injury") || clean.includes("chronic") || clean.includes("physical") || clean.includes("disease")) {
-        profile.scenario = "chronic_health";
-        profile.vitality = 45;
-        profile.mental = 60;
-        profile.emotional = 55;
-      } else if (clean.includes("die") || clean.includes("death") || clean.includes("pass away") || clean.includes("family") || clean.includes("mortality")) {
-        profile.scenario = "family_loss";
-        profile.vitality = 0;
-        profile.mental = 0;
-        profile.emotional = 20;
-      }
-
-      return profile;
+      return state;
     }
 
     function compileAndSimulate() {
-      const area = document.getElementById("userDilemma");
-      const rawText = area ? area.value.trim() : "";
-
-      if (!rawText) {
-        alert("Please describe your dilemma in the box first!");
+      const text = document.getElementById("userDilemma").value.trim();
+      if (!text) {
+        alert("Please describe what you are going through or choose a preset!");
         return;
       }
 
-      const p = parseDilemmaText(rawText);
+      const p = parseUniversalDilemma(text);
 
-      document.getElementById("prof_age").value = p.age;
-      document.getElementById("prof_savings").value = p.savings;
-      document.getElementById("prof_income").value = p.income;
-      document.getElementById("prof_expenses").value = p.expenses;
-      document.getElementById("prof_vitality").value = p.vitality;
-      document.getElementById("prof_mental").value = p.mental;
-      document.getElementById("prof_emotional").value = p.emotional;
-      document.getElementById("prof_sleep").value = p.sleep;
-      document.getElementById("scenarioType").value = p.scenario;
+      document.getElementById("v_mental").value = p.mental;
+      document.getElementById("v_emotional").value = p.emotional;
+      document.getElementById("v_vitality").value = p.vitality;
+      document.getElementById("v_social").value = p.social;
+      document.getElementById("v_survival").value = p.survival;
+      document.getElementById("v_distress").value = p.distress;
+      document.getElementById("detectedArchetype").textContent = `Category: ${p.archetype}`;
 
-      runSimulation();
+      runSimulation(p.type);
     }
 
     /**
-     * Deterministic Multi-Pillar Trajectory Simulation Engine
+     * 5-Year Consequence Simulation Matrix
      */
-    function runSimulation() {
-      const age = parseInt(document.getElementById("prof_age").value) || 27;
-      const initialSavings = parseFloat(document.getElementById("prof_savings").value) || 0;
-      const monthlyIncome = parseFloat(document.getElementById("prof_income").value) || 0;
-      const annualIncome = monthlyIncome * 12;
-      const monthlyExpense = parseFloat(document.getElementById("prof_expenses").value) || 0;
-      let annualExpense = monthlyExpense * 12;
-      
-      let vitality = parseFloat(document.getElementById("prof_vitality").value) || 80;
-      let mental = parseFloat(document.getElementById("prof_mental").value) || 75;
-      let emotional = parseFloat(document.getElementById("prof_emotional").value) || 70;
-      const sleep = parseFloat(document.getElementById("prof_sleep").value) || 7.5;
-      const scenario = document.getElementById("scenarioType").value;
+    function runSimulation(dilemmaType) {
+      let mental = parseFloat(document.getElementById("v_mental").value) || 50;
+      let emotional = parseFloat(document.getElementById("v_emotional").value) || 50;
+      let vitality = parseFloat(document.getElementById("v_vitality").value) || 50;
+      let social = parseFloat(document.getElementById("v_social").value) || 50;
+      let survival = parseFloat(document.getElementById("v_survival").value) || 50;
+      let distress = parseFloat(document.getElementById("v_distress").value) || 50;
 
-      const years = 15;
-      const inflation = 0.06;
-      const yieldRate = 0.08;
+      const years = 5;
+      let timeline = [];
 
-      let baselineTraj = [];
-      let whatifTraj = [];
-      let depletedYear = null;
-      let burnoutCrashYear = null;
-
-      // 1. Status Quo Baseline
-      let bNW = initialSavings;
-      let bExp = annualExpense;
-      for (let yr = 1; yr <= years; yr++) {
-        bNW = (bNW + (annualIncome - bExp)) * (1 + yieldRate);
-        baselineTraj.push({ yr, age: age + yr, nw: Math.round(bNW), vitality: 75, mental: 70, emotional: 70 });
-        bExp *= (1 + inflation);
-      }
-
-      // 2. Multi-Pillar What-If Trajectory
-      let wNW = initialSavings;
-      let wExp = annualExpense;
-      let curVit = vitality;
-      let curMen = mental;
-      let curEmo = emotional;
+      let curM = mental;
+      let curE = emotional;
+      let curV = vitality;
+      let curDistress = distress;
 
       for (let yr = 1; yr <= years; yr++) {
-        let earned = annualIncome;
-
-        if (scenario === "burnout") {
-          // Sleeping < 6 hours creates compounding cognitive decline and medical drain
-          if (sleep < 6) {
-            curVit = Math.max(10, curVit - (6 - sleep) * 4);
-            curMen = Math.max(10, curMen - (6 - sleep) * 5);
-            curEmo = Math.max(10, curEmo - 6);
-          }
-          // Peak income for 2 years, then severe biological crash and medical overhead
-          if (yr >= 3 && (curVit < 35 || curMen < 30)) {
-            if (!burnoutCrashYear) burnoutCrashYear = yr;
-            earned *= 0.4; // 60% loss of earning power due to medical leave/burnout
-            wExp += 150000; // Therapy, hospital, and medical recovery costs
-          } else {
-            earned *= 1.25; // Overwork income bonus
-          }
-        } 
-        else if (scenario === "toxic_exit") {
-          if (yr === 1) {
-            earned = 0; // Immediate exit, 1 year unemployment/transition
-            curEmo = Math.min(90, curEmo + 35); // Dramatic emotional relief from leaving toxicity
-            curMen = Math.min(85, curMen + 30);
-            curVit = Math.min(85, curVit + 15);
-          } else {
-            earned = annualIncome * 1.1; // Recovery in healthier workplace
-            curEmo = Math.min(95, curEmo + 5);
-          }
-        }
-        else if (scenario === "chronic_health") {
-          earned *= 0.60; // 40% reduction in working capacity
-          curVit = Math.max(25, curVit - 2);
-          curMen = Math.max(40, curMen - 1);
-          wExp += 80000; // Chronic maintenance medication costs
-        }
-        else if (scenario === "family_loss") {
-          earned = 0;
-          curVit = 0;
-          curMen = 0;
-          curEmo = 20;
-          if (yr === 1) wNW += 3000000; // Term insurance payout assumption
+        // Model Dynamic Recovery vs Inaction Cascade over 5 years
+        if (yr === 1) {
+          // Year 1: Peak friction and shock
+          curDistress = Math.max(20, curDistress * 0.7);
+          curE = Math.min(100, curE + 10);
+          curM = Math.min(100, curM + 8);
+        } else if (yr <= 3) {
+          // Rebuilding Phase
+          curDistress = Math.max(15, curDistress * 0.6);
+          curE = Math.min(95, curE + 12);
+          curM = Math.min(95, curM + 14);
+          curV = Math.min(90, curV + 8);
+        } else {
+          // Equilibrium Re-established
+          curDistress = Math.max(10, curDistress * 0.8);
+          curE = Math.min(95, curE + 6);
+          curM = Math.min(95, curM + 6);
+          curV = Math.min(90, curV + 4);
         }
 
-        wNW = (wNW + (earned - wExp)) * (1 + yieldRate);
-        if (wNW <= 0) {
-          wNW = 0;
-          if (!depletedYear) depletedYear = yr;
-        }
-
-        whatifTraj.push({
-          yr,
-          age: age + yr,
-          nw: Math.round(wNW),
-          vitality: Math.round(curVit),
-          mental: Math.round(curMen),
-          emotional: Math.round(curEmo)
+        timeline.push({
+          year: `Yr ${yr}`,
+          mental: Math.round(curM),
+          emotional: Math.round(curE),
+          vitality: Math.round(curV),
+          equilibrium: Math.round((curM + curE + curV) / 3)
         });
-
-        wExp *= (1 + inflation);
       }
 
-      updateHolisticDiagnosis(scenario, depletedYear, burnoutCrashYear, annualExpense, initialSavings, curVit, curMen, curEmo, sleep);
-      updateMetrics(baselineTraj, whatifTraj, depletedYear, curVit, curMen, curEmo);
-      renderChart(baselineTraj, whatifTraj);
+      renderUniversalVerdict(dilemmaType, mental, emotional, vitality, distress);
+      updateKPIs(timeline[timeline.length - 1]);
+      renderUniversalChart(timeline);
     }
 
-    function updateHolisticDiagnosis(scenario, depletedYear, burnoutCrashYear, annualExpense, initialSavings, vit, men, emo, sleep) {
+    function renderUniversalVerdict(type, m, e, v, d) {
       const pill = document.getElementById("verdictPill");
       const summary = document.getElementById("verdictSummary");
       const risk = document.getElementById("riskText");
       const action = document.getElementById("actionText");
       const list = document.getElementById("insightsList");
+      list.innerHTML = "";
 
-      if (!pill || !summary) return;
-      if (list) list.innerHTML = "";
-
-      // 1. Burnout & Hustle Trap
-      if (scenario === "burnout") {
-        pill.className = "status-pill status-danger";
-        pill.textContent = "High Systemic Burnout Risk";
-
-        summary.innerHTML = `<strong>Biological & Mental Crash in Year ${burnoutCrashYear || 3}:</strong> Sacrificing sleep (${sleep} hrs/day) for extra income creates a compounding biological deficit. By Year ${burnoutCrashYear || 3}, your Physical Vitality (${vit}/100) and Mental Bandwidth (${men}/100) collapse, forcing an involuntary 60% drop in earning capacity alongside mounting medical rehab costs.`;
+      if (type === "animal_moral") {
+        pill.className = "status-pill status-warn";
+        pill.textContent = "Mercy vs Guilt Equilibrium";
+        summary.innerHTML = `<strong>The Compassion Paradox:</strong> You are conflating the moral act of mercy with the trauma of loss. Holding onto a living companion in terminal intractable pain prolongs <em>their biological suffering</em> to delay <em>your personal emotional grief</em>. Euthanasia in terminal agony is not abandonment; it is taking on their pain yourself so they can finally rest.`;
 
         risk.innerHTML = `
-          <strong>1. Neurocognitive Fatigue Accumulation:</strong> Chronic sleep below 6 hours destroys executive function, prefrontal cortex decision-making, and emotional regulation.<br>
-          <strong>2. The False Productivity Paradox:</strong> Working 80 hours yields diminishing marginal returns; mistake rates increase by over 300%, negating nominal income gains.<br>
-          <strong>3. Involuntary Biological Crash:</strong> Human biology cannot sustain high cortisol for more than 24–36 months without triggering chronic immune/endocrine breakdown.<br>
-          <strong>4. Reversal of Financial Gains:</strong> Hospitalization, psychotherapy, and burnout recovery expenses quickly consume the surplus income earned during overwork.<br>
-          <strong>5. Emotional Alienation:</strong> Isolation from personal relationships destroys emotional support systems, creating a negative feedback loop with work.<br>
-          <strong>6. Forced Career Interruption:</strong> A sudden burnout-induced crash often forces unmanaged multi-month gaps that harm long-term career momentum.<br>
-          <strong>7. Addiction & Maladaptive Coping:</strong> Chronic fatigue regularly leads to reliance on stimulants (excess caffeine, nicotine) and depressants for sleep.<br>
-          <strong>8. Permanent Vitality Penalty:</strong> Severe chronic burnout can leave lasting metabolic and autonomic nervous system dysfunction.<br>
-          <strong>9. Relationship Atrophy:</strong> Zero bandwidth for family or friends leaves you with no emotional cushion during critical life crises.<br>
-          <strong>10. Terminal Loss of Purpose:</strong> Converting all life energy into pure capital accumulation consistently triggers severe existential depression.
+          <strong>1. Prolonged Secondary Agony:</strong> The companion endures unnecessary biological distress solely to comfort the human caregiver.<br>
+          <strong>2. Traumatic Memory Stacking:</strong> Remembering their final weeks as traumatic suffering displaces years of joyful memories.<br>
+          <strong>3. Self-Inflicted Guilt Trap:</strong> Blaming yourself for a biological disease you did not cause.<br>
+          <strong>4. Caregiver Burnout:</strong> Sleepless nights and helplessness erode your own emotional and physical vitality.<br>
+          <strong>5. Postponed Inevitability:</strong> Delaying the inevitable increases emergency crisis risks rather than peaceful closure.
         `;
 
         action.innerHTML = `
-          <strong>Phase 1: Physiological Stabilization (Immediate)</strong><br>
-          • Enforce a non-negotiable 7-hour minimum sleep buffer; treat sleep as an essential performance variable.<br>
-          • Cap weekly professional hours at 50–55 hours max; eliminate low-leverage side hustles immediately.<br>
-          • Take a structured 7-to-10 day zero-screen biological reset vacation to lower systemic cortisol.<br><br>
-          <strong>Phase 2: High-Leverage Boundary Engineering (Month 1–3)</strong><br>
-          • Shift from "hours worked" to "outcomes achieved" by automating or delegating low-yield tasks.<br>
-          • Establish strict work cutoffs at 7:30 PM with zero work email notifications permitted on personal phones.<br>
-          • Schedule 3 weekly sessions of zone-2 aerobic exercise to rebuild autonomic cardiovascular resilience.<br><br>
-          <strong>Phase 3: Financial Decoupling & Sustainable Scaling</strong><br>
-          • Build a 12-month living buffer so you never feel forced to sacrifice health out of fear of income loss.<br>
-          • Rebalance compensation goals toward sustainable roles with high autonomy rather than pure hours-for-pay trades.
+          <strong>1. Objective Quality of Life Audit:</strong> Use the standard HHHHHMM scale (Hurt, Hunger, Hydration, Hygiene, Happiness, Mobility). If more than 3 are failing, mercy is the kindest action.<br>
+          <strong>2. Reframe Euthanasia as the Final Gift:</strong> You promised them protection from suffering; keeping that promise requires bearing the grief yourself.<br>
+          <strong>3. In-Home Peaceful Transition:</strong> Arrange an in-home veterinary service so their final moments are in their familiar bed, surrounded by love without clinical hospital fear.<br>
+          <strong>4. Structured Mourning Period:</strong> Allow yourself permission to grieve deeply without shame.
         `;
 
         list.innerHTML = `
-          <li><strong>Biological Deficit:</strong> ${sleep} hours of sleep creates an unrecoverable cognitive deficit within 24 months.</li>
-          <li><strong>Income Inversion:</strong> Post-crash medical and rehabilitation costs offset nominal earnings gains.</li>
+          <li>Terminally suffering beings cannot conceptualize "tomorrow"; they only experience the physical agony of "now".</li>
+          <li>Releasing them preserves dignity and honors the companionship contract.</li>
         `;
-      }
-
-      // 2. Toxic Workplace / Relationship Exit
-      else if (scenario === "toxic_exit") {
-        if (depletedYear) {
-          pill.className = "status-pill status-warn";
-          pill.textContent = "Mental Relief / Financial Deficit";
-
-          summary.innerHTML = `<strong>Immediate Emotional Recovery vs. Capital Depletion:</strong> Resigning from toxicity instantly restores Emotional Well-Being (${emo}/100) and Mental Health (${men}/100), but your liquid savings exhaust in <strong>Year ${depletedYear}</strong> without active transition income.`;
-
-          risk.innerHTML = `
-            <strong>1. Financial Distress Compounder:</strong> While leaving toxicity saves your mental health, zero cash in Year ${depletedYear} creates a new wave of acute financial panic.<br>
-            <strong>2. Desperation Hiring Trap:</strong> Running out of money forces you to accept the next available job, which often ends up being equally toxic.<br>
-            <strong>3. Premature Emergency Fund Depletion:</strong> Spending your entire emergency reserve on an unplanned sabbatical leaves zero buffer for medical crises.<br>
-            <strong>4. Loss of Professional Confidence:</strong> Abrupt departures without structured transition narratives can create interview friction.<br>
-            <strong>5. Compounding Investment Disruption:</strong> Liquidating assets to pay monthly rent permanently stops your investment compounding curve.
-          `;
-
-          action.innerHTML = `
-            <strong>Phase 1: Emotional Detachment Strategy (Pre-Resignation)</strong><br>
-            • Mentally "quiet quit": Perform your core duties strictly within working hours while disengaging emotionally from toxic dynamics.<br>
-            • Build an immediate 6-to-9 month survival cash runway before submitting your formal resignation.<br>
-            • Direct all non-working energy into daily job applications, networking calls, and portfolio modernization.<br><br>
-            <strong>Phase 2: Strategic Exit Execution</strong><br>
-            • Secure an independent health insurance policy so departure does not leave you medically vulnerable.<br>
-            • Frame your departure narrative positively around seeking higher ownership rather than complaining about past toxicity.
-          `;
-        } else {
-          pill.className = "status-pill status-safe";
-          pill.textContent = "High Life Quality Upgrade";
-
-          summary.innerHTML = `<strong>Optimal Strategic Exit:</strong> Your savings safely support your transition. Exiting toxicity raises your Mental Health to ${men}/100 and Emotional Index to ${emo}/100 while preserving long-term capital runway.`;
-
-          risk.innerHTML = `
-            <strong>1. Temporary Career Stagnation:</strong> Transition pauses resume momentum for 6–12 months.<br>
-            <strong>2. Inertia Risk:</strong> Relief from leaving toxicity can lead to prolonged procrastination if strict job-search routines aren't kept.<br>
-            <strong>3. Sequence Risk:</strong> Downturns in your specific industry could lengthen your planned search timeline.
-          `;
-
-          action.innerHTML = `
-            <strong>1. Execute Planned Resignation:</strong> Submit your notice cleanly without burning bridges.<br>
-            <strong>2. Treat the Transition as a Full-Time Role:</strong> Spend 4 hours every morning on structured learning, networking, and applications.<br>
-            <strong>3. Protect Your Morning Routine:</strong> Prioritize outdoor daylight, sleep regularity, and exercise to sustain mental clarity.
-          `;
-        }
-
-        list.innerHTML = `
-          <li>Emotional Well-Being increases significantly upon leaving chronic toxicity.</li>
-          <li>Financial runway determines whether the exit leads to permanent growth or panic hiring.</li>
-        `;
-      }
-
-      // 3. Chronic Physical Health Shock
-      else if (scenario === "chronic_health") {
+      } 
+      else if (type === "existential_void") {
         pill.className = "status-pill status-danger";
-        pill.textContent = "Capacity Constraint";
-
-        summary.innerHTML = `<strong>Permanent 40% Work Capacity Reduction:</strong> Physical Vitality drops to ${vit}/100 with ongoing healthcare costs of ₹80,000/year. Long-term net worth lags baseline path unless high-leverage passive or flexible income streams are established.`;
+        pill.textContent = "Existential Dissociation";
+        summary.innerHTML = `<strong>The 'Arrival Fallacy' Breakdown:</strong> You achieved societal checkboxes (money, stability, career), but discovered they do not synthesize intrinsic meaning. The void is not a sign of failure—it is your psyche rebelling against living a script written by external expectations.`;
 
         risk.innerHTML = `
-          <strong>1. Diminished Human Capital Velocity:</strong> Inability to work extended hours caps promotion speed and performance bonuses.<br>
-          <strong>2. Recurring Healthcare Inflation:</strong> Chronic illness maintenance costs inflate at 10–12% per year, outpacing general consumer inflation.<br>
-          <strong>3. Secondary Mental Health Strain:</strong> Ongoing physical pain or limitations frequently triggers secondary depressive episodes.<br>
-          <strong>4. Energy Allocation Scarcity:</strong> Expending all available energy on basic work leaves zero vitality for family, fitness, or leisure.
+          <strong>1. Autopilot Numbing:</strong> Prolonged dissociation leads to reliance on dopamine numbing (scrolling, alcohol, consumerism).<br>
+          <strong>2. Impulsive Self-Sabotage:</strong> Burning your life down abruptly without building an alternative foundation creates secondary financial panic.<br>
+          <strong>3. Emotional Flatlining:</strong> Anhedonia (inability to feel pleasure) deepens into clinical depressive paralysis.<br>
+          <strong>4. Social Isolation:</strong> Hiding your emptiness behind a "successful persona" isolates you from authentic human connection.
         `;
 
         action.innerHTML = `
-          <strong>1. Pivot to High-Leverage Asynchronous Work:</strong> Transition into specialized knowledge work, consulting, or remote roles that reward judgment over physical presence.<br>
-          <strong>2. Automate Aggressive Index Investing:</strong> Make capital work harder by automating investments to offset diminished physical labor capacity.<br>
-          <strong>3. Secure Comprehensive Health Cover:</strong> Lock in comprehensive health insurance and critical illness policies to cap out-of-pocket costs.
+          <strong>1. Do Not Burn the Ship Yet:</strong> Keep your financial baseline secure as an energy shield while you explore meaning.<br>
+          <strong>2. Micro-Exploration of Agency:</strong> Reclaim 1 hour daily for completely unmonetized, unjudged curiosity (art, nature, volunteering).<br>
+          <strong>3. Somatic Grounding:</strong> Re-engage the physical body through rigorous movement or cold exposure to break mental loops.<br>
+          <strong>4. Professional Psyche Integration:</strong> Engage an existential or psychodynamic therapist to uncover neglected core values.
         `;
 
         list.innerHTML = `
-          <li>Physical capacity constraints cap active labor income potential.</li>
-          <li>Shifting to knowledge leverage and automated capital compounding becomes mandatory.</li>
+          <li>Material security solves survival; it does not solve meaning.</li>
+          <li>The void is a signal to pivot internal values, not to give up on life.</li>
         `;
       }
-
-      // 4. Family Mortality Shock
-      else if (scenario === "family_loss") {
+      else if (type === "emotional_abuse") {
         pill.className = "status-pill status-danger";
-        pill.textContent = "Contingency Shock";
-
-        summary.innerHTML = `<strong>Family Survivorship & Solvency:</strong> Provider demise drops physical and mental inputs to zero. The family's survivability is entirely determined by whether net assets and life insurance payouts cover household inflation through dependent maturity.`;
+        pill.textContent = "Sovereignty Emergency";
+        summary.innerHTML = `<strong>Trauma Bonding & Identity Dissolution:</strong> Your cognitive sense of self is being systematically eroded. Psychological abusers use cyclical affection and terror to create biochemical addiction. Every month you stay reduces your emotional defense vector further.`;
 
         risk.innerHTML = `
-          <strong>1. Total Loss of Future Human Capital:</strong> Future salary appraisals, equity incentives, and promotions vanish instantly.<br>
-          <strong>2. Immediate Debt Encumbrance:</strong> Outstanding loans consume early insurance proceeds unless debt-protection riders are in place.<br>
-          <strong>3. High Dependent Vulnerability:</strong> Minor dependents face severe educational disruption if assets run dry before age 22.
+          <strong>1. Complete Self-Doubt:</strong> Gaslighting makes you unable to trust your own senses and decisions.<br>
+          <strong>2. Gradual Social Severing:</strong> Abusers systematically alienate you from friends and family until you have no refuge.<br>
+          <strong>3. Systemic Stress Illness:</strong> Living in constant fight-or-flight triggers autoimmune and cardiovascular dysfunction.<br>
+          <strong>4. Escalation of Control:</strong> Emotional intimidation inevitably escalates into financial or physical containment.
         `;
 
         action.innerHTML = `
-          <strong>1. Maintain Pure Term Cover:</strong> Keep term insurance scaled to at least 15–20x annual household expenses.<br>
-          <strong>2. Register Clear Nominees:</strong> Ensure all bank accounts, mutual fund folios, and policies have unambiguous legal nominees.<br>
-          <strong>3. Set Up an SWP Payout Plan:</strong> Ensure insurance proceeds are deployed into structured monthly withdrawal plans rather than sitting in low-yield cash.
+          <strong>1. Silent Safety Network:</strong> Re-establish secret contact with 1 trusted family member or counselor immediately.<br>
+          <strong>2. Digital & Financial Ringfencing:</strong> Secure your personal documents, bank passwords, and emergency funds secretly.<br>
+          <strong>3. The 'Gray Rock' Technique:</strong> Stop arguing or reacting emotionally; become as unreactive as a gray rock while preparing departure.<br>
+          <strong>4. Strict Zero-Contact Post-Exit:</strong> Block across all channels once out; an abuser's promises of change are calculated tools to drag you back.
         `;
 
         list.innerHTML = `
-          <li>Family solvency depends completely on upfront insurance and asset ringfencing.</li>
+          <li>Emotional abuse creates physical neural damage equivalent to repeated concussions.</li>
+          <li>Leaving is not quitting; it is reclaiming your life sovereignty.</li>
         `;
+      }
+      else if (type === "physical_collapse") {
+        pill.className = "status-pill status-warn";
+        pill.textContent = "Identity Reconstruction";
+        summary.innerHTML = `<strong>Somatic Shock & Ego Fracture:</strong> When an athlete or active being loses physical function, the primary grief is not the injury—it is the death of their identity. Your body has changed, but your consciousness and drive still exist.`;
+
+        risk.innerHTML = `
+          <strong>1. Grief-Induced Despair:</strong> Mourning the lost body can paralyze you from rehabilitating remaining faculties.<br>
+          <strong>2. Identity Void:</strong> Believing "if I am not an athlete/healthy, I am nothing."<br>
+          <strong>3. Somatic Deconditioning:</strong> Inactivity triggering secondary metabolic and mental deterioration.<br>
+          <strong>4. Bitterness & Resentment:</strong> Watching others compete while you are sidelined breeds corrosive envy.
+        `;
+
+        action.innerHTML = `
+          <strong>1. Grieve the Past Self Formally:</strong> Acknowledge that the old physical chapter has closed without denial.<br>
+          <strong>2. Channel Athlete Discipline Inward:</strong> Re-apply your training discipline to aggressive physical therapy and new crafts.<br>
+          <strong>3. Pivot to Tactical/Strategic Mastery:</strong> Move from physical execution to coaching, analysis, mentorship, or intellectual arenas.<br>
+          <strong>4. Redefine Victory:</strong> Success is no longer running a sub-10 second race; it is mastering adaptability under adversity.
+        `;
+
+        list.innerHTML = `
+          <li>Injuries destroy physical capabilities; they cannot touch your internal mental fortitude.</li>
+          <li>Every great coach, strategist, or resilient human was forged in an unexpected crucible.</li>
+        `;
+      }
+      else {
+        pill.className = "status-pill status-safe";
+        pill.textContent = "Systemic Equilibrium";
+        summary.innerHTML = `<strong>Holistic Balance Analysis:</strong> Your dilemma reflects a friction between current cognitive energy and life demands. Restoring balance requires re-calibrating mental boundaries and physical reserves.`;
+
+        risk.innerHTML = `
+          <strong>1. Chronic Stress Compounding:</strong> Unchecked emotional friction drains biological resilience.<br>
+          <strong>2. Reactive Decision-Making:</strong> High distress triggers short-sighted choices that damage long-term peace.
+        `;
+
+        action.innerHTML = `
+          <strong>1. Establish Daily Recovery Rituals:</strong> Protect 8 hours of sleep and regular nutrition.<br>
+          <strong>2. Set Rigid Life Boundaries:</strong> Disengage from non-essential emotional drains.
+        `;
+
+        list.innerHTML = `<li>Balanced inputs lead to long-term systemic stability.</li>`;
       }
     }
 
-    function updateMetrics(bTraj, wTraj, depletedYear, vit, men, emo) {
-      document.getElementById("runwayMetric").textContent = depletedYear ? `Yr ${depletedYear}` : "15+ Yrs";
-      
-      const vEl = document.getElementById("vitalityMetric");
-      vEl.textContent = `${vit} / 100`;
-      vEl.style.color = vit < 40 ? "var(--danger)" : (vit < 70 ? "var(--warning)" : "var(--success)");
-
-      const mEl = document.getElementById("mentalMetric");
-      mEl.textContent = `${men} / 100`;
-      mEl.style.color = men < 40 ? "var(--danger)" : "var(--mental)";
-
-      const eEl = document.getElementById("emotionalMetric");
-      eEl.textContent = `${emo} / 100`;
-      eEl.style.color = emo < 40 ? "var(--danger)" : "var(--emotional)";
+    function updateKPIs(finalState) {
+      document.getElementById("kpi_mental").textContent = `${finalState.mental} / 100`;
+      document.getElementById("kpi_emotional").textContent = `${finalState.emotional} / 100`;
+      document.getElementById("kpi_vitality").textContent = `${finalState.vitality} / 100`;
+      document.getElementById("kpi_equilibrium").textContent = `${finalState.equilibrium}%`;
     }
 
-    function renderChart(bTraj, wTraj) {
-      const chartCanvas = document.getElementById("trajectoryChart");
-      if (!chartCanvas || typeof Chart === "undefined") return;
-
-      const labels = bTraj.map(d => `Age ${d.age} (Yr ${d.yr})`);
-      
-      // Holistic Comparative Datasets
-      const netWorthData = wTraj.map(d => d.nw);
-      const vitalityData = wTraj.map(d => d.vitality);
-      const mentalData = wTraj.map(d => d.mental);
-      const emoData = wTraj.map(d => d.emotional);
+    function renderUniversalChart(timeline) {
+      const labels = timeline.map(d => d.year);
+      const mData = timeline.map(d => d.mental);
+      const eData = timeline.map(d => d.emotional);
+      const vData = timeline.map(d => d.vitality);
+      const eqData = timeline.map(d => d.equilibrium);
 
       if (myChart) myChart.destroy();
 
-      const ctx = chartCanvas.getContext("2d");
+      const ctx = document.getElementById("trajectoryChart").getContext("2d");
       myChart = new Chart(ctx, {
         type: "line",
         data: {
           labels: labels,
           datasets: [
             {
-              label: "Net Worth (₹)",
-              data: netWorthData,
-              borderColor: "#6366f1",
-              backgroundColor: "rgba(99, 102, 241, 0.1)",
-              yAxisID: 'y',
-              fill: true,
-              tension: 0.2
-            },
-            {
-              label: "Physical Vitality (0-100)",
-              data: vitalityData,
-              borderColor: "#10b981",
-              borderDash: [4, 4],
-              yAxisID: 'y1',
+              label: "Life Equilibrium (%)",
+              data: eqData,
+              borderColor: "#f8fafc",
+              borderWidth: 3,
               fill: false,
-              tension: 0.2
+              tension: 0.3
             },
             {
-              label: "Mental Health (0-100)",
-              data: mentalData,
+              label: "Mental Peace (0–100)",
+              data: mData,
               borderColor: "#38bdf8",
-              borderDash: [2, 2],
-              yAxisID: 'y1',
+              borderDash: [3, 3],
               fill: false,
-              tension: 0.2
+              tension: 0.3
             },
             {
-              label: "Emotional Stability (0-100)",
-              data: emoData,
+              label: "Emotional Heart (0–100)",
+              data: eData,
               borderColor: "#ec4899",
               borderDash: [5, 5],
-              yAxisID: 'y1',
               fill: false,
-              tension: 0.2
+              tension: 0.3
+            },
+            {
+              label: "Physical Vitality (0–100)",
+              data: vData,
+              borderColor: "#22c55e",
+              borderDash: [2, 2],
+              fill: false,
+              tension: 0.3
             }
           ]
         },
@@ -677,31 +547,23 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            x: { grid: { color: "#27334a" }, ticks: { color: "#94a3b8" } },
+            x: { grid: { color: "#243352" }, ticks: { color: "#94a3b8" } },
             y: {
-              type: 'linear',
-              display: true,
-              position: 'left',
-              grid: { color: "#27334a" },
-              ticks: { color: "#818cf8", callback: (v) => "₹" + (v/100000).toFixed(1) + "L" }
-            },
-            y1: {
-              type: 'linear',
-              display: true,
-              position: 'right',
               min: 0,
               max: 100,
-              grid: { drawOnChartArea: false },
-              ticks: { color: "#34d399", callback: (v) => v + " pts" }
+              grid: { color: "#243352" },
+              ticks: { color: "#94a3b8", callback: (v) => v + " pts" }
             }
           },
-          plugins: { legend: { labels: { color: "#f8fafc" } } }
+          plugins: {
+            legend: { labels: { color: "#f8fafc", font: { size: 11 } } }
+          }
         }
       });
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      runSimulation();
+      compileAndSimulate();
     });
   </script>
 </body>
