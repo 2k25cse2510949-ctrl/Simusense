@@ -85,8 +85,22 @@
     .conclusion-box { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
     .conclusion-box span { font-size: 12px; color: #818cf8; text-transform: uppercase; display: block; margin-bottom: 8px; font-weight: 700; }
 
+    /* Video Section Cards */
+    .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+    .video-card { background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .video-card h4 { font-size: 14px; color: #f8fafc; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .video-frame { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 6px; background: #000; }
+    .video-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .video-desc { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+    .yt-search-btn { display: inline-block; margin-top: 8px; font-size: 11px; color: #818cf8; text-decoration: none; border: 1px solid #818cf8; padding: 4px 8px; border-radius: 4px; }
+    .yt-search-btn:hover { background: rgba(129, 140, 248, 0.1); }
+
     .dashboard-grid { display: grid; grid-template-columns: 440px 1fr; gap: 20px; }
-    @media (max-width: 950px) { .dashboard-grid { grid-template-columns: 1fr; } .conclusion-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 950px) { 
+      .dashboard-grid { grid-template-columns: 1fr; } 
+      .conclusion-grid { grid-template-columns: 1fr; } 
+      .video-grid { grid-template-columns: 1fr; }
+    }
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
@@ -103,7 +117,6 @@
     .insights-card ul { padding-left: 18px; font-size: 13px; color: var(--text-muted); margin-top: 6px; }
     .insights-card li { margin-bottom: 6px; }
     
-    /* Clean up Google Translate bar elements */
     .goog-te-gadget { font-size: 0px !important; }
     .goog-te-gadget span { display: none !important; }
     .goog-te-banner-frame { display: none !important; }
@@ -127,12 +140,11 @@
     
     <div class="top-nav">
       <div>
-        <span class="badge">SimuSense Universal</span>
-        <h1>Life Decision & Dilemma Helper</h1>
+        <span class="badge">SimuSense Universal v7.0</span>
+        <h1>Life Decision &amp; Dilemma Helper</h1>
         <p class="subtitle">Helps you make the right choice for money, health, stress, relationships, and pets in simple words.</p>
       </div>
 
-      <!-- Language Selector -->
       <div class="translate-box">
         <span>🌐 Choose Language:</span>
         <div id="google_translate_element"></div>
@@ -153,7 +165,7 @@
         <button type="button" class="chip" onclick="handlePreset('physical_spine')">🦴 Severe health pain stopping my work?</button>
       </div>
 
-      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze My Problem &amp; Show Simple Roadmap</button>
+      <button type="button" class="btn-primary" onclick="compileAndSimulate()">Analyze My Problem &amp; Show Video Roadmaps</button>
     </section>
 
     <!-- Verdict Banner -->
@@ -174,6 +186,34 @@
         <div class="conclusion-box">
           <span>✅ What you should do step-by-step</span>
           <div id="actionText" style="font-size: 13px; color: #f8fafc; line-height: 1.6;">-</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual Video Guide Section -->
+    <section class="card" id="videoSection">
+      <h2 style="font-size: 16px; margin-bottom: 4px;">📹 Visual Video Guides (Problem &amp; Practical Solution)</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Watch these curated walkthroughs to see why the problem happens and exactly how the solution works in real life.</p>
+      
+      <div class="video-grid">
+        <!-- Problem Video Card -->
+        <div class="video-card">
+          <h4>🔴 Video 1: Understanding The Problem</h4>
+          <div class="video-frame">
+            <iframe id="problemVideoIframe" src="" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <div class="video-desc" id="problemVideoDesc">Loading problem breakdown...</div>
+          <a href="#" target="_blank" id="problemYtLink" class="yt-search-btn">🔍 Search More Problem Breakdown Videos</a>
+        </div>
+
+        <!-- Solution Video Card -->
+        <div class="video-card">
+          <h4>🟢 Video 2: How The Solution Works</h4>
+          <div class="video-frame">
+            <iframe id="solutionVideoIframe" src="" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <div class="video-desc" id="solutionVideoDesc">Loading solution roadmap...</div>
+          <a href="#" target="_blank" id="solutionYtLink" class="yt-search-btn">🔍 Search Practical Solution Walkthroughs</a>
         </div>
       </div>
     </section>
@@ -252,6 +292,58 @@
   <script>
     let myChart = null;
 
+    // Curated high-relevance video mappings for each scenario
+    const videoDataMap = {
+      investment: {
+        problemId: "KZaQx6Q0Gv4", // Why small money disappears & common beginner traps
+        problemDesc: "Why investing small money in high-risk crypto or quick-rich tips always leads to loss.",
+        problemQuery: "why beginners lose money in stock market and crypto",
+        solutionId: "vBq3qV2G3o8", // How Index Funds and Micro SIPs work
+        solutionDesc: "Step-by-step tutorial: How to start a Rs 500/month Index Fund SIP and invest in skills.",
+        solutionQuery: "how to start index fund sip with 500 rupees groww zerodha"
+      },
+      burnout: {
+        problemId: "gB4D9V7Wd8E", // The biological cost of sleep deprivation and overwork
+        problemDesc: "The science of sleep deprivation: What 80-hour workweeks do to your brain and body.",
+        problemQuery: "what happens to brain when you sleep only 4 hours burnout",
+        solutionId: "GszU8r8gS_c", // Resetting nervous system and healthy boundaries
+        solutionDesc: "The 7-day nervous system reset: How to recover from burnout and set boundaries at work.",
+        solutionQuery: "how to recover from severe work burnout practical steps"
+      },
+      toxic_exit: {
+        problemId: "2oY9sWv8sK8", // Signs of toxic workplace gaslighting
+        problemDesc: "Understanding the psychological damage of toxic managers and office harassment.",
+        problemQuery: "signs of a toxic work environment and gaslighting boss",
+        solutionId: "mN2H7K0q8jE", // How to quietly quit and plan an emergency exit
+        solutionDesc: "Quiet quitting and exit strategy: How to find a new job safely without getting broke.",
+        solutionQuery: "how to leave a toxic job without offer exit strategy"
+      },
+      animal_moral: {
+        problemId: "Tk8Z3cK9pRw", // Quality of life assessment for elderly/terminal pets
+        problemDesc: "A veterinarian explains when an old pet is in too much pain and quality of life scales.",
+        problemQuery: "how to know when it is time to put dog down vet quality of life",
+        solutionId: "7P9Z6vW1mKo", // Understanding compassionate pet euthanasia & handling guilt
+        solutionDesc: "Compassionate euthanasia: How in-home peaceful transition works and overcoming guilt.",
+        solutionQuery: "how pet euthanasia works at home peaceful goodbye"
+      },
+      physical_shock: {
+        problemId: "d6q0v1V5kM0", // Disc herniation, sciatica, and sitting damage
+        problemDesc: "What prolonged sitting and herniated spine discs do to your spinal nerves.",
+        problemQuery: "spine disc herniation and sitting posture explained",
+        solutionId: "4BOTvaRaUQc", // McGill Big 3 and spine rehabilitation routine
+        solutionDesc: "The McGill Big 3 core exercises to decompress the spine and adapt your daily work.",
+        solutionQuery: "mcgill big 3 spine back pain rehabilitation exercises"
+      },
+      existential: {
+        problemId: "X2qka1z6f4U", // The feeling of emptiness and the arrival fallacy
+        problemDesc: "Why having money and a stable job can still leave you feeling hollow and numb.",
+        problemQuery: "why success makes you feel empty arrival fallacy psychology",
+        solutionId: "L9aF0t8z7gQ", // Finding authentic meaning and micro-habits
+        solutionDesc: "How to rebuild authentic meaning, reconnect with real curiosity, and exit the void.",
+        solutionQuery: "how to find purpose when life feels meaningless"
+      }
+    };
+
     const presets = {
       micro_invest: "I have 1200 rupees, where should I put this money to get the best result?",
       burnout: "I am working 80 hours a week and sleeping only 4.5 hours for good money. I feel depressed and exhausted. Should I stop?",
@@ -325,6 +417,26 @@
       return res;
     }
 
+    function updateVideoGuides(type) {
+      const data = videoDataMap[type] || videoDataMap.investment;
+      
+      const pFrame = document.getElementById("problemVideoIframe");
+      const pDesc = document.getElementById("problemVideoDesc");
+      const pLink = document.getElementById("problemYtLink");
+
+      const sFrame = document.getElementById("solutionVideoIframe");
+      const sDesc = document.getElementById("solutionVideoDesc");
+      const sLink = document.getElementById("solutionYtLink");
+
+      if (pFrame) pFrame.src = "https://www.youtube-nocookie.com/embed/" + data.problemId;
+      if (pDesc) pDesc.textContent = data.problemDesc;
+      if (pLink) pLink.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.problemQuery);
+
+      if (sFrame) sFrame.src = "https://www.youtube-nocookie.com/embed/" + data.solutionId;
+      if (sDesc) sDesc.textContent = data.solutionDesc;
+      if (sLink) sLink.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(data.solutionQuery);
+    }
+
     function compileAndSimulate() {
       const area = document.getElementById("userDilemma");
       const text = area ? area.value.trim() : "";
@@ -343,6 +455,7 @@
       if (vEl) vEl.value = p.vitality;
       if (dEl) dEl.value = p.distress;
 
+      updateVideoGuides(p.type);
       runSimulation(p.type, p.capital);
     }
 
@@ -409,7 +522,6 @@
       const list = document.getElementById("insightsList");
       if (list) list.innerHTML = "";
 
-      // 1. Small Money & Investment
       if (type === "investment") {
         if (arch) arch.textContent = "Category: Smart Money Decision";
         if (pill) {
@@ -419,11 +531,8 @@
 
         if (capital <= 5000) {
           if (summary) summary.innerHTML = "<strong>The Truth About Rs " + capital.toLocaleString('en-IN') + ":</strong> In the stock market, Rs 1,200 only grows by about Rs 140 in a full year. But if you spend this money to learn a skill or buy a tool, that same Rs 1,200 can help you earn Rs 10,000+ every month!";
-
           if (risk) risk.innerHTML = "<strong>1. Getting Scammed:</strong> Never put small money into quick-rich schemes, Telegram tips, or crypto. 90% of people lose all their money there.<br><strong>2. Waste on Junk:</strong> Thinking 'Rs 1,200 is too small' and wasting it on useless fast food or party clothes.<br><strong>3. Hidden App Fees:</strong> Trading apps charge small fees that eat up your small profits.";
-
           if (action) action.innerHTML = "<strong>Step 1: Buy a Good Learning Tool or Book</strong><br>Use Rs 500 to buy a life-changing book (like Psychology of Money) or an online course that helps you get a better job or freelance work.<br><br><strong>Step 2: Start a Rs 500 Monthly Habit (SIP)</strong><br>Put Rs 500 every month in a safe Index Fund (Nifty 50). This builds the habit of a wealthy person.<br><br><strong>Step 3: Keep the Rest Safe</strong><br>Keep the remaining money in your bank for any sudden emergency.";
-
           if (list) list.innerHTML = "<li>With small money, investing in yourself gives 100 times more return than the share market.</li><li>Starting small today is much better than waiting for lakhs of rupees.</li>";
         } else {
           if (summary) summary.innerHTML = "<strong>Growing Your Rs " + capital.toLocaleString('en-IN') + ":</strong> You have a good amount of savings. Keep it safe and let it grow steadily without taking stupid risks.";
@@ -432,7 +541,6 @@
           if (list) list.innerHTML = "<li>Safe index funds beat 90% of stock pickers over 5 to 10 years.</li>";
         }
       } 
-      // 2. Animal & Pet Moral Decision
       else if (type === "animal_moral") {
         if (arch) arch.textContent = "Category: Loving Your Pet & Hard Choices";
         if (pill) {
@@ -444,7 +552,6 @@
         if (action) action.innerHTML = "<strong>Step 1: Check Their Daily Joy:</strong> If they cannot walk, eat, or wag their tail without pain, it is time to be brave for them.<br><strong>Step 2: Peaceful Goodbye at Home:</strong> Call a vet to your home so your pet falls asleep in their favorite bed with you hugging them.<br><strong>Step 3: Allow Yourself to Cry:</strong> Grieve openly. You gave them a wonderful life.";
         if (list) list.innerHTML = "<li>Animals only live in the present moment; they do not care about tomorrow if today is pure pain.</li><li>Relieving their pain is true love, not betrayal.</li>";
       }
-      // 3. Physical Health & Spine
       else if (type === "physical_shock") {
         if (arch) arch.textContent = "Category: Body Health & Work Balance";
         if (pill) {
@@ -456,7 +563,6 @@
         if (action) action.innerHTML = "<strong>Step 1: Stop Long Sitting:</strong> Stand up or walk for 2 minutes every 30 minutes.<br><strong>Step 2: Change How You Work:</strong> Learn skills where you can work on a laptop from home or bed rather than heavy physical presence.<br><strong>Step 3: Get Regular Physio:</strong> Do proper doctor-guided stretches every morning.";
         if (list) list.innerHTML = "<li>You only get one body. Work can wait; broken nerves cannot be easily fixed.</li>";
       }
-      // 4. Toxic Job & Bad Boss
       else if (type === "toxic_exit") {
         if (arch) arch.textContent = "Category: Toxic Job & Mental Peace";
         if (pill) {
@@ -468,7 +574,6 @@
         if (action) action.innerHTML = "<strong>Step 1: Stop Caring Emotionally:</strong> Do only what is required during office hours. Do not let their shouting touch your heart.<br><strong>Step 2: Save 3 Months Expenses:</strong> Cut useless spending and build an emergency cash shield.<br><strong>Step 3: Apply to 5 Jobs Daily:</strong> Use your evenings to send resumes quietly. The moment you get an offer, resign with a smile.";
         if (list) list.innerHTML = "<li>A quiet, planned exit is always 10 times better than an angry, broke exit.</li>";
       }
-      // 5. Burnout & No Sleep
       else if (type === "burnout") {
         if (arch) arch.textContent = "Category: Overwork & Tiredness";
         if (pill) {
@@ -480,7 +585,6 @@
         if (action) action.innerHTML = "<strong>Step 1: Sleep 7 Hours Non-Negotiable:</strong> Your body repairs its brain cells only when you sleep.<br><strong>Step 2: Say 'No' to Extra Free Hours:</strong> Leave work on time. The company will replace you in 3 days if you drop dead.<br><strong>Step 3: Take a 3-Day Full Rest:</strong> Keep your phone away for an entire weekend and just sleep and walk in nature.";
         if (list) list.innerHTML = "<li>Health is wealth. If your body stops working, your bank balance is useless.</li>";
       }
-      // 6. General
       else {
         if (arch) arch.textContent = "Category: Finding Peace & Meaning";
         if (pill) {
